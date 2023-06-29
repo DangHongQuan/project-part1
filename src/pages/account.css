@@ -1,0 +1,61 @@
+.hederp {
+  margin-left: 20px;
+  margin-top: 10px;
+  display: flex;
+  font-size: 30px;
+  color: rgb(255, 145, 56);
+}
+.hederpaccount {
+  margin-top: 10px;
+  margin-right: 20px;
+  font-size: 30px;
+  color: rgb(255, 145, 56);
+}
+.imgaccount {
+  width: 40px;
+  height: 40px;
+  border-radius: 48px;
+  margin-top: -10px !important;
+  margin-right: 3px;
+}
+
+.xc {
+  color: var(--gray-gray-300, #7e7d88);
+  /* 12/12 Reg */
+  font-size: 12px;
+  font-family: Nunito;
+  margin-left: -150px !important;
+}
+.name {
+  color: var(--gray-gray-400-text, #535261);
+  /* 16/16 Bold */
+  font-size: 16px;
+  font-family: Nunito;
+  font-weight: 700;
+  line-height: 24px;
+  margin-top: -45px !important;
+  margin-left: -70px !important;
+}
+.btnaccount {
+  width: 40px;
+  height: 40px;
+  border-radius: 48px;
+}
+.hdaccount {
+  background: var(--bg, #f6f6f6);
+}
+.iconaccount {
+  margin-top: -10px !important;
+}
+.bg {
+  background: var(--bg, #f6f6f6);
+}
+
+.card {
+    margin-top: 150px;
+    margin-left: 120px;
+  width: 1112px;
+  padding: 40px 24px 54px 24px;
+  justify-content: center !important;
+  gap: 24px;
+}

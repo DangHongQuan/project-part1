@@ -1,0 +1,9 @@
+.dsdv{
+    color: var(--orange-orange-500, #FF7506);
+
+    /* 24/24 Bold */
+    font-size: 24px;
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: 700;
+}

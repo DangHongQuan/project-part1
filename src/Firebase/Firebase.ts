@@ -1,30 +1,123 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getAuth } from "firebase/auth";
-import { createContext } from "react";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc, getDocs, getFirestore, query, where } from "firebase/firestore";
+import { getDownloadURL, getStorage } from 'firebase/storage';
+
+import {  createUserWithEmailAndPassword } from "firebase/auth";
+import {  collection, addDoc } from "firebase/firestore";
+import {  ref, uploadBytes } from 'firebase/storage';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyCJHCALUKzkM2XdidBlMspd_wzLct7i20Q",
-    authDomain: "project-1-reacts.firebaseapp.com",
-    projectId: "project-1-reacts",
-    storageBucket: "project-1-reacts.appspot.com",
-    messagingSenderId: "395325290124",
-    appId: "1:395325290124:web:23279b969c1122c2916da9",
-    measurementId: "G-3R3FD5ZNM7"
-  };
+  apiKey: "AIzaSyD2_n2jaMMBF1qwAcFroeddE0ibt6p9Igs",
+  authDomain: "project-1-804ed.firebaseapp.com",
+  projectId: "project-1-804ed",
+  storageBucket: "project-1-804ed.appspot.com",
+  messagingSenderId: "1073530932270",
+  appId: "1:1073530932270:web:8c81652e6d0e148cb8a3bf",
+  measurementId: "G-RYEM5Y32S9"
+};
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 export const auth = getAuth(app);
+export const firestore = getFirestore(app);
+export const storage= getStorage(app);
+export const registerUser = async (
+  name: string,
+  email: string,
+  password: string,
+  address: string,
+  phone: string,
+  role: string,
+  status: string,
+  image: File
+) => {
+  try {
+    // Create user with email and password
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const userId = userCredential.user.uid;
+
+    // Upload image to Storage
+    const storageRef = ref(storage, `images/${userId}`);
+    await uploadBytes(storageRef, image);
+
+    // Save user information to Firestore
+    const usersCollection = collection(firestore, 'users');
+    await addDoc(usersCollection, {
+      name,
+      email,
+      password,
+      address,
+      phone,
+      role,
+      status,
+      image: userId
+    });
+
+    console.log("User registered successfully!");
+  } catch (error) {
+    console.error("Error registering user:", error);
+  }
+};
+// ...
+// ...
+
+// ...
 
 
-export const AuthContext = createContext({
-    isLoggedIn: false,
-    setIsLoggedIn: (value: boolean) => {},
-  });
+
+// Hàm đăng nhập
+export const loginUser = async (email: string, password: string) => {
+  try {
+    // Thực hiện đăng nhập bằng email và password
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    if (user) {
+      // Lấy thông tin người dùng từ Firestore dựa trên email
+      const querySnapshot = await getDocs(query(collection(firestore, 'users'), where('email', '==', email)));
+      const userDocs = querySnapshot.docs;
+
+      if (userDocs.length > 0) {
+        const userData = userDocs[0].data();
+        const imageFileName = userData.image;
+
+        // Lấy URL của ảnh từ Storage
+        const storageRef = ref(storage, 'images/' + imageFileName);
+        const imageURL = await getDownloadURL(storageRef);
+
+        console.log("User data:", userData);
+        console.log("Image URL:", imageURL);
+
+        // Trả về đối tượng chứa thông tin người dùng và URL của ảnh
+        const userWithImageURL = {
+          ...userData,
+          imageURL: imageURL,
+        };
+
+        // Trả về đối tượng userWithImageURL
+        return userWithImageURL;
+      } else {
+        console.log("User not found in Firestore");
+      }
+    } else {
+      console.log("User not found in Auth");
+    }
+  } catch (error) {
+    console.error("Login error:", error);
+  }
+
+  // Trả về giá trị null hoặc giá trị khác khi có lỗi xảy ra
+  return null;
+};
+
+
+
+// ...
+
+

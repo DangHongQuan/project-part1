@@ -1,90 +1,74 @@
+
 import React, { useState } from "react";
 import { Form, Input, Button, Col, Row } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from "../Firebase/Firebase";
-
+import { auth, firestore, loginUser } from "../Firebase/Firebase";
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import "../Css/Logincss.css";
+import { useNavigate } from "react-router-dom";
+
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
-  const [emailError, setEmailError] = useState("");
+ 
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [userData, setUserData] = useState<any | null>(null); // State để lưu trữ thông tin người dùng
+  const history = useNavigate();
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-   
-  };
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-    setPasswordError(""); // Reset password error when password changes
-  };
-
-  const handleSubmit = async (values: any) => {
-    try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
-      console.log("Login successful");
-      window.location.href = "/";
-    } catch (error) {
-      console.log("Login failed", error);
-      
-      setPasswordError("Sai mật khẩu hoặc tên đăng nhập"); // Set password error message
+  
+  const handleLogin = async () => {
+    const user = await loginUser(email, password);
+    if (user) {
+      setUserData(user); // Cập nhật state userData với thông tin người dùng
+      localStorage.setItem('userData', JSON.stringify(user)); // Lưu thông tin người dùng vào localStorage
+      history('/dasboard'); // Chuyển hướng đến trang hiển thị thông tin người dùng
     }
   };
-
   return (
     <Row align="middle" className="layout">
       <Col className="layoytlog" span={10} style={{ height: '100%', width: '100%' }}>
-        <Form onFinish={handleSubmit} className="mt-5">
+        <Form  className="mt-5" onClick={handleLogin}>
           <Form.Item>
             <img src="/img/Logoalta.png" alt="" />
           </Form.Item>
-          <label className="labletk">Tên đăng nhập*</label>
-          <Form.Item
-            name="email"
-            rules={[
-              { required: true, message: "Please input your email!" },
-              { type: "email", message: "Please enter a valid email!" },
-            ]}
-          >
+          <label className="labletk">Tên đăng nhập*</label>
+          <Form.Item name="email" rules={[{ required: true, message: 'Vui lòng nhập email!' }]}>
             <Input
               className="input"
               prefix={<UserOutlined />}
               placeholder="Email"
               value={email}
-              onChange={handleEmailChange}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </Form.Item>
-          <label className="lablemk">Mật khẩu *</label>
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
-            validateStatus={passwordError ? "error" : ""}
-            help={passwordError}
-          >
+          <label className="lablemk">Mật khẩu *</label>
+          <Form.Item name="password" rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}>
             <Input.Password
               className="input"
               prefix={<LockOutlined />}
-              placeholder="Password"
+              placeholder="Mật khẩu"
               value={password}
-              onChange={handlePasswordChange}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </Form.Item>
-          <a className="qmklogin">Quên mật khẩu?</a>
+          <a className="qmklogin">Quên mật khẩu?</a>
           <Form.Item>
             <Button className="btlogin" htmlType="submit">
-              Đặng Nhập
+              Đăng Nhập
             </Button>
           </Form.Item>
         </Form>
       </Col>
-      <Col className="bg-home" span={14} style={{ height: '100%', width: '100%' }}>
-        <img src="/img/bgh.jpg" width={848} alt="Logo" />
+      <Col className="bg-home" span={11} style={{ height: '100%', width: '100%' }}>
+        <img src="/img/bgh.jpg" width={840} alt="Logo" />
       </Col>
     </Row>
   );
 };
 
 export default Login;
+
+
+
+
