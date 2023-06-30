@@ -6,9 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.bundle';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import rootReducer from './redux/reducers'
-const store = createStore(rootReducer);
+import store from "./reduxtoolkit/store"
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
@@ -16,7 +14,6 @@ root.render(
   <Provider store={store}>
     <App />
   </Provider>,
-
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,90 +1,48 @@
-import React, { useState } from "react";
+// import React from 'react';
+// import { useSelector } from 'react-redux';
+// import { selectServices } from '../reduxtoolkit/servicesSlice';
 
-import { Form, Input, Button } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
-// import { initializeApp } from 'firebase/app';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from "../Firebase/Firebase";
+// const DangDemo: React.FC = () => {
+//   const services = useSelector(selectServices);
 
+//   return (
+//     // Hiển thị dữ liệu từ Redux store
+//     <div>
+//       {services.map((service) => (
+//         <div key={service.id}>{service.name}</div>
+//       ))}
+//     </div>
+//   );
+// };
 
-const Login: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+// export default DangDemo;
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
+import React from 'react'
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { RootState } from '../reduxtoolkit/store';
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-  };
+function Demoaaa() {
+  const { id_sv } = useParams<{ id_sv: string }>();
+  const data = useSelector((state: RootState) => state.service.data);
 
-
-  const handleSubmit = async () => {
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      console.log("Login successful");
-      window.location.href = "/";
-    } catch (error) {
-      console.log("Login failed", error);
-      // Xử lý khi đăng nhập thất bại, ví dụ: hiển thị thông báo lỗi
-    }
-  };
-  
-  
+  // Kiểm tra xem dữ liệu đã được lấy thành công hay chưa
+  const selectedData = data.find(item => item.id_sv === id_sv);
+  if (!selectedData) {
+    return <div>Loading...</div>; // Hoặc thông báo lỗi nếu cần
+  }
+console.log(selectedData)
+  // Hiển thị chi tiết dữ liệu
   return (
-    <div className="container">
-      <div className="row justify-content-center mt-5">
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-header">
-              <h2 className="text-center">Login</h2>
-            </div>
-            <div className="card-body">
-              <Form onFinish={handleSubmit}>
-                <Form.Item
-                  name="email"
-                  rules={[
-                    { required: true, message: "Please input your email!" },
-                    { type: "email", message: "Please enter a valid email!" },
-                  ]}
-                >
-                  <Input
-                    prefix={<UserOutlined />}
-                    placeholder="Email"
-                    value={email}
-                    onChange={handleEmailChange}
-                  />
-                </Form.Item>
-                <Form.Item
-                  name="password"
-                  rules={[{ required: true, message: "Please input your password!" }]}
-                >
-                  <Input.Password
-                    prefix={<LockOutlined />}
-                    placeholder="Password"
-                    value={password}
-                    onChange={handlePasswordChange}
-                  />
-                </Form.Item>
-                <Form.Item>
-                  <Button type="primary" htmlType="submit" >
-                    Login
-                  </Button>
-                </Form.Item>
-                <Form.Item>
-                  <Button type="text" onClick={() => window.location.href = ("/reg")} block>
-                    Register
-                  </Button>
-                </Form.Item>
-              </Form>
-            </div>
-            
-          </div>
-        </div>
-      </div>
+    <div>
+    
+     {selectedData.id}
+     {selectedData.name}
+     {selectedData.id_sv}
+     {selectedData.describe}
+     {selectedData.status}
     </div>
   );
 };
 
-export default Login;
+export default Demoaaa;

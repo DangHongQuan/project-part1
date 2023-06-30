@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 // import './homedasboard.css'
+// import  useFetchServiceData  from '../redux/serviceActions';
+
 import { Badge, Card, DatePicker, Pagination, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import './dasbordefault.css'
 import './service.css'
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, useNavigate, Routes } from 'react-router-dom';
 import {
     AppstoreOutlined,
     AreaChartOutlined,
@@ -18,6 +20,13 @@ import {
 import { Button, Col, Input, Layout, Menu, Row, Select, Space } from "antd";
 import { Header } from "antd/es/layout/layout";
 import Column from "antd/es/table/Column";
+import { query } from "express";
+import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../reduxtoolkit/store";
+import { ThunkDispatch } from "redux-thunk";
+import { AnyAction } from "redux";
+import { fetchServiceData } from "../reduxtoolkit/serviceActions";
 
 
 const { Sider, Content } = Layout;
@@ -62,17 +71,7 @@ const items: Menu[] = [
         getItem("Quản lý người dùng", "6.3", <SettingOutlined />, "/users"),
     ]),
 ];
-interface DataType {
-    key: string;
-    name: string;
-    age: number;
-    tel: string;
-    phone: number;
-    address: string;
-}
 
-// In the fifth row, other columns are merged into first column
-// by setting it's colSpan to be 0
 const data = [
     {
         id_sv: "KIO_01",
@@ -91,11 +90,59 @@ const data = [
         cn: "Cập nhật",
     },
 
-
-    // ...Thêm dữ liệu của các thiết bị khác
 ];
+interface Data {
+    id_sv: string;
+    name: string;
+    describe: string;
+    isActive: boolean;
+    ct: string;
+    cn: string;
+}
+
+
 
 const Service: React.FC = () => {
+
+    // const [data, setData] = useState<Data[]>([]);
+
+    // useEffect(() => {
+    //     const fetchServiceData = async () => {
+    //         try {
+    //             const firestore = getFirestore();
+    //             const serviceCollectionRef = collection(firestore, 'service');
+    //             const querySnapshot = await getDocs(serviceCollectionRef);
+
+    //             if (!querySnapshot.empty) {
+    //                 const rows = querySnapshot.docs.map((doc) => doc.data() as Data);
+    //                 setData(rows);
+    //             }
+    //         } catch (error) {
+    //             console.log('Lỗi khi lấy dữ liệu:', error);
+    //         }
+    //     };
+
+    //     fetchServiceData();
+    // }, []);
+    const navigate = useNavigate();
+    const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
+    const { data } = useSelector((state: RootState) => state.service);
+
+    useEffect(() => {
+        dispatch(fetchServiceData());
+    }, [dispatch]);
+    //   const navigate = useHistory()
+    //     const handleViewDetails = (serviceId: string) => {
+    //         const selectedDevice = data.find(
+    //           (service) => service.id_sv === serviceId
+    //         );
+    //         if (selectedDevice) {
+    //           console.log("Selected device:", selectedDevice);
+    //           navigate.push(`/chitiettb/${serviceId}`, { device: selectedDevice });
+    //         } else {
+    //           console.log("Không có dữ liệu thiết bị");
+    //         }
+    //       };
     return (
         <>
             <Layout style={{ minHeight: "100vh" }}>
@@ -188,59 +235,64 @@ const Service: React.FC = () => {
 
                     <Row className="mt-5 ms-5">
                         <Col span={20}>
-                            <Table dataSource={data} bordered pagination={{ pageSize: 5 }} rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-even' : 'table-row-odd')}  >
-                                <Column
-                                    title={<span className="table-title">Mã dịch vụ</span>}
+                            <Table
+                                dataSource={data}
+                                bordered
+                                pagination={{ pageSize: 5 }}
+                                rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-even' : 'table-row-odd')}
+                            >
+                                <Table.Column
+                                    title={<span>Mã dịch vụ</span>}
                                     dataIndex="id_sv"
                                     key="id_sv"
                                     render={(text: string) => <span>{text}</span>}
                                 />
-                                <Column
+                                <Table.Column
                                     title={<span className="table-title">Tên dịch vụ</span>}
                                     dataIndex="name"
                                     key="name"
                                     render={(text: string) => <span>{text}</span>}
                                 />
-                                <Column
+                                <Table.Column
                                     title={<span className="table-title">Mô tả</span>}
                                     dataIndex="describe"
                                     key="describe"
                                     render={(text: string) => <span>{text}</span>}
                                 />
-                                <Column
-                                    title={
-                                        <span className="table-title">Trạng thái hoạt động</span>
-                                    }
+                                <Table.Column
+                                    title={<span className="table-title">Trạng thái hoạt động</span>}
                                     dataIndex="isActive"
                                     key="isActive"
                                     render={(isActive: boolean) => (
-                                        <Badge
-                                            color="#4277FF"
-                                            text={isActive ? "Hoạt động" : "Ngừng hoạt động"}
-                                        />
+                                        <Badge color="#4277FF" text={isActive ? 'Hoạt động' : 'Ngừng hoạt động'} />
                                     )}
                                 />
 
-
-                                <Column
-                                    title=""
+                                {/* tìm id theo data của redux  */}
+                                <Table.Column
+                                    title="aaa"
                                     dataIndex="ct"
                                     key="ct"
-                                    render={(text: string) => <Link to={"/detailDevice"}>{text}</Link>}
+                                    render={(text: string, record: any) => (
+                                        <Button   onClick={() => navigate(`/detailDevice/${record.id_sv}`)} >Chi tiết</Button>
+                                    )}
                                 />
-                                <Column
-                                    title=""
+                                <Table.Column
+                                    title="aaaaa"
                                     dataIndex="cn"
                                     key="cn"
-                                    render={(text: string) => <Link to={"/editDevice"}>{text}</Link>}
+                                    render={(text: string, record: any) => (
+                                        <Button onClick={() => navigate(`/editDevice/${record.id_sv}`)}>Cập Nhật</Button>
+                                    )}
                                 />
                             </Table>
                         </Col>
                         <Col span={3} className="ms-1">
-                            <Link to={"/addDevice"}>
+                            <Link to={"/addService"}>
                                 <Card className="bgaDvice">
                                     <img src="/img/icon/add-square.png" alt="" />
                                     <p>Thêm dịch vụ</p>
+
                                 </Card>
                             </Link>
                         </Col>
@@ -259,3 +311,5 @@ const Service: React.FC = () => {
 };
 
 export default Service;
+
+
