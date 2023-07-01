@@ -73,7 +73,7 @@ interface DataType {
 
 // In the fifth row, other columns are merged into first column
 // by setting it's colSpan to be 0
-const data = [
+ const data = [
   {
     id: 1,
     name: "máy tính",

@@ -28,6 +28,8 @@ import SignUpForm from './Demo/AddUser';
 import ChietTietService from './pages/ChitetServiceDemo';
 import EditService from './pages/EditService';
 import DemoFechDevices from './Component/DemoFechDevices';
+import NumberLever from './pages/NumberLever';
+import NewnumberLever from './pages/NewnumberLever';
 
 
 
@@ -57,10 +59,9 @@ function RouteApp() {
         <Route path="/d" element={<SignUpForm />} />
         <Route path="/g" element={<DemoFechDevices />} />
 
+        <Route path="/numbers" element={<NumberLever />} />
 
-
-
-        
+        <Route path="/addNumberLever" element={<NewnumberLever />} />
       </Routes>
     </BrowserRouter>
   )
