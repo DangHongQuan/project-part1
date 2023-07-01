@@ -18,6 +18,12 @@ import { Button, Col, Input, Layout, Menu, Row, Select, Space } from "antd";
 import { Header } from "antd/es/layout/layout";
 import Column from "antd/es/table/Column";
 import TextArea from "antd/es/input/TextArea";
+import { ThunkDispatch } from "redux-thunk";
+import { AnyAction } from "redux";
+import { RootState } from "../reduxtoolkit/store";
+import { useDispatch } from "react-redux";
+import { addNewService } from "../reduxtoolkit/serviceActions";
+import { unwrapResult } from "@reduxjs/toolkit";
 
 
 const { Sider, Content } = Layout;
@@ -68,6 +74,18 @@ const items: Menu[] = [
 
 
 const AddService: React.FC = () => {
+    const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
+
+    const handleAddNewService = async (values: any) => {
+        // Perform any processing you need with the new data
+
+        // Call addNewService action to add new service and update Redux Toolkit
+        const actionResult = await dispatch(addNewService(values));
+        const newServiceData = unwrapResult(actionResult);
+
+        // Handle success after adding and updating Redux Toolkit
+        alert('Thêm mới thành công:' + newServiceData);
+    };
     return (
         <>
             <Layout style={{ minHeight: "100vh" }}>
@@ -103,7 +121,7 @@ const AddService: React.FC = () => {
                         <Row >
                             <Col span={10}>
                                 <p className="hederpc mx-2">Dịch vụ &gt;
-                                    <a href="/device" className=" dsdvadd ms-2"> Danh sách dịch vụ &gt;  </a>
+                                    <a href="/services" className=" dsdvadd ms-2"> Danh sách dịch vụ &gt;  </a>
                                     <a href="" className="dsdv ms-2"> Thêm dịch vụ</a>
                                 </p>
                             </Col>
@@ -123,67 +141,70 @@ const AddService: React.FC = () => {
                         </Row>
                     </Header>
                     <p className="qldv">Quản lý dịch vụ</p>
-                    <Card className="card">
-                        <p className="thongTindichvu">Thông tin dịch vụ</p>
-                        <Row>
-                            <Col span={11}>
-                                <Row>
-                                    <Col span={24}>
-                                        <label className="lbaddSe" > Mã dịch vụ: <i className="kytu"> &#42;</i></label>
-                                        <Input className="inputaddSe" />
-                                    </Col>
-                                    <Col span={24}>
-                                        <label className="lbaddSe custom-lbadd" > Tên dịch vụ: <i className="kytu"> &#42;</i></label>
-                                        <Input className="inputaddSe" />
-                                    </Col>
-                                </Row>
+                    <Form onFinish={handleAddNewService}>
+                        <Card className="card">
+                            <p className="thongTindichvu">Thông tin dịch vụ</p>
+                            <Row>
+                                <Col span={11}>
+                                    <Row>
+                                        <Col span={24}>
+                                            <label className="lbaddSe" > Mã dịch vụ: <i className="kytu"> &#42;</i></label>
+                                            <Form.Item name="id_sv" >
+                                                <Input />
+                                            </Form.Item>
+                                        </Col>
+                                        <Col span={24}>
+                                            <label className="lbaddSe custom-lbadd" > Tên dịch vụ: <i className="kytu"> &#42;</i></label>
+                                            <Form.Item name="name" >
+                                                <Input />
+                                            </Form.Item>
+                                        </Col>
+                                    </Row>
+                                </Col>
+                                <Col span={11} className="ms-4">
+
+                                    <label className="lbaddSe" >Mô tả: </label>
+                                    <Form.Item name="describe" >
+                                        <TextArea rows={5} />
+                                    </Form.Item>
+
+
+                                </Col>
+                            </Row>
+                            <p className="qtcs mt-4"> Quy tắt cấp số</p>
+                            <Row>
+                                <Form.Item name="numberlever">
+                                    <Checkbox.Group style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <Checkbox value="tăng tự động">Tăng tự động từ:
+                                            <Tag className="ms-1 tagcheck">0001</Tag>
+                                            đến
+                                            <Tag className="ms-1"> 999</Tag></Checkbox>
+                                        <Checkbox value="Frefix">Frefix:
+                                            <Tag className="ms-7 tagcheck">0001</Tag></Checkbox>
+                                        <Checkbox value="Surfix">Surfix:
+                                            <Tag className="ms-7 tagcheck">0001</Tag></Checkbox>
+                                        <Checkbox value="Rest mỗi ngày">Rest mỗi ngày</Checkbox>
+                                    </Checkbox.Group>
+                                </Form.Item>
+                                <Form.Item name="status" hidden initialValue="hoạt động">
+                                    <Input />
+                                </Form.Item>
+                            </Row>
+                            <p className="mt-5 abs"> <i className="kytu"> &#42;</i> là trường thông tin bắt buộc</p>
+                        </Card>
+                        <Row className="justify-content-center mt-3">
+                            <Col span={10} className="text-end col-hb">
+                                <button className="btn-adddvice">
+                                    Hủy bỏ
+                                </button>
                             </Col>
-                            <Col span={11} className="ms-4">
-
-                                <label className="lbaddSe" >Mô tả: </label>
-                                <TextArea rows={5} />
-
+                            <Col span={12} className="d-flex ms-5">
+                                <button type="submit" className="btn-ttb">
+                                    Thêm dịch vụ
+                                </button>
                             </Col>
                         </Row>
-                        <p className="qtcs mt-4"> Quy tắt cấp số</p>
-                        <Row>
-                            <Col span={20}>
-                                <Checkbox className="checkbok" >Tăng tự động từ:
-                                    <Tag className="ms-1 tagcheck">0001</Tag>
-                                    đến
-                                    <Tag className="ms-1"> 999</Tag>
-                                </Checkbox>
-                            </Col>
-                            <Col span={20} className="mt-3">
-                                <Checkbox className="checkbok" >Frefix:
-                                    <Tag className="ms-7 tagcheck">0001</Tag>
-                                </Checkbox>
-                            </Col>
-                            <Col span={20} className="mt-3">
-                                <Checkbox className="checkbok" >Surfix:
-                                    <Tag className="ms-7 tagcheck">0001</Tag>
-                                </Checkbox>
-                            </Col>
-                            <Col span={20} className="mt-3">
-                                <Checkbox className="checkbok" >Reset mỗi ngày
-                                </Checkbox>
-                            </Col>
-                        </Row>
-                        <p className="mt-5 abs"> <i className="kytu"> &#42;</i> là trường thông tin bắt buộc</p>
-                    </Card>
-                    <Row className="justify-content-center mt-3">
-                        <Col span={10} className="text-end col-hb">
-                            <button className="btn-adddvice">
-                                Hủy bỏ
-                            </button>
-                        </Col>
-                        <Col span={12} className="d-flex ms-5">
-                            <button className="btn-ttb">
-                                Thêm dịch vụ
-                            </button>
-                        </Col>
-                    </Row>
-
+                    </Form>
                     <Routes >
                         {items.map((item) => (
                             <Route key={item.key} path={item.path}>

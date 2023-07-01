@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import './homedasboard.css'
 import './account.css'
 import { Link, Route, Routes } from "react-router-dom";
@@ -58,32 +58,9 @@ const items: Menu[] = [
     getItem("Quản lý người dùng", "6.3", <SettingOutlined />, "/users"),
   ]),
 ];
-// interface userData {
-//   email:String,
-//   name: String,
-//   address: String,
-//   password: String,
-//   phone: String,
-//   role: String,
-//   status: String,
-//   imageURL: String,
-// }
-// const [userData, setUserData] = React.useState<userData>({
-//   email: "",
-//   name: "",
-//   address: "",
-//   password: "",
-//   phone: "",
-//   role: " ",
-//   status: "",
-//   imageURL: "",
-// });
-// Lấy thông tin người dùng từ localStorage
-const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-// useEffect(() => {
-//   const storedUserData = JSON.parse(localStorage.getItem("userData") || "{}");
-//   setUserData(storedUserData);
-// }, []);
+
+// const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+
 const handleLogout = () => {
   // Xử lý đăng xuất tại đây (ví dụ: xóa thông tin đăng nhập, đặt lại trạng thái, v.v.)
   // Sau đó, chuyển hướng về trang đăng nhập
@@ -93,7 +70,11 @@ const handleLogout = () => {
 };
 
 const PersoalAccount: React.FC   = () => {
- 
+  const [userData, setUserData] = useState<any>({});
+ useEffect(() => {
+  const storedUserData = JSON.parse(localStorage.getItem("userData") || "{}");
+  setUserData(storedUserData);
+}, []);
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
@@ -184,8 +165,7 @@ const PersoalAccount: React.FC   = () => {
                          Tên tài khoản
                           </label>
                           <Form.Item className="">
-                           <Input defaultValue={userData.name} />
-                         
+                         <input className="vauePe" value={userData.name}/>
                           </Form.Item>
                         </div>
                         <div className="col-6">
@@ -193,7 +173,7 @@ const PersoalAccount: React.FC   = () => {
                             Tên đăng nhập
                           </label>
                           <Form.Item className="">
-                          <Input defaultValue={userData.email} />
+                          <input className="vauePe" value={userData.email}/>
                           </Form.Item>
                         </div>
                         <div className="col-6">
@@ -201,7 +181,8 @@ const PersoalAccount: React.FC   = () => {
                             Số điện thoại
                           </label>
                           <Form.Item className="">
-                          <Input defaultValue={userData.phone} />
+                          <input className="vauePe" value={userData.phone}/>
+
                           </Form.Item>
                         </div>
                         <div className="col-6">
@@ -209,7 +190,8 @@ const PersoalAccount: React.FC   = () => {
                             Mật khẩu
                           </label>
                           <Form.Item className="">
-                          <Input.Password defaultValue={userData.password} />
+                          <input className="vauePe" value={userData.password}/>
+
                           </Form.Item>
                         </div>
                         <div className="col-6">
@@ -217,7 +199,8 @@ const PersoalAccount: React.FC   = () => {
                             Email:
                           </label>
                           <Form.Item className="">
-                          <Input defaultValue={userData.email} />
+                          <input className="vauePe" value={userData.email}/>
+
                           </Form.Item>
                         </div>
                         <div className="col-6">
@@ -225,7 +208,8 @@ const PersoalAccount: React.FC   = () => {
                             Vai trò:
                           </label>
                           <Form.Item className="">
-                          <Input defaultValue={userData.role} />
+                          <input className="vauePe" value={userData.role}/>
+
                           </Form.Item>
                         </div>
                       </div>

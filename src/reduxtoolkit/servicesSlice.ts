@@ -11,6 +11,7 @@ export interface Data{
   status: string;
 }
 
+
 interface ServiceState {
   data: Data[]; // Thay thế Data bằng kiểu dữ liệu của dữ liệu lấy từ Firestore
   isLoading: boolean;
@@ -31,6 +32,7 @@ const serviceSlice = createSlice({
       state.isLoading = true;
       state.error = null;
     },
+   
     fetchDataSuccess(state, action: PayloadAction<Data[]>) {
       state.isLoading = false;
       state.data = action.payload;
@@ -42,6 +44,6 @@ const serviceSlice = createSlice({
   },
 });
 
-export const { fetchDataStart, fetchDataSuccess, fetchDataFailure } = serviceSlice.actions;
+export const { fetchDataStart, fetchDataSuccess, fetchDataFailure} = serviceSlice.actions;
 
 export default serviceSlice.reducer;

@@ -104,26 +104,7 @@ interface Data {
 
 const Service: React.FC = () => {
 
-    // const [data, setData] = useState<Data[]>([]);
-
-    // useEffect(() => {
-    //     const fetchServiceData = async () => {
-    //         try {
-    //             const firestore = getFirestore();
-    //             const serviceCollectionRef = collection(firestore, 'service');
-    //             const querySnapshot = await getDocs(serviceCollectionRef);
-
-    //             if (!querySnapshot.empty) {
-    //                 const rows = querySnapshot.docs.map((doc) => doc.data() as Data);
-    //                 setData(rows);
-    //             }
-    //         } catch (error) {
-    //             console.log('Lỗi khi lấy dữ liệu:', error);
-    //         }
-    //     };
-
-    //     fetchServiceData();
-    // }, []);
+    
     const navigate = useNavigate();
     const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
     const { data } = useSelector((state: RootState) => state.service);
@@ -131,18 +112,7 @@ const Service: React.FC = () => {
     useEffect(() => {
         dispatch(fetchServiceData());
     }, [dispatch]);
-    //   const navigate = useHistory()
-    //     const handleViewDetails = (serviceId: string) => {
-    //         const selectedDevice = data.find(
-    //           (service) => service.id_sv === serviceId
-    //         );
-    //         if (selectedDevice) {
-    //           console.log("Selected device:", selectedDevice);
-    //           navigate.push(`/chitiettb/${serviceId}`, { device: selectedDevice });
-    //         } else {
-    //           console.log("Không có dữ liệu thiết bị");
-    //         }
-    //       };
+
     return (
         <>
             <Layout style={{ minHeight: "100vh" }}>
@@ -177,7 +147,7 @@ const Service: React.FC = () => {
                     <Header className="hdaccount">
                         <Row >
                             <Col span={10}>
-                                <p className="hederpc mx-2">Dịch vụ &gt;  <a href="/device" className="dsdv ms-2"> Danh sách dịch vụ</a></p>
+                                <p className="hederpc mx-2">Dịch vụ &gt;  <a href="/services" className="dsdv ms-2"> Danh sách dịch vụ</a></p>
                             </Col>
                             <Col span={11}   >
                                 <div className="hederpaccount text-end">
@@ -259,14 +229,20 @@ const Service: React.FC = () => {
                                     key="describe"
                                     render={(text: string) => <span>{text}</span>}
                                 />
-                                <Table.Column
+                                  <Table.Column
+                                    title={<span className="table-title">Trạng thái hoạt động</span>}
+                                    dataIndex="status"
+                                    key="status"
+                                    render={(text: string) => <span>{text}</span>}
+                                />
+                                {/* <Table.Column
                                     title={<span className="table-title">Trạng thái hoạt động</span>}
                                     dataIndex="isActive"
                                     key="isActive"
                                     render={(isActive: boolean) => (
                                         <Badge color="#4277FF" text={isActive ? 'Hoạt động' : 'Ngừng hoạt động'} />
                                     )}
-                                />
+                                /> */}
 
                                 {/* tìm id theo data của redux  */}
                                 <Table.Column
@@ -274,7 +250,7 @@ const Service: React.FC = () => {
                                     dataIndex="ct"
                                     key="ct"
                                     render={(text: string, record: any) => (
-                                        <Button   onClick={() => navigate(`/detailDevice/${record.id_sv}`)} >Chi tiết</Button>
+                                        <Button   onClick={() => navigate(`/detailService/${record.id_sv}`)} >Chi tiết</Button>
                                     )}
                                 />
                                 <Table.Column
@@ -282,7 +258,7 @@ const Service: React.FC = () => {
                                     dataIndex="cn"
                                     key="cn"
                                     render={(text: string, record: any) => (
-                                        <Button onClick={() => navigate(`/editDevice/${record.id_sv}`)}>Cập Nhật</Button>
+                                        <Button onClick={() => navigate(`/editService/${record.id_sv}`)}>Cập Nhật</Button>
                                     )}
                                 />
                             </Table>

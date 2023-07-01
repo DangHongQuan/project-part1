@@ -25,6 +25,9 @@ import Demoaaa from './Component/Demo';
 import EditDevice from './Component/EditDevice';
 import AddDemo from './Component/AddDemo';
 import SignUpForm from './Demo/AddUser';
+import ChietTietService from './pages/ChitetServiceDemo';
+import EditService from './pages/EditService';
+import DemoFechDevices from './Component/DemoFechDevices';
 
 
 
@@ -48,10 +51,13 @@ function RouteApp() {
         <Route path='/addService' element={<AddService />} />
         <Route path='/b' element={<ServiceComponent />} />
         <Route path='/e' element={<YourComponent />} />
-        <Route path="/detailDevice/:id_sv" element={<Demoaaa/>} />
-        <Route path="/editDevice/:id_sv" element={<EditDevice />} />
+        <Route path="/detailService/:id_sv" element={<ChietTietService/>} />
+        <Route path="/editService/:id_sv" element={<EditService />} />
         <Route path="/c" element={<AddDemo />} />
         <Route path="/d" element={<SignUpForm />} />
+        <Route path="/g" element={<DemoFechDevices />} />
+
+
 
 
         
