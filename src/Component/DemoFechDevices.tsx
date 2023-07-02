@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 import { AnyAction, ThunkDispatch, unwrapResult } from '@reduxjs/toolkit';
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button, Checkbox, Select } from 'antd';
 import React from 'react';
 import { RootState } from '../reduxtoolkit/store';
 import { addNewDevices } from '../reduxtoolkit/DevicesActions';
@@ -21,34 +21,39 @@ function DemoFechDevices() {
   return (
     <div>
       <Form onFinish={handleAddNewService}>
-        <Form.Item name="id_dc" label="Name">
+        <Form.Item name="id_dc" label="Ma thiet bi">
           <Input />
         </Form.Item>
-        <Form.Item name="type" label="Status">
+        <Form.Item name="type" label="loai thiet bi">
+          <Select>
+            <Select.Option value="option1">Option 1</Select.Option>
+            <Select.Option value="option2">Option 2</Select.Option>
+            <Select.Option value="option3">Option 3</Select.Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item name="name" label="name">
           <Input />
         </Form.Item>
-        <Form.Item name="name" label="Describe">
+        <Form.Item name="username" label="tk">
           <Input />
         </Form.Item>
-        <Form.Item name="username" label="ID">
+        <Form.Item name="ip" label="ip">
           <Input />
         </Form.Item>
-        <Form.Item name="ip" label="ID">
+        <Form.Item name="password" label="mk">
           <Input />
         </Form.Item>
-        <Form.Item name="password" label="ID">
+        <Form.Item name="servie_dc" label="dich vu su dung">
           <Input />
         </Form.Item>
-        <Form.Item name="servie_dc" label="ID">
+        <Form.Item name="status_hd" label="hd">
           <Input />
         </Form.Item>
-        {/* <Form.Item name="numberlever" label="Number Lever">
-          <Checkbox.Group style={{ display: 'flex', flexDirection: 'column' }}>
-            <Checkbox value="Option 1">Option 1</Checkbox>
-            <Checkbox value="Option 2">Option 2</Checkbox>
-            <Checkbox value="Option 3">Option 3</Checkbox>
-          </Checkbox.Group>
-        </Form.Item> */}
+        <Form.Item name="status_kn" label="kn">
+          <Input />
+        </Form.Item>
+
         <Form.Item>
           <Button type="primary" htmlType="submit">
             Add

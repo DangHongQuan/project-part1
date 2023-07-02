@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import './homedasboard.css'
 import { useNavigate } from 'react-router-dom';
 
@@ -58,8 +58,13 @@ const items: Menu[] = [
   ]),
 ];
 
-const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+
 const HomeDasboard: React.FC = () => {
+  const [userData, setUserData] = useState<any>({});
+ useEffect(() => {
+  const storedUserData = JSON.parse(localStorage.getItem("userData") || "{}");
+  setUserData(storedUserData);
+}, []);
   const navigate = useNavigate();
   return (
     <>

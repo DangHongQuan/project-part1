@@ -8,6 +8,8 @@ interface DeviceeData {
     ip: string;
     password: string;
     servie_dc: string;
+    status_hd: string;
+    status_kn: string;
    
   }
   

@@ -8,6 +8,8 @@ export interface DataDevice {
     ip: string;
     password: string;
     servie_dc: string;
+    status_hd: string;
+    status_kn: string;
     // Add the new properties here...
   }
   

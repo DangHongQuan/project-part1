@@ -30,6 +30,8 @@ import EditService from './pages/EditService';
 import DemoFechDevices from './Component/DemoFechDevices';
 import NumberLever from './pages/NumberLever';
 import NewnumberLever from './pages/NewnumberLever';
+import Report from './pages/Report';
+import DemoOption from './Component/DemoOptionSelect';
 
 
 
@@ -58,9 +60,12 @@ function RouteApp() {
         <Route path="/c" element={<AddDemo />} />
         <Route path="/d" element={<SignUpForm />} />
         <Route path="/g" element={<DemoFechDevices />} />
+        <Route path="/reports" element={<Report />} />
 
         <Route path="/numbers" element={<NumberLever />} />
+        <Route path="/x" element={<DemoOption />} />
 
+   
         <Route path="/addNumberLever" element={<NewnumberLever />} />
       </Routes>
     </BrowserRouter>

@@ -14,6 +14,7 @@
   import { firestore } from "../Firebase/Firebase";
 import { DataDevice, fetchDataDeviceFailure, fetchDataDeviceSuccess, fetchDateDeviceStart } from "./DeviceSlice";
 import DeviceeData from "./DevicesData";
+import { useEffect, useState } from "react";
   
   export const fetchDevicesData = (): AppThunk => async (dispatch, getState) => {
     dispatch(fetchDateDeviceStart());
@@ -60,14 +61,55 @@ import DeviceeData from "./DevicesData";
     }
   );
   
+  // const [ipAddress, setIPAddress] = useState('');
+
+  //   useEffect(() => {
+  //       const fetchIPAddress = async () => {
+
+  //           const response = await fetch('https://api.ipify.org?format=json');
+  //           const data = await response.json();
+  //           setIPAddress(data.ip);
+
+  //       };
+
+  //       fetchIPAddress();
+  //   }, []);
+  // export const addNewDevices = createAsyncThunk(
+  //   'service/addNewDevices',
+  //   async (newServiceData: any) => {
+  //     const firestore: Firestore = getFirestore();
+  //     const newServiceDocRef = await addDoc(collection(firestore, 'devices'), newServiceData);
+  //     ip: ipAddress
+  //     const newServiceId = newServiceDocRef.id;
+      
+  //     return { id_dc: newServiceId, ...newServiceData };
+  //   }
+  // );
+
+  const fetchIPAddress = async () => {
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      return data.ip;
+    } catch (error) {
+      console.error('Error fetching IP address:', error);
+      return null;
+    }
+  };
+  
   export const addNewDevices = createAsyncThunk(
     'service/addNewDevices',
-    async (newServiceData: any) => {
-      const firestore: Firestore = getFirestore();
-      const newServiceDocRef = await addDoc(collection(firestore, 'devices'), newServiceData);
-      const newServiceId = newServiceDocRef.id;
-      
-      return { id_dc: newServiceId, ...newServiceData };
+    async (newDeviceData: any) => {
+      const ipAddress = await fetchIPAddress();
+      if (ipAddress) {
+        const firestore: Firestore = getFirestore();
+        const newServiceDocRef = await addDoc(collection(firestore, 'devices'), { ...newDeviceData, ip: ipAddress });
+        const newServiceId = newServiceDocRef.id;
+        return { id_dc: newServiceId, ...newDeviceData };
+      } else {
+        throw new Error('Failed to fetch IP address');
+      }
     }
   );
+  
   

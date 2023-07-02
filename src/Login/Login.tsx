@@ -22,7 +22,7 @@ const Login: React.FC = () => {
     if (user) {
       setUserData(user); // Cập nhật state userData với thông tin người dùng
       localStorage.setItem('userData', JSON.stringify(user)); // Lưu thông tin người dùng vào localStorage
-      history('/dasboard'); // Chuyển hướng đến trang hiển thị thông tin người dùng
+      history('/persoalaccount'); // Chuyển hướng đến trang hiển thị thông tin người dùng
     }
   };
   return (

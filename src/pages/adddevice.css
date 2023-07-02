@@ -82,17 +82,7 @@
   align-items: center;
   gap: 10px;
 }
-.inputaddSelect {
-  border-radius: 8px;
-  border: 1.5px solid var(--gray-gray-100, #d4d4d7);
-  background: var(--white, #fff);
-  display: flex;
-  width: 465px;
-  height: 44px;
-  padding: 10px 270px 10px 12px;
-  align-items: center;
-  gap: 10px;
-}
+
 .selectadd {
   color: var(--gray-gray-200-placeholder, #a9a9b0) !important;
 

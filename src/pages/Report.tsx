@@ -102,16 +102,10 @@ interface Data {
 
 
 
-const Service: React.FC = () => {
+const Report: React.FC = () => {
 
     
-    const navigate = useNavigate();
-    const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
-    const { data } = useSelector((state: RootState) => state.service);
-
-    useEffect(() => {
-        dispatch(fetchServiceData());
-    }, [dispatch]);
+    
 
     return (
         <>
@@ -130,7 +124,7 @@ const Service: React.FC = () => {
                                         ))}
                                     </SubMenu>
                                 ) : (
-                                    <Menu.Item key={item.key} icon={item.icon} className="menu-item" style={item.key === '3' ? { backgroundColor: '#ff7506', color: 'white' } : {}}> {/* Add className="menu-item" */}
+                                    <Menu.Item key={item.key} icon={item.icon} className="menu-item" style={item.key === '5' ? { backgroundColor: '#ff7506', color: 'white' } : {}}> {/* Add className="menu-item" */}
                                         <Link to={item.path}>{item.label}</Link>
                                     </Menu.Item>
                                 )
@@ -147,7 +141,7 @@ const Service: React.FC = () => {
                     <Header className="hdaccount">
                         <Row >
                             <Col span={10}>
-                                <p className="hederpc mx-2">Dịch vụ &gt;  <a href="/services" className="dsdv ms-2"> Danh sách dịch vụ</a></p>
+                                <p className="hederpc mx-2">Báo cáo &gt;  <a href="/reports" className="dsdv ms-2"> Lập báo cáo</a></p>
                             </Col>
                             <Col span={11}   >
                                 <div className="hederpaccount text-end">
@@ -167,16 +161,7 @@ const Service: React.FC = () => {
                     <p className="dstbhome">Danh sách dịch vụ</p>
 
                     <Row className="custom-ms">
-                        <Col span={5}>
-                            <label className="tthd ">Trạng thái hoạt động</label>
-                            <Select defaultValue="all" style={{ width: 280 }} className="slectTop d-flex ms-3">
-                                <Select.Option value="all"  >Tất cả</Select.Option>
-                                <Select.Option value="active">Hoạt động</Select.Option>
-                                <Select.Option value="inactive">
-                                    Ngưng hoạt động
-                                </Select.Option>
-                            </Select>
-                        </Col>
+                       
                         <Col span={10} className=" ms-3">
                             <label className="tthd " > Chọn thời gian</label>
                             <Space.Compact block>
@@ -184,21 +169,7 @@ const Service: React.FC = () => {
 
                             </Space.Compact>
                         </Col>
-                        <Col span={5} className="custom-tk">
-                            <label className="tk">Từ khóa</label>
-                            <Input
-                                style={{ width: 280 }}
-                                placeholder="Nhập từ khóa"
-                                suffix={
-                                    <Space>
-                                        <SearchOutlined
-                                            className="d-flex align-items-center justify-content-center inputtk"
-                                            style={{ color: "#1890ff" }}
-                                        />
-                                    </Space>
-                                }
-                            />
-                        </Col>
+                       
                     </Row>
 
 
@@ -236,29 +207,14 @@ const Service: React.FC = () => {
                                     render={(text: string) => <span>{text}</span>}
                                 />
                           
-                                <Table.Column
-                                    title="aaa"
-                                    dataIndex="ct"
-                                    key="ct"
-                                    render={(text: string, record: any) => (
-                                        <Button   onClick={() => navigate(`/detailService/${record.id_sv}`)} >Chi tiết</Button>
-                                    )}
-                                />
-                                <Table.Column
-                                    title="aaaaa"
-                                    dataIndex="cn"
-                                    key="cn"
-                                    render={(text: string, record: any) => (
-                                        <Button onClick={() => navigate(`/editService/${record.id_sv}`)}>Cập Nhật</Button>
-                                    )}
-                                />
+                                
                             </Table>
                         </Col>
                         <Col span={3} className="ms-1">
                             <Link to={"/addService"}>
                                 <Card className="bgaDvice">
-                                    <img src="/img/icon/add-square.png" alt="" />
-                                    <p>Thêm dịch vụ</p>
+                                    <img src="/img/icon/document-download.png" alt="" />
+                                    <p>Tải về   </p>
 
                                 </Card>
                             </Link>
@@ -277,6 +233,6 @@ const Service: React.FC = () => {
     )
 };
 
-export default Service;
+export default Report;
 
 

@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 // import './homedasboard.css'
 import { Badge, Card, Pagination, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import './dasbordefault.css'
 import './device.css'
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import {
   AppstoreOutlined,
   AreaChartOutlined,
@@ -18,6 +18,11 @@ import {
 import { Button, Col, Input, Layout, Menu, Row, Select, Space } from "antd";
 import { Header } from "antd/es/layout/layout";
 import Column from "antd/es/table/Column";
+import { ThunkDispatch } from "redux-thunk";
+import { RootState } from "../reduxtoolkit/store";
+import { AnyAction } from "redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchDevicesData } from "../reduxtoolkit/DevicesActions";
 
 
 const { Sider, Content } = Layout;
@@ -73,7 +78,7 @@ interface DataType {
 
 // In the fifth row, other columns are merged into first column
 // by setting it's colSpan to be 0
- const data = [
+const data = [
   {
     id: 1,
     name: "máy tính",
@@ -98,6 +103,13 @@ interface DataType {
   // ...Thêm dữ liệu của các thiết bị khác
 ];
 const DeviceApp: React.FC = () => {
+  const navigate= useNavigate();
+  const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
+  const { data } = useSelector((state: RootState) => state.device);
+
+  useEffect(() => {
+    dispatch(fetchDevicesData());
+  }, [dispatch]);
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
@@ -196,8 +208,8 @@ const DeviceApp: React.FC = () => {
               <Table dataSource={data} bordered pagination={{ pageSize: 5 }} rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-even' : 'table-row-odd')} >
                 <Column
                   title={<span className="table-title">Mã thiết bị</span>}
-                  dataIndex="id"
-                  key="id"
+                  dataIndex="id_dc"
+                  key="id_dc"
                   render={(text: string) => <span>{text}</span>}
                 />
                 <Column
@@ -208,53 +220,48 @@ const DeviceApp: React.FC = () => {
                 />
                 <Column
                   title={<span className="table-title">Địa chỉ IP</span>}
-                  dataIndex="ipAddress"
-                  key="ipAddress"
+                  dataIndex="ip"
+                  key="ip"
                   render={(text: string) => <span>{text}</span>}
                 />
                 <Column
                   title={
                     <span className="table-title">Trạng thái hoạt động</span>
                   }
-                  dataIndex="isActive"
-                  key="isActive"
-                  render={(isActive: boolean) => (
-                    <Badge
-                      color="#4277FF"
-                      text={isActive ? "Hoạt động" : "Ngừng hoạt động"}
-                    />
-                  )}
+                  dataIndex="status_hd"
+                  key="status_hd"
+                  render={(text: string) => <span>{text}</span>}
                 />
                 <Column
                   title={
                     <span className="table-title">Trạng thái kết nối</span>
                   }
-                  dataIndex="isConnected"
-                  key="isConnected"
-                  render={(isConnected: boolean) => (
-                    <Badge
-                      color="#4277FF"
-                      text={isConnected ? "Hoạt động" : "Ngừng hoạt động"}
-                    />
-                  )}
+                  dataIndex="status_kn"
+                  key="status_kn"
+                  render={(text: string) => <span>{text}</span>}
+
                 />
                 <Column
                   title={<span className="table-title">Dịch vụ sử dụng</span>}
-                  dataIndex="service"
-                  key="service"
+                  dataIndex="servie_dc"
+                  key="servie_dc"
                   render={(text: string) => <span>{text}</span>}
                 />
-                <Column
-                  title=""
+                <Table.Column
+                  title="aaa"
                   dataIndex="ct"
                   key="ct"
-                  render={(text: string) => <Link to={"/detailDevice"}>{text}</Link>}
+                  render={(text: string, record: any) => (
+                    <Button onClick={() => navigate(`/detailDevice/${record.id_dc}`)} >Chi tiết</Button>
+                  )}
                 />
-                <Column
-                  title=""
+                <Table.Column
+                  title="aaaaa"
                   dataIndex="cn"
                   key="cn"
-                  render={(text: string) => <Link to={"/editDevice"}>{text}</Link>}
+                  render={(text: string, record: any) => (
+                    <Button onClick={() => navigate(`/editDevice/${record.id_dc}`)}>Cập Nhật</Button>
+                  )}
                 />
               </Table>
             </Col>
