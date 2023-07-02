@@ -97,7 +97,7 @@ const AddDevice: React.FC = () => {
 
     useEffect(() => {
         dispatch(fetchServiceData());
-        
+
     }, [dispatch]);
 
 
@@ -213,10 +213,10 @@ const AddDevice: React.FC = () => {
                             <Row>
                                 <Col span={11} className="mx-2">
                                     <h1 className="lbadd">Địa chỉ ip: <i className="kytu"> &#42;</i></h1>
-                                 
-                                        <Input   className="inputadd"  value={ipAddress} readOnly/>
-                                    
-                               
+
+                                    <Input className="inputadd" value={ipAddress} readOnly />
+
+
                                 </Col>
                                 <Col span={11} className="ms-4">
                                     <h1 className="lbadd">Mật khẩu: <i className="kytu"> &#42;</i></h1>
@@ -229,10 +229,10 @@ const AddDevice: React.FC = () => {
                             <Row>
                                 <Col span={23} className="mx-2">
                                     <h1 className="lbadd">Dịch vụ sử dụng: <i className="kytu"> &#42;</i></h1>
-                              
-                                        <div className="site-space-compact-wrapper">
-                                            <Space.Compact block>
-                                        <Form.Item  name="servie_dc"   style={{ width: '99%' }}>
+
+                                    <div className="site-space-compact-wrapper">
+                                        <Space.Compact block>
+                                            <Form.Item name="servie_dc" style={{ width: '99%' }}>
 
                                                 <Select
                                                     allowClear
@@ -245,11 +245,11 @@ const AddDevice: React.FC = () => {
                                                         </Option>
                                                     ))}
                                                 </Select>
-                                    </Form.Item>
+                                            </Form.Item>
 
-                                            </Space.Compact>
+                                        </Space.Compact>
 
-                                        </div>
+                                    </div>
                                 </Col>
 
                             </Row>

@@ -1,0 +1,17 @@
+.text-dtDevice {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--gray-gray-500, #282739);
+
+  /* 16/16 Semi */
+  font-size: 16px;
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 24px;
+}
+.multi-line {
+    white-space: pre-line;
+  }
+  

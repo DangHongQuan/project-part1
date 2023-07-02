@@ -1,6 +1,7 @@
 
 
 interface DeviceeData {
+  id: string;
     id_dc: string;
     type: string;
     name: string;

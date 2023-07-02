@@ -32,6 +32,8 @@ import NumberLever from './pages/NumberLever';
 import NewnumberLever from './pages/NewnumberLever';
 import Report from './pages/Report';
 import DemoOption from './Component/DemoOptionSelect';
+import ChiTietDevice from './Component/ChitietDevice';
+import DetailDevice from './pages/DetailDevice';
 
 
 
@@ -64,9 +66,10 @@ function RouteApp() {
 
         <Route path="/numbers" element={<NumberLever />} />
         <Route path="/x" element={<DemoOption />} />
-
-   
+        <Route path="/detailDevice/:id" element={<DetailDevice   />} />
         <Route path="/addNumberLever" element={<NewnumberLever />} />
+        <Route path="/p" element={<DetailDevice />} />
+
       </Routes>
     </BrowserRouter>
   )

@@ -252,7 +252,7 @@ const DeviceApp: React.FC = () => {
                   dataIndex="ct"
                   key="ct"
                   render={(text: string, record: any) => (
-                    <Button onClick={() => navigate(`/detailDevice/${record.id_dc}`)} >Chi tiết</Button>
+                    <Button onClick={() => navigate(`/detailDevice/${record.id}`)} >Chi tiết</Button>
                   )}
                 />
                 <Table.Column
@@ -260,7 +260,7 @@ const DeviceApp: React.FC = () => {
                   dataIndex="cn"
                   key="cn"
                   render={(text: string, record: any) => (
-                    <Button onClick={() => navigate(`/editDevice/${record.id_dc}`)}>Cập Nhật</Button>
+                    <Button onClick={() => navigate(`/editDevice/${record.name}`)}>Cập Nhật</Button>
                   )}
                 />
               </Table>

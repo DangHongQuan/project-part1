@@ -16,22 +16,44 @@ import { DataDevice, fetchDataDeviceFailure, fetchDataDeviceSuccess, fetchDateDe
 import DeviceeData from "./DevicesData";
 import { useEffect, useState } from "react";
   
-  export const fetchDevicesData = (): AppThunk => async (dispatch, getState) => {
-    dispatch(fetchDateDeviceStart());
+  // export const fetchDevicesData = (): AppThunk => async (dispatch, getState) => {
+  //   dispatch(fetchDateDeviceStart());
   
-    try {
-      const firestore = getFirestore();
-      const serviceCollectionRef = collection(firestore, "devices");
-      const querySnapshot = await getDocs(serviceCollectionRef);
+  //   try {
+  //     const firestore = getFirestore();
+  //     const serviceCollectionRef = collection(firestore, "devices");
+  //     const querySnapshot = await getDocs(serviceCollectionRef);
   
-      if (!querySnapshot.empty) {
-        const rows: DataDevice[] = querySnapshot.docs.map((doc) => doc.data() as DataDevice);
-        dispatch(fetchDataDeviceSuccess(rows));
+  //     if (!querySnapshot.empty) {
+  //       const rows: DataDevice[] = querySnapshot.docs.map((doc) => doc.data() as DataDevice);
+  //       dispatch(fetchDataDeviceSuccess(rows));
+  //     }
+  //   } catch (error) {
+  //     dispatch(fetchDataDeviceFailure("Lỗi khi lấy dữ liệu: " + String(error))); // Chuyển error thành string
+  //   }
+  // };
+    export const fetchDevicesData = (): AppThunk => async (dispatch, getState) => {
+      dispatch(fetchDateDeviceStart());
+    
+      try {
+        const firestore = getFirestore();
+        const serviceCollectionRef = collection(firestore, "devices");
+        const querySnapshot = await getDocs(serviceCollectionRef);
+    
+        if (!querySnapshot.empty) {
+          const rows: DataDevice[] = querySnapshot.docs.map((doc) => {
+            const data = doc.data() as DataDevice;
+            const id = doc.id;
+            return { ...data, id }; // Tạo object mới và gán giá trị cho thuộc tính id
+          });
+          dispatch(fetchDataDeviceSuccess(rows));
+          
+        }
+      } catch (error) {
+        dispatch(fetchDataDeviceFailure("Lỗi khi lấy dữ liệu: " + String(error))); // Chuyển error thành string
       }
-    } catch (error) {
-      dispatch(fetchDataDeviceFailure("Lỗi khi lấy dữ liệu: " + String(error))); // Chuyển error thành string
-    }
-  };
+    };
+    
   
   export const updateDevicesData = createAsyncThunk(
     "devices/updateDevicesData",
