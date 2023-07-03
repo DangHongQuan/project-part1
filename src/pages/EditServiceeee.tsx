@@ -3,7 +3,7 @@ import React from "react";
 import { Badge, Card, Checkbox, DatePicker, Form, Pagination, Table, Tag } from 'antd';
 import './dasbordefault.css'
 import './addservice.css'
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import {
     AppstoreOutlined,
     AreaChartOutlined,
@@ -21,9 +21,11 @@ import TextArea from "antd/es/input/TextArea";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import { RootState } from "../reduxtoolkit/store";
-import { useDispatch } from "react-redux";
-import { addNewService } from "../reduxtoolkit/serviceActions";
+import { useDispatch, useSelector } from "react-redux";
+import { addNewService, updateServiceData } from "../reduxtoolkit/serviceActions";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { collection, getDocs, query, updateDoc, where } from "@firebase/firestore";
+import { firestore } from "../Firebase/Firebase";
 
 
 const { Sider, Content } = Layout;
@@ -73,18 +75,32 @@ const items: Menu[] = [
 // by setting it's colSpan to be 0
 
 
-const AddService: React.FC = () => {
+const EditServiceeee: React.FC = () => {
     const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
+    const { id_sv } = useParams<{ id_sv: string }>();
+    const data = useSelector((state: RootState) => state.service.data);
+    const navigate= useNavigate();
+    // Kiểm tra xem dữ liệu đã được lấy thành công hay chưa
+    const selectedData = data.find((item) => item.id_sv === id_sv);
+    if (!selectedData) {
+        return <div>Loading...</div>; // Hoặc thông báo lỗi nếu cần
+    }
 
-    const handleAddNewService = async (values: any) => {
-        // Perform any processing you need with the new data
+    const handleSaveChanges = async (values: any) => {
+        const updatedData = {
+            ...selectedData,
+            ...values,
+        };
+        const serviceQuery = query(collection(firestore, 'service'), where('id_sv', '==', selectedData.id_sv));
+        const serviceDocs = await getDocs(serviceQuery);
+        const serviceDocRef = serviceDocs.docs[0].ref;
 
-        // Call addNewService action to add new service and update Redux Toolkit
-        const actionResult = await dispatch(addNewService(values));
-        const newServiceData = unwrapResult(actionResult);
+        await updateDoc(serviceDocRef, updatedData);
 
-        // Handle success after adding and updating Redux Toolkit
-        alert('Thêm mới thành công:' + newServiceData);
+        // Gửi action updateServiceData với dữ liệu cập nhật
+        dispatch(updateServiceData(updatedData));
+        alert("Cập nhật thành công")
+        navigate("/services")
     };
     return (
         <>
@@ -122,7 +138,8 @@ const AddService: React.FC = () => {
                             <Col span={10}>
                                 <p className="hederpc mx-2">Dịch vụ &gt;
                                     <a href="/services" className=" dsdvadd ms-2"> Danh sách dịch vụ &gt;  </a>
-                                    <a href="" className="dsdv ms-2"> Thêm dịch vụ</a>
+
+                                    <a href="" className="dsdv ms-2"> Cập nhật</a>
                                 </p>
                             </Col>
                             <Col span={11}   >
@@ -141,7 +158,7 @@ const AddService: React.FC = () => {
                         </Row>
                     </Header>
                     <p className="qldv">Quản lý dịch vụ</p>
-                    <Form onFinish={handleAddNewService}>
+                    <Form onFinish={handleSaveChanges   } initialValues={selectedData}>
                         <Card className="card">
                             <p className="thongTindichvu">Thông tin dịch vụ</p>
                             <Row>
@@ -218,4 +235,4 @@ const AddService: React.FC = () => {
     )
 };
 
-export default AddService;
+export default EditServiceeee;

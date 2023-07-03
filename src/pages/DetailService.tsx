@@ -6,7 +6,8 @@ import { Badge, Card, DatePicker, Pagination, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import './dasbordefault.css'
 import './service.css'
-import { Link, Route, useNavigate, Routes } from 'react-router-dom';
+import './detaildevice.css'
+import { Link, Route, useNavigate, Routes, useParams } from 'react-router-dom';
 import {
     AppstoreOutlined,
     AreaChartOutlined,
@@ -27,7 +28,8 @@ import { RootState } from "../reduxtoolkit/store";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import { fetchServiceData } from "../reduxtoolkit/serviceActions";
-
+import style from "react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark";
+import './detailservice.css'
 
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
@@ -102,16 +104,19 @@ interface Data {
 
 
 
-const DetailService: React.FC = () => {
+const DetailServiceeee: React.FC = () => {
 
-    
+
     const navigate = useNavigate();
-    const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
-    const { data } = useSelector((state: RootState) => state.service);
+    const { id_sv } = useParams<{ id_sv: string }>();
+    const data = useSelector((state: RootState) => state.service.data);
 
-    useEffect(() => {
-        dispatch(fetchServiceData());
-    }, [dispatch]);
+    // Kiểm tra xem dữ liệu đã được lấy thành công hay chưa
+    const selectedData = data.find(item => item.id_sv === id_sv);
+    if (!selectedData) {
+        return <div>Loading...</div>; // Hoặc thông báo lỗi nếu cần
+    }
+
 
     return (
         <>
@@ -168,21 +173,37 @@ const DetailService: React.FC = () => {
                     <Row>
                         <Col span={7} className="ms-3">
                             <Card>
-                            <h1>aaaaaaa</h1>
-
+                                <h1 className="tbdv">Thông tin dịch vụ</h1>
+                                <p className="mdv d-flex"> Mã dịch vụ: {selectedData.id_sv}  </p>
+                                <p className="mdv d-flex">Tên dịch vụ: {selectedData.name}  </p>
+                                <p className="mdv d-flex"> Mô tả:  {selectedData.describe} </p>
+                                <h1 className="tbdv">Quy tắt cấp số</h1>
+                                <span className="d-flex"> {selectedData.numberlever}</span>
                             </Card>
                         </Col>
                         <Col span={13} className="ms-3">
-                        <Card>
-                            <h1>aaaaaaa</h1>
+                            <Card>
+                                <h1>Table</h1>
 
                             </Card>
                         </Col>
-                        <Col span={3}>
-                         <h1>aaaaaaa</h1>
+                        <Col span={3} >
+
+                            <div className="cnsc">  
+                            <a onClick={() => navigate(`/editService/${selectedData.id_sv}`)}>
+                                <img src="/img/icon/Edit Square.png" /> <br /><span>Cập Nhật</span></a>
+                                
+                                </div>
+                                <div className="cnsc1">  
+                            <a href="/services">
+                                <img src="/img/Edit Square.png" /> <br /><span>Quay lại    </span></a>
+                                
+                                </div>
+
+
                         </Col>
                     </Row>
-                   
+
                     <Routes >
                         {items.map((item) => (
                             <Route key={item.key} path={item.path}>
@@ -196,6 +217,6 @@ const DetailService: React.FC = () => {
     )
 };
 
-export default DetailService;
+export default DetailServiceeee;
 
 

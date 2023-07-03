@@ -35,6 +35,8 @@ import ChiTietDevice from './Component/ChitietDevice';
 import DetailDevice from './pages/DetailDevice';
 import DetailService from './pages/DetailService';
 import EditDevice from './pages/EditDevice';
+import DetailServiceeee from './pages/DetailService';
+import EditServiceeee from './pages/EditServiceeee';
 
 
 
@@ -58,9 +60,8 @@ function RouteApp() {
         <Route path='/addService' element={<AddService />} />
         <Route path='/b' element={<ServiceComponent />} />
         <Route path='/e' element={<YourComponent />} />
-        <Route path="/detailService/:id_sv" element={<ChietTietService />} />
-        <Route path="/detailService" element={<DetailService />} />
-        <Route path="/editService/:id_sv" element={<EditService />} />
+        <Route path="/detailService/:id_sv" element={<DetailServiceeee />} />
+        <Route path="/editService/:id_sv" element={<EditServiceeee />} />
         <Route path="/c" element={<AddDemo />} />
         <Route path="/d" element={<SignUpForm />} />
         <Route path="/g" element={<DemoFechDevices />} />
