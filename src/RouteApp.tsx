@@ -22,7 +22,6 @@ import DangDemo from './Component/Demo';
 import Themthietbi from './Component/ServiceComponent';
 import YourComponent from './Component/YourComponent';
 import Demoaaa from './Component/Demo';
-import EditDevice from './Component/EditDevice';
 import AddDemo from './Component/AddDemo';
 import SignUpForm from './Demo/AddUser';
 import ChietTietService from './pages/ChitetServiceDemo';
@@ -34,6 +33,8 @@ import Report from './pages/Report';
 import DemoOption from './Component/DemoOptionSelect';
 import ChiTietDevice from './Component/ChitietDevice';
 import DetailDevice from './pages/DetailDevice';
+import DetailService from './pages/DetailService';
+import EditDevice from './pages/EditDevice';
 
 
 
@@ -57,7 +58,8 @@ function RouteApp() {
         <Route path='/addService' element={<AddService />} />
         <Route path='/b' element={<ServiceComponent />} />
         <Route path='/e' element={<YourComponent />} />
-        <Route path="/detailService/:id_sv" element={<ChietTietService/>} />
+        <Route path="/detailService/:id_sv" element={<ChietTietService />} />
+        <Route path="/detailService" element={<DetailService />} />
         <Route path="/editService/:id_sv" element={<EditService />} />
         <Route path="/c" element={<AddDemo />} />
         <Route path="/d" element={<SignUpForm />} />
@@ -66,9 +68,12 @@ function RouteApp() {
 
         <Route path="/numbers" element={<NumberLever />} />
         <Route path="/x" element={<DemoOption />} />
-        <Route path="/detailDevice/:id" element={<DetailDevice   />} />
+        <Route path="/detailDevice/:id" element={<DetailDevice />} />
+        <Route path="/editDevice/:id" element={<EditDevice />} />
+
+
         <Route path="/addNumberLever" element={<NewnumberLever />} />
-        <Route path="/p" element={<DetailDevice />} />
+        <Route path="/h" element={<DetailService />} />
 
       </Routes>
     </BrowserRouter>

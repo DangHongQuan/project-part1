@@ -27,7 +27,6 @@ import { RootState } from "../reduxtoolkit/store";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import { fetchServiceData } from "../reduxtoolkit/serviceActions";
-import { Option } from "antd/es/mentions";
 
 
 const { Sider, Content } = Layout;
@@ -103,9 +102,9 @@ interface Data {
 
 
 
-const Service: React.FC = () => {
+const DetailService: React.FC = () => {
 
-
+    
     const navigate = useNavigate();
     const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
     const { data } = useSelector((state: RootState) => state.service);
@@ -113,26 +112,6 @@ const Service: React.FC = () => {
     useEffect(() => {
         dispatch(fetchServiceData());
     }, [dispatch]);
-
-    const [searchText, setSearchText] = useState('');
-    const [searchStatus, setSearchStatus] = useState('');
-
-    const handleSearch = () => {
-        const filtered = data.filter(item =>
-            item.name.toLowerCase().includes(searchText.toLowerCase()) &&
-            (searchStatus === '' || item.status.toLowerCase() === searchStatus.toLowerCase())
-        );
-        return filtered;
-    };
-
-    const handleChangeSearchText = e => {
-        setSearchText(e.target.value);
-    };
-
-    const handleChangeSearchStatus = value => {
-        setSearchStatus(value);
-    };
-
 
     return (
         <>
@@ -168,7 +147,7 @@ const Service: React.FC = () => {
                     <Header className="hdaccount">
                         <Row >
                             <Col span={10}>
-                                <p className="hederpc mx-2">Dịch vụ &gt;  <a href="/services" className="dsdv ms-2"> Danh sách dịch vụ</a></p>
+                                <p className="hederpc mx-2">Dịch vụ &gt;  <a href="/services" className="dstbadd ms-2"> Danh sách dịch vụ  &gt;</a> <a href="/" className="dsdv ms-2"> Chi tiết</a></p>
                             </Col>
                             <Col span={11}   >
                                 <div className="hederpaccount text-end">
@@ -185,111 +164,25 @@ const Service: React.FC = () => {
                             </Col>
                         </Row>
                     </Header>
-                    <p className="dstbhome">Danh sách dịch vụ</p>
+                    <p className="dstbhome">Quảng lý dịch vụ</p>
+                    <Row>
+                        <Col span={7} className="ms-3">
+                            <Card>
+                            <h1>aaaaaaa</h1>
 
-                    <Row className="custom-ms">
-                        <Col span={5}>
-                            <label className="tthd ">Trạng thái hoạt động</label>
-                            <Select
-                             className=" d-flex ms-3"
-                                placeholder="Tìm kiếm theo trạng thái hoạt động"
-                                value={searchStatus}
-                                onChange={handleChangeSearchStatus}
-                                style={{ width: 180, marginBottom: 16  }}
-                            >
-                                <Option value="">Tất cả</Option>
-                                <Option value="Hoạt động">Hoạt động</Option>
-                                <Option value="Ngừng hoạt động">Ngừng hoạt động</Option>
-                            </Select>
-                            {/* <Select defaultValue="all" style={{ width: 280 }} className="slectTop d-flex ms-3">
-                                <Select.Option value="all"  >Tất cả</Select.Option>
-                                <Select.Option value="active">Hoạt động</Select.Option>
-                                <Select.Option value="inactive">
-                                    Ngưng hoạt động
-                                </Select.Option>
-                            </Select> */}
+                            </Card>
                         </Col>
-                        <Col span={10} className=" ms-3">
-                            <label className="tthd " > Chọn thời gian</label>
-                            <Space.Compact block>
-                                <DatePicker.RangePicker style={{ width: '60%' }} />
+                        <Col span={13} className="ms-3">
+                        <Card>
+                            <h1>aaaaaaa</h1>
 
-                            </Space.Compact>
+                            </Card>
                         </Col>
-                        <Col span={5} className="custom-tk">
-                            <label className="tk">Từ khóa</label>
-                            <Input.Search
-                                placeholder="Tìm kiếm..."
-                                value={searchText}
-                                onChange={handleChangeSearchText}
-                                onSearch={handleSearch}
-                                style={{ marginBottom: 16 }}
-                            />
-
+                        <Col span={3}>
+                         <h1>aaaaaaa</h1>
                         </Col>
                     </Row>
-
-
-
-                    <Row className="mt-5 ms-5">
-                        <Col span={20}>
-                          
-                            <Table
-                                dataSource={handleSearch()}
-                                bordered
-                                pagination={{ pageSize: 5 }}
-                                rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-even' : 'table-row-odd')}
-                            >
-                                <Table.Column
-                                    title={<span>Mã dịch vụ</span>}
-                                    dataIndex="id_sv"
-                                    key="id_sv"
-                                    render={(text: string) => <span>{text}</span>}
-                                />
-                                <Table.Column
-                                    title={<span className="table-title">Tên dịch vụ</span>}
-                                    dataIndex="name"
-                                    key="name"
-                                    render={(text: string) => <span>{text}</span>}
-                                />
-                                <Table.Column
-                                    title={<span className="table-title">Mô tả</span>}
-                                    dataIndex="describe"
-                                    key="describe"
-                                    render={(text: string) => <span>{text}</span>}
-                                />
-                                <Table.Column
-                                    title={<span className="table-title">Trạng thái hoạt động</span>}
-                                    dataIndex="status"
-                                    key="status"
-                                    render={(text: string) => <span>{text}</span>}
-                                />
-                                <Table.Column
-                                    dataIndex="ct"
-                                    key="ct"
-                                    render={(text: string, record: any) => (
-                                        <Button onClick={() => navigate(`/detailService/${record.id_sv}`)}>Chi tiết</Button>
-                                    )}
-                                />
-                                <Table.Column
-                                    dataIndex="cn"
-                                    key="cn"
-                                    render={(text: string, record: any) => (
-                                        <Button onClick={() => navigate(`/editService/${record.id_sv}`)}>Cập Nhật</Button>
-                                    )}
-                                />
-                            </Table>
-                        </Col>
-                        <Col span={3} className="ms-1">
-                            <Link to={"/addService"}>
-                                <Card className="bgaDvice">
-                                    <img src="/img/icon/add-square.png" alt="" />
-                                    <p>Thêm dịch vụ</p>
-
-                                </Card>
-                            </Link>
-                        </Col>
-                    </Row>
+                   
                     <Routes >
                         {items.map((item) => (
                             <Route key={item.key} path={item.path}>
@@ -303,6 +196,6 @@ const Service: React.FC = () => {
     )
 };
 
-export default Service;
+export default DetailService;
 
 

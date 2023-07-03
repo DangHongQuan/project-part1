@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 // import './homedasboard.css'
 import { Badge, Card, Pagination, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -23,6 +23,7 @@ import { RootState } from "../reduxtoolkit/store";
 import { AnyAction } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDevicesData } from "../reduxtoolkit/DevicesActions";
+import { Option } from "antd/es/mentions";
 
 
 const { Sider, Content } = Layout;
@@ -76,40 +77,47 @@ interface DataType {
   address: string;
 }
 
-// In the fifth row, other columns are merged into first column
-// by setting it's colSpan to be 0
-const data = [
-  {
-    id: 1,
-    name: "máy tính",
-    ipAddress: "192.168.1.1",
-    isActive: true,
-    isConnected: true,
-    service: "Dịch vụ máy tính",
-    ct: "Chi tiết",
-    cn: "Cập nhật",
-  },
-  {
-    id: 2,
-    name: "máy tính",
-    ipAddress: "192.168.1.1",
-    isActive: true,
-    isConnected: true,
-    service: "Dịch vụ máy tính",
-    ct: "Chi tiết",
-    cn: "Cập nhật",
-  },
 
-  // ...Thêm dữ liệu của các thiết bị khác
-];
 const DeviceApp: React.FC = () => {
-  const navigate= useNavigate();
+  const navigate = useNavigate();
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
   const { data } = useSelector((state: RootState) => state.device);
 
   useEffect(() => {
     dispatch(fetchDevicesData());
   }, [dispatch]);
+
+
+  const [searchText, setSearchText] = useState('');
+  const [searchStatus_hd, setSearchStatus_hd] = useState('');
+  const [searchStatus_kn, setSearchStatus_kn] = useState('');
+
+
+  const handleSearch = () => {
+    const filtered = data.filter(item =>
+      item.name.toLowerCase().includes(searchText.toLowerCase()) &&
+
+
+      (searchStatus_hd === '' || item.status_hd.toLowerCase() === searchStatus_hd.toLowerCase()) &&
+      (searchStatus_kn === '' || item.status_kn.toLowerCase() === searchStatus_kn.toLowerCase())
+    );
+    return filtered;
+  };
+
+  const handleChangeSearchText = e => {
+    setSearchText(e.target.value);
+  };
+
+  const handleChangeSearchStatus_hd = value => {
+    setSearchStatus_hd(value);
+  };
+  const handleChangeSearchStatus_kn = value => {
+    setSearchStatus_kn(value);
+  };
+
+
+
+
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
@@ -166,38 +174,56 @@ const DeviceApp: React.FC = () => {
           <Row className="custom-ms">
             <Col span={5}>
               <label className="tthd ">Trạng thái hoạt động</label>
-              <Select defaultValue="all" style={{ width: 280 }} className="slectTop d-flex ms-3">
+              <Select
+                className="slectTop d-flex ms-3"
+                placeholder="Tìm kiếm theo trạng thái hoạt động"
+                value={searchStatus_hd}
+                onChange={handleChangeSearchStatus_hd}
+                style={{ width: 200, marginBottom: 16 }}
+              >
+                <Option value="">Tất cả</Option>
+                <Option value="Hoạt động">Hoạt động</Option>
+                <Option value="Ngừng hoạt động">Ngừng hoạt động</Option>
+              </Select>
+              {/* <Select defaultValue="all" style={{ width: 280 }} className="slectTop d-flex ms-3">
                 <Select.Option value="all"  >Tất cả</Select.Option>
                 <Select.Option value="active">Hoạt động</Select.Option>
                 <Select.Option value="inactive">
                   Ngưng hoạt động
                 </Select.Option>
-              </Select>
+              </Select> */}
             </Col>
             <Col span={10}>
               <label className="ttkn">Trạng thái kết nối</label>
-              <Select defaultValue="all" style={{ width: 280 }} className="slectTop d-flex ms-3">
+              <Select
+                className="slectTop d-flex ms-3"
+                placeholder="Tìm kiếm theo trạng thái kết nối"
+                value={searchStatus_kn}
+                onChange={handleChangeSearchStatus_kn}
+                style={{ width: 200, marginBottom: 16 }}
+              >
+                <Option value="">Tất cả</Option>
+                <Option value="Kết nối">Kết nối</Option>
+                <Option value="Mất kết nối">Mất kết nối</Option>
+              </Select>
+              {/* <Select defaultValue="all" style={{ width: 280 }} className="slectTop d-flex ms-3">
                 <Select.Option value="all"  >Tất cả</Select.Option>
                 <Select.Option value="active">Hoạt động</Select.Option>
                 <Select.Option value="inactive">
                   Ngưng hoạt động
                 </Select.Option>
-              </Select>
+              </Select> */}
             </Col>
             <Col span={5} className="custom-tk">
               <label className="tk">Từ khóa</label>
-              <Input
-                style={{ width: 280 }}
-                placeholder="Nhập từ khóa"
-                suffix={
-                  <Space>
-                    <SearchOutlined
-                      className="d-flex align-items-center justify-content-center inputtk"
-                      style={{ color: "#1890ff" }}
-                    />
-                  </Space>
-                }
+              <Input.Search
+                placeholder="Tìm kiếm..."
+                value={searchText}
+                onChange={handleChangeSearchText}
+                onSearch={handleSearch}
+                style={{ marginBottom: 16 }}
               />
+
             </Col>
           </Row>
 
@@ -205,62 +231,62 @@ const DeviceApp: React.FC = () => {
 
           <Row className="mt-5 ms-5">
             <Col span={20}>
-              <Table dataSource={data} bordered pagination={{ pageSize: 5 }} rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-even' : 'table-row-odd')} >
-                <Column
+              <Table
+                dataSource={handleSearch()}
+                bordered
+                pagination={{ pageSize: 5 }}
+                rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-even' : 'table-row-odd')}
+              >
+                <Table.Column
                   title={<span className="table-title">Mã thiết bị</span>}
                   dataIndex="id_dc"
                   key="id_dc"
                   render={(text: string) => <span>{text}</span>}
                 />
-                <Column
+                <Table.Column
                   title={<span className="table-title">Tên thiết bị</span>}
                   dataIndex="name"
                   key="name"
                   render={(text: string) => <span>{text}</span>}
                 />
-                <Column
+                <Table.Column
                   title={<span className="table-title">Địa chỉ IP</span>}
                   dataIndex="ip"
                   key="ip"
                   render={(text: string) => <span>{text}</span>}
                 />
-                <Column
-                  title={
-                    <span className="table-title">Trạng thái hoạt động</span>
-                  }
+                <Table.Column
+                  title={<span className="table-title">Trạng thái hoạt động</span>}
                   dataIndex="status_hd"
                   key="status_hd"
                   render={(text: string) => <span>{text}</span>}
                 />
-                <Column
-                  title={
-                    <span className="table-title">Trạng thái kết nối</span>
-                  }
+                <Table.Column
+                  title={<span className="table-title">Trạng thái kết nối</span>}
                   dataIndex="status_kn"
                   key="status_kn"
                   render={(text: string) => <span>{text}</span>}
-
                 />
-                <Column
+                <Table.Column
                   title={<span className="table-title">Dịch vụ sử dụng</span>}
                   dataIndex="servie_dc"
                   key="servie_dc"
                   render={(text: string) => <span>{text}</span>}
                 />
                 <Table.Column
-                  title="aaa"
+                  title="Chi tiết"
                   dataIndex="ct"
                   key="ct"
                   render={(text: string, record: any) => (
-                    <Button onClick={() => navigate(`/detailDevice/${record.id}`)} >Chi tiết</Button>
+                    <Button onClick={() => navigate(`/detailDevice/${record.id}`)}>Chi tiết</Button>
                   )}
                 />
                 <Table.Column
-                  title="aaaaa"
+                  title="Cập Nhật"
                   dataIndex="cn"
                   key="cn"
                   render={(text: string, record: any) => (
-                    <Button onClick={() => navigate(`/editDevice/${record.name}`)}>Cập Nhật</Button>
+                    <Button onClick={() => navigate(`/editDevice/${record.id}`)}>Cập Nhật</Button>
                   )}
                 />
               </Table>

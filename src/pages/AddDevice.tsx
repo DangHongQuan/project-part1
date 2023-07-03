@@ -181,17 +181,13 @@ const AddDevice: React.FC = () => {
                                 </Col>
                                 <Col span={11} className="ms-4">
                                     <h1 className="lbadd">Loại thiết bị: <i className="kytu"> &#42;</i></h1>
-                                    <Form.Item name="type"  >
+                                    <Form.Item name="type"    >
                                         <Select placeholder="Chọn loại thiêt bị"  >
                                             <option value="DC_03">DC_03</option>
 
                                         </Select>
                                     </Form.Item>
-                                    {/* <select className="inputaddSelect" >
-                                        <option  >Chọn loại thiết bị</option>
-                                        <option value="">Kiosk</option>
-                                        <option value="">Display couter</option>
-                                    </select> */}
+                                 
                                 </Col>
                             </Row>
                             <Row>
@@ -223,6 +219,12 @@ const AddDevice: React.FC = () => {
                                     <Form.Item name="password"  >
                                         <Input className="inputadd" />
                                     </Form.Item>
+                                    <Form.Item name="status_hd" hidden initialValue="Hoạt động">
+                                    <Input />
+                                </Form.Item>
+                                <Form.Item name="status_kn" hidden initialValue="Kết nối">
+                                    <Input />
+                                </Form.Item>
                                     {/* <Input placeholder="Nhập mã thiết bị" className="inputadd" /> */}
                                 </Col>
                             </Row>
@@ -240,7 +242,7 @@ const AddDevice: React.FC = () => {
                                                     style={{ width: '99%' }}
                                                 >
                                                     {data.map(item => (
-                                                        <Option key={item.name} value={item.name}>
+                                                        <Option key={item.name} value={item.name + " "}>
                                                             {item.name}
                                                         </Option>
                                                     ))}
