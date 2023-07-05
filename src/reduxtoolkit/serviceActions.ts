@@ -43,7 +43,7 @@ export const updateServiceData = createAsyncThunk(
   async (updatedData: ServiceData, { getState }) => {
     try {
       
-      const data = useSelector((state: RootState) => state.service.data);
+      const data = useSelector((state: RootState) => state.service.dataService);
       const { id_sv } = updatedData;
 
       // Kiểm tra xem dữ liệu có tồn tại trong store hay không

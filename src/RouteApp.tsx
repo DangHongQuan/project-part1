@@ -3,11 +3,8 @@ import React from 'react'
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './Login/Login';
-import Demo from './Component/Demo';
 import ForgotPassword from './Login/ForgotPassword';
 import ResetPassword from './Login/ResetPassword';
-import Profile from './Page/Profile';
-import DashboardPage from './Page/Dashboard';
 import HomeDasboard from './pages/HomeDasboard';
 import DeviceApp from './pages/DeviceApp';
 import Register from './Login/Register';
@@ -15,23 +12,16 @@ import PersoalAccount from './pages/PersonalAccount';
 import AddDevice from './pages/AddDevice';
 import LoginForm from './Demo/LoginFrom';
 import Service from './pages/Service';
-import addService from './pages/addService';
 import AddService from './pages/addService';
 import ServiceComponent from './Component/ServiceComponent';
-import DangDemo from './Component/Demo';
-import Themthietbi from './Component/ServiceComponent';
 import YourComponent from './Component/YourComponent';
-import Demoaaa from './Component/Demo';
 import AddDemo from './Component/AddDemo';
 import SignUpForm from './Demo/AddUser';
-import ChietTietService from './pages/ChitetServiceDemo';
-import EditService from './pages/EditService';
 import DemoFechDevices from './Component/DemoFechDevices';
 import NumberLever from './pages/NumberLever';
 import NewnumberLever from './pages/NewnumberLever';
 import Report from './pages/Report';
 import DemoOption from './Component/DemoOptionSelect';
-import ChiTietDevice from './Component/ChitietDevice';
 import DetailDevice from './pages/DetailDevice';
 import DetailService from './pages/DetailService';
 import EditDevice from './pages/EditDevice';
@@ -75,6 +65,7 @@ function RouteApp() {
 
         <Route path="/addNumberLever" element={<NewnumberLever />} />
         <Route path="/h" element={<DetailService />} />
+        <Route path="/j" element={<AddDemo />} />
 
       </Routes>
     </BrowserRouter>

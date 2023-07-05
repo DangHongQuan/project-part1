@@ -108,7 +108,7 @@ const Service: React.FC = () => {
 
     const navigate = useNavigate();
     const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
-    const { data } = useSelector((state: RootState) => state.service);
+    const { dataService } = useSelector((state: RootState) => state.service);
 
     useEffect(() => {
         dispatch(fetchServiceData());
@@ -118,7 +118,8 @@ const Service: React.FC = () => {
     const [searchStatus, setSearchStatus] = useState('');
 
     const handleSearch = () => {
-        const filtered = data.filter(item =>
+        const filtered = dataService.filter(item =>
+            item.name &&
             item.name.toLowerCase().includes(searchText.toLowerCase()) &&
             (searchStatus === '' || item.status.toLowerCase() === searchStatus.toLowerCase())
         );
@@ -201,13 +202,7 @@ const Service: React.FC = () => {
                                 <Option value="Hoạt động">Hoạt động</Option>
                                 <Option value="Ngừng hoạt động">Ngừng hoạt động</Option>
                             </Select>
-                            {/* <Select defaultValue="all" style={{ width: 280 }} className="slectTop d-flex ms-3">
-                                <Select.Option value="all"  >Tất cả</Select.Option>
-                                <Select.Option value="active">Hoạt động</Select.Option>
-                                <Select.Option value="inactive">
-                                    Ngưng hoạt động
-                                </Select.Option>
-                            </Select> */}
+                          
                         </Col>
                         <Col span={10} className=" ms-3">
                             <label className="tthd " > Chọn thời gian</label>

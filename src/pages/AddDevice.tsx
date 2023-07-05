@@ -93,7 +93,7 @@ const AddDevice: React.FC = () => {
     }, []);
 
     const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
-    const { data } = useSelector((state: RootState) => state.service);
+    const { dataService } = useSelector((state: RootState) => state.service);
 
     useEffect(() => {
         dispatch(fetchServiceData());
@@ -241,7 +241,7 @@ const AddDevice: React.FC = () => {
                                                     mode="multiple"
                                                     style={{ width: '99%' }}
                                                 >
-                                                    {data.map(item => (
+                                                    {dataService.map(item => (
                                                         <Option key={item.name} value={item.name + " "}>
                                                             {item.name}
                                                         </Option>

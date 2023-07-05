@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import './homedasboard.css'
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import {
     AppstoreOutlined,
     AreaChartOutlined,
@@ -18,6 +18,15 @@ import { Header } from "antd/es/layout/layout";
 import Column from "antd/es/table/Column";
 import './newnumberlaver.css'
 import './numberlever.css'
+import { AnyAction, ThunkDispatch, unwrapResult } from "@reduxjs/toolkit";
+import { addNewNumber, fetchNumberData } from "../reduxtoolkit/NumberLeverActions";
+import { RootState } from "../reduxtoolkit/store";
+import { useDispatch, useSelector } from "react-redux";
+import { format } from "date-fns";
+import { fetchServiceData } from './../reduxtoolkit/serviceActions';
+import { Option } from "antd/es/mentions";
+import style from 'react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark';
+import { Modal } from "react-bootstrap";
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
@@ -95,11 +104,67 @@ const handleLogout = () => {
 };
 
 const NewnumberLever: React.FC = () => {
+    const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
+    const [startDate, setStartDate] = useState(new Date().toISOString());
+    const { dataService } = useSelector((state: RootState) => state.service);
+
+    const [endDate, setEndDate] = useState(
+        new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toISOString()
+    );
+
+    const { data } = useSelector((state: RootState) => state.numberlever);
+    const [maxId_cs, setMaxId_cs] = useState(0);
+    const [isMaxIdLoaded, setIsMaxIdLoaded] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    useEffect(() => {
+        dispatch(fetchNumberData());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (data.length > 0) {
+            const maxId_cs = data.reduce((maxId, item) => {
+                const currentId = parseInt(item.id_cs, 10);
+                return currentId > maxId ? currentId : maxId;
+            }, 0);
+            setTimeout(() => {
+                console.log(maxId_cs);
+                setMaxId_cs(maxId_cs + 1);
+                setIsMaxIdLoaded(true);
+            }, 50); // Hiển thị giá trị sau 5 giây
+        }
+    }, [data]);
+
+    const handleAddNewNumber = async (values: any) => {
+        values.id_cs = maxId_cs;
+        const actionResult = await dispatch(addNewNumber(values));
+        const newServiceData = unwrapResult(actionResult);
+
+        setIsModalVisible(true); // Mở popup khi thêm mới thành công
+    };
+    const navigate = useNavigate();
+    const handleModalOk = () => {
+        setIsModalVisible(false); // Đóng popup
+        navigate("/numbers")
+    };
+
+    const handleModalCancel = () => {
+        setIsModalVisible(false); // Đóng popup
+    };
+
+
+
+
     const [userData, setUserData] = useState<any>({});
     useEffect(() => {
         const storedUserData = JSON.parse(localStorage.getItem("userData") || "{}");
         setUserData(storedUserData);
     }, []);
+
+    useEffect(() => {
+        dispatch(fetchServiceData());
+    }, [dispatch]);
+    
     return (
         <>
             <Layout style={{ minHeight: "100vh" }}>
@@ -160,25 +225,78 @@ const NewnumberLever: React.FC = () => {
                     <p className="dstbhome">Quản lý cấp số</p>
 
 
-                    <div className=" justify-content-center  mt-5">
-                        <p className="csm">Cấp số mới</p>
-                        <p className="dvkh">Dịch vụ khách hàng lựa chọn</p>
-                        <select defaultValue="all" className="slectTop slv ms-3">
-                            <option value="" className="dvlc">Dịch vụ lựa chọn</option>
-                        </select>
-                        <Row className="justify-content-center mt-3 row-nb ">
-                            <Col span={10} className="text-end col-hb">
-                                <button className="hb">
-                                    Hủy bỏ
-                                </button>
-                            </Col>
-                            <Col span={12} className="d-flex ms-5">
-                                <button type="submit" className="btn-ttb">
-                                   in số
-                                </button>
-                            </Col>
-                        </Row>
-                    </div>
+                    <Card className="card">
+                        <div className=" justify-content-center  mt-5">
+                            <p className="csm">Cấp số mới</p>
+                            <Form onFinish={handleAddNewNumber}>
+                                <p className="dvkh">Tên khách hàng</p>
+                                <Form.Item name="name_kh" className="tkh_addNumber" >
+                                    <Input style={{ height: 44 }} />
+                                </Form.Item>
+                                <p className="dvkh mt-3">Dịch vụ khách hàng</p>
+                                <br />
+                                <Form.Item name="name_dv">
+                                    <select
+
+                                        className="slectTop slv ms-4" >
+                                        <option></option>
+                                        {dataService.map((item) => (
+
+                                            <option key={item.name} value={item.name}>
+                                                {item.name}
+                                            </option>
+
+                                        ))}
+                                    </select>
+                                </Form.Item>
+
+                                <Form.Item label="Ngày bắt đầu" name="data" hidden initialValue={startDate}>
+                                    <Input type="datetime-local" disabled />
+                                </Form.Item>
+                                <Form.Item label="Ngày kết thúc" name="data_hsd" hidden initialValue={endDate}>
+                                    <Input type="datetime-local" disabled />
+                                </Form.Item>
+                                <Form.Item label="status" initialValue="Đang chờ" name="status" hidden>
+                                    <Input readOnly />
+                                </Form.Item>
+                                <Form.Item label="powersupply" initialValue="Hệ thống" hidden name="powersupply">
+                                    <Input readOnly />
+                                </Form.Item>
+                                <Form.Item>
+                                    <Row className="justify-content-center mt-3 row-nb ">
+                                        <Col span={10} className="text-end col-hb">
+                                            <button className="hb">
+                                                Hủy bỏ
+                                            </button>
+                                        </Col>
+                                        <Col span={12} className="d-flex ms-5">
+                                            <button type="submit" className="btn-ttb">
+                                                in số
+                                            </button>
+                                        </Col>
+                                    </Row>
+                                </Form.Item>
+                            </Form>
+
+                            <Modal show={isModalVisible} onHide={handleModalCancel}>
+
+                                <Modal.Body>
+                                    <p className="stt">Số thứ tự được cấp</p>
+
+                                    <p className="maxid">{maxId_cs}</p>
+
+                                    <div className="bg-modal">
+                                        <p className="tgc">Thời gian cấp: {format(new Date(startDate), "HH:mm:ss 'ngày' dd/MM/yyyy")}</p>
+                                        <p className="tgc" style={{ marginTop: "-30px" }}>Hạn sử dụng: {format(new Date(endDate), "HH:mm:ss 'ngày' dd/MM/yyyy")}</p>
+                                    </div>
+                                </Modal.Body>
+
+
+
+                            </Modal>
+
+                        </div>
+                    </Card>
                     <Routes >
                         {items.map((item) => (
                             <Route key={item.key} path={item.path}>

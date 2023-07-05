@@ -13,13 +13,13 @@ export interface Data{
 
 
 interface ServiceState {
-  data: Data[]; // Thay thế Data bằng kiểu dữ liệu của dữ liệu lấy từ Firestore
+  dataService: Data[]; // Thay thế Data bằng kiểu dữ liệu của dữ liệu lấy từ Firestore
   isLoading: boolean;
   error: string | null;
 }
 
 const initialState: ServiceState = {
-  data: [],
+  dataService: [],
   isLoading: false,
   error: null,
 };
@@ -35,7 +35,7 @@ const serviceSlice = createSlice({
    
     fetchDataSuccess(state, action: PayloadAction<Data[]>) {
       state.isLoading = false;
-      state.data = action.payload;
+      state.dataService = action.payload;
     },
     fetchDataFailure(state, action: PayloadAction<string>) {
       state.isLoading = false;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import './homedasboard.css'
-import { Link, Route, Routes } from "react-router-dom";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import {
     AppstoreOutlined,
     AreaChartOutlined,
@@ -18,6 +18,13 @@ import { Header } from "antd/es/layout/layout";
 import Column from "antd/es/table/Column";
 
 import './numberlever.css'
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../reduxtoolkit/store";
+import { ThunkDispatch } from "redux-thunk";
+import { AnyAction } from "redux";
+import { fetchNumberData } from "../reduxtoolkit/NumberLeverActions";
+import { format } from "date-fns";
+import { Option } from "antd/es/mentions";
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
@@ -96,11 +103,78 @@ const handleLogout = () => {
 };
 
 const NumberLever: React.FC = () => {
+    const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
+
     const [userData, setUserData] = useState<any>({});
     useEffect(() => {
         const storedUserData = JSON.parse(localStorage.getItem("userData") || "{}");
         setUserData(storedUserData);
     }, []);
+
+
+    const { data } = useSelector((state: RootState) => state.numberlever);
+
+    useEffect(() => {
+        dispatch(fetchNumberData());
+    }, [dispatch]);
+    const [searchText, setSearchText] = useState('');
+    const [searchStatusTt, setsearchStatusTt] = useState('');
+    const [searchStatusnc, setsearchStatusnc] = useState('');
+    const [searchStatustdv, setsearchStatustdv] = useState('');
+
+    const [selectedDate, setSelectedDate] = useState(null);
+
+
+    const navigate = useNavigate();
+   
+    const handleSearch = () => {
+        const filtered = data.filter((item) => {
+          const itemDate = new Date(item.data);
+          const startDate = selectedDate && selectedDate[0] ? new Date(selectedDate[0]) : null;
+          const endDate = selectedDate && selectedDate[1] ? new Date(selectedDate[1]) : null;
+      
+          if (startDate && endDate) {
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setHours(23, 59, 59, 999);
+          }
+        
+          return (
+            item.name_dv &&
+            item.name_kh.toLowerCase().includes(searchText.toLowerCase()) &&
+            (searchStatusTt === '' || item.status.toLowerCase() === searchStatusTt.toLowerCase()) &&
+            (searchStatusnc === '' || item.powersupply.toLowerCase() === searchStatusnc.toLowerCase()) &&
+            (searchStatustdv === '' || item.name_dv.toLowerCase() === searchStatustdv.toLowerCase()) &&
+            (!selectedDate || (startDate && endDate && itemDate >= startDate && itemDate <= endDate))
+          );
+        });
+      
+        return filtered;
+      };
+      
+      
+      
+
+
+    const handleChangeSearchText = e => {
+        setSearchText(e.target.value);
+    };
+
+    const handleChangesearchStatusTt = value => {
+        setsearchStatusTt(value);
+    };
+
+    const handleChangesearchStatusnc = value => {
+        setsearchStatusnc(value);
+    };
+
+    const handleChangesearchStatustdv = value => {
+        setsearchStatustdv(value);
+    };
+
+    const handleDateChange = (dates) => {
+        setSelectedDate(dates);
+    };
+    
     return (
         <>
             <Layout style={{ minHeight: "100vh" }}>
@@ -160,44 +234,59 @@ const NumberLever: React.FC = () => {
                     <Row className="custom-ms">
                         <Col span={3}>
                             <label className="tthd ">Tên dịch vụ</label>
-                            <Select defaultValue="all" style={{ width: 154 }} className="slectTop d-flex ms-3">
-                                <Select.Option value="all"  >Tất cả</Select.Option>
-                                <Select.Option value="active">Hoạt động</Select.Option>
-                                <Select.Option value="inactive">
-                                    Ngưng hoạt động
-                                </Select.Option>
+                            <Select
+                              value={searchStatustdv}
+                              onChange={handleChangesearchStatustdv}
+                             defaultValue="Tất cả" style={{ width: 154 }} className="slectTop d-flex ms-3">
+                                <Option value="">Tất cả</Option>
+                                {data.map((item)=> (
+                                    <Option key={item.id_cs} value={item.name_dv}>
+                                        {item.name_dv}
+                                    </Option>
+                                ))}
                             </Select>
+
+
                         </Col>
                         <Col span={3} className="">
                             <label className="tthd ">Tình trạng</label>
-                            <Select defaultValue="all" style={{ width: 154 }} className="slectTop d-flex ms-3">
-                                <Select.Option value="all"  >Tất cả</Select.Option>
-                                <Select.Option value="active">Hoạt động</Select.Option>
-                                <Select.Option value="inactive">
-                                    Ngưng hoạt động
-                                </Select.Option>
+                            <Select
+                                className=" d-flex ms-3"
+                                placeholder="Tìm trạng"
+                                value={searchStatusTt}
+                                onChange={handleChangesearchStatusTt}
+                                style={{ width: 180, marginBottom: 16 }}
+                            >
+                                <Option value="">Tất cả</Option>
+                                <Option value="Đang chờ">Đang chờ</Option>
+                                <Option value="Hết hạn">Hết hạn</Option>
                             </Select>
                         </Col>
                         <Col span={3} className="">
                             <label className="tthd ">Nguồn cấp</label>
-                            <Select defaultValue="all" style={{ width: 154 }} className="slectTop d-flex ms-3">
-                                <Select.Option value="all"  >Tất cả</Select.Option>
-                                <Select.Option value="active">Hoạt động</Select.Option>
-                                <Select.Option value="inactive">
-                                    Ngưng hoạt động
-                                </Select.Option>
+                            <Select
+                                className=" d-flex ms-3"
+                                placeholder="Tìm trạng"
+                                value={searchStatusnc}
+                                onChange={handleChangesearchStatusnc}
+                                style={{ width: 180, marginBottom: 16 }}
+                            >
+                                <Option value="">Tất cả</Option>
+                                <Option value="Hệ thống">Hệ thống</Option>
+                                <Option value="Kiosk">Kiosk</Option>
                             </Select>
                         </Col>
                         <Col span={6} className=" ms-3">
                             <label className="ctg  " > Chọn thời gian</label>
                             <Space.Compact block>
-                                <DatePicker.RangePicker style={{ width: '60%' }} />
+                            <DatePicker.RangePicker style={{ width: '90%' }} onChange={handleDateChange} />
+
 
                             </Space.Compact>
                         </Col>
                         <Col span={5} className="custom-tk ms-1">
                             <label className="tukhoa">Từ khóa</label>
-                            <Input
+                            {/* <Input
                                 style={{ width: 280 }}
                                 placeholder="Nhập từ khóa"
                                 suffix={
@@ -208,6 +297,13 @@ const NumberLever: React.FC = () => {
                                         />
                                     </Space>
                                 }
+                            /> */}
+                            <Input.Search
+                                placeholder="Tìm kiếm..."
+                                value={searchText}
+                                onChange={handleChangeSearchText}
+                                onSearch={handleSearch}
+                                style={{ marginBottom: 16 }}
                             />
                         </Col>
                     </Row>
@@ -216,56 +312,58 @@ const NumberLever: React.FC = () => {
 
                     <Row className="mt-5 ms-5">
                         <Col span={20}>
-                            <Table dataSource={data} bordered pagination={{ pageSize: 5 }} rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-even' : 'table-row-odd')} >
+                            <Table dataSource={handleSearch()} bordered pagination={{ pageSize: 5 }} rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-even' : 'table-row-odd')} >
                                 <Column
                                     title={<span className="table-title">STT</span>}
-                                    dataIndex="id"
-                                    key="id"
+                                    dataIndex="id_cs"
+                                    key="id_cs"
                                     render={(text: string) => <span>{text}</span>}
                                 />
                                 <Column
                                     title={<span className="table-title">Tên khách hàng</span>}
-                                    dataIndex="name"
-                                    key="name"
+                                    dataIndex="name_kh"
+                                    key="name_kh"
                                     render={(text: string) => <span>{text}</span>}
                                 />
                                 <Column
                                     title={<span className="table-title">Tên dịch vụ</span>}
-                                    dataIndex="ipAddress"
-                                    key="ipAddress"
+                                    dataIndex="name_dv"
+                                    key="name_dv"
                                     render={(text: string) => <span>{text}</span>}
                                 />
 
 
                                 <Column
                                     title={<span className="table-title">Thời gian cấp</span>}
-                                    dataIndex="service"
-                                    key="service"
-                                    render={(text: string) => <span>{text}</span>}
+                                    dataIndex="data"
+                                    key="data"
+                                    render={(text: string) => <span>{format(new Date(text), "HH:mm:ss ' ' dd/MM/yyyy")}</span>}
                                 />
                                 <Column
                                     title={<span className="table-title">Hạn sử dụng</span>}
-                                    dataIndex="service"
-                                    key="service"
-                                    render={(text: string) => <span>{text}</span>}
+                                    dataIndex="data_hsd"
+                                    key="data_hsd"
+                                    render={(text: string) => <span>{format(new Date(text), "HH:mm:ss ' ' dd/MM/yyyy")}</span>}
                                 />
                                 <Column
                                     title={<span className="table-title">Trạng thái</span>}
-                                    dataIndex="service"
-                                    key="service"
+                                    dataIndex="status"
+                                    key="status"
                                     render={(text: string) => <span>{text}</span>}
                                 />
                                 <Column
                                     title={<span className="table-title">Nguồn cấp</span>}
-                                    dataIndex="service"
-                                    key="service"
+                                    dataIndex="powersupply"
+                                    key="powersupply"
                                     render={(text: string) => <span>{text}</span>}
                                 />
-                                <Column
-                                    title=""
-                                    dataIndex="ct"
-                                    key="ct"
-                                    render={(text: string) => <Link to={"/detailNumberLever"}>{text}</Link>}
+
+                                <Table.Column
+                                    dataIndex="cn"
+                                    key="cn"
+                                    render={(text: string, record: any) => (
+                                        <Button onClick={() => navigate(`/editnumberlever/${record.id_cs}`)}>Chi tiết</Button>
+                                    )}
                                 />
 
                             </Table>
