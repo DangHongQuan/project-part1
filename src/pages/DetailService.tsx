@@ -23,13 +23,17 @@ import { Header } from "antd/es/layout/layout";
 import Column from "antd/es/table/Column";
 import { query } from "express";
 import { collection, getDocs, getFirestore } from "firebase/firestore";
-import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../reduxtoolkit/store";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import { fetchServiceData } from "../reduxtoolkit/serviceActions";
 import style from "react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark";
 import './detailservice.css'
+import { format } from "date-fns";
+import { fetchNumberData } from "../reduxtoolkit/NumberLeverActions";
+import { useSelector } from "react-redux/es/hooks/useSelector";
+import { useDispatch } from "react-redux/es/exports";
+import { Option } from "antd/es/mentions";
 
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
@@ -108,14 +112,60 @@ const DetailServiceeee: React.FC = () => {
 
 
     const navigate = useNavigate();
-    const { id_sv } = useParams<{ id_sv: string }>();
-    const data = useSelector((state: RootState) => state.service.data);
+    const [searchText, setSearchText] = useState('');
+    const [searchStatusTt, setsearchStatusTt] = useState('');
+    const [searchStatusnc, setsearchStatusnc] = useState('');
+    const [searchStatustdv, setsearchStatustdv] = useState('');
 
+    const [selectedDate, setSelectedDate] = useState(null);
+    const { id_sv } = useParams<{ id_sv: string }>();
+    const dataService = useSelector((state: RootState) => state.service.dataService);
+    const data = useSelector((state: RootState) => state.numberlever.data);
+    const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
+    useEffect(() => {
+        dispatch(fetchNumberData());
+    }, [dispatch]);
+
+    const handleSearch = () => {
+
+        const filtered = data.filter((item) => {
+            const itemDate = new Date(item.data);
+            const startDate = selectedDate && selectedDate[0] ? new Date(selectedDate[0]) : null;
+            const endDate = selectedDate && selectedDate[1] ? new Date(selectedDate[1]) : null;
+            if (startDate && endDate) {
+                startDate.setHours(0, 0, 0, 0);
+                endDate.setHours(23, 59, 59, 999);
+            }
+
+            return (
+                item.name_dv &&
+                item.id_cs.toString().includes(searchText) &&
+                (!selectedDate || (startDate && endDate && itemDate >= startDate && itemDate <= endDate))
+            );
+        });
+
+        return filtered;
+    };
+
+
+    const handleChangeSearchText = e => {
+        setSearchText(e.target.value);
+    };
+
+    const handleChangesearchStatusTt = value => {
+        setsearchStatusTt(value);
+    };
+
+
+    const handleDateChange = (dates) => {
+        setSelectedDate(dates);
+    };
     // Kiểm tra xem dữ liệu đã được lấy thành công hay chưa
-    const selectedData = data.find(item => item.id_sv === id_sv);
+    const selectedData = dataService.find(item => item.id_sv === id_sv);
     if (!selectedData) {
         return <div>Loading...</div>; // Hoặc thông báo lỗi nếu cần
     }
+
 
 
     return (
@@ -183,22 +233,77 @@ const DetailServiceeee: React.FC = () => {
                         </Col>
                         <Col span={13} className="ms-3">
                             <Card>
-                                <h1>Table</h1>
+                          <Row>
+                            <Col span={8}>
+                            <label className="tthd ">Tình trạng</label>
+                            <Select
+                                className=" d-flex ms-3"
+                                placeholder="Tìm trạng"
+                                value={searchStatusTt}
+                                onChange={handleChangesearchStatusTt}
+                                style={{ width: 180, marginBottom: 16 }}
+                            >
+                                <Option value="">Tất cả</Option>
+                                <Option value="Đang chờ">Đang chờ</Option>
+                                <Option value="Hết hạn">Hết hạn</Option>
+                            </Select>
+                            </Col>
+                            <Col span={8}>
+                       
+                            <label className="ctg  " > Chọn thời gian</label>
+                            <Space.Compact block>
+                            <DatePicker.RangePicker style={{ width: '90%' }} onChange={handleDateChange} />
+
+
+                            </Space.Compact>
+                   
+                            </Col>
+                            <Col span={8}>
+                            <label className="tukhoa">Từ khóa</label>
+                                <Input.Search
+                                    placeholder="Tìm kiếm..."
+                                    value={searchText}
+                                    onChange={handleChangeSearchText}
+                                    onSearch={handleSearch}
+                                    style={{ marginBottom: 16 }}
+                                />
+                            </Col>
+                          </Row>
+                                <Table dataSource={handleSearch()} bordered pagination={{ pageSize: 5 }} rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-even' : 'table-row-odd')} >
+                                    <Column
+                                        title={<span className="table-title">STT</span>}
+                                        dataIndex="id_cs"
+                                        key="id_cs"
+                                        render={(text: string) => <span>{text}</span>}
+                                    />
+
+
+                                    <Column
+                                        title={<span className="table-title">Trạng thái</span>}
+                                        dataIndex="status"
+                                        key="status"
+                                        render={(text: string) => <span>{text}</span>}
+                                    />
+
+
+
+
+                                </Table>
 
                             </Card>
                         </Col>
                         <Col span={3} >
 
-                            <div className="cnsc">  
-                            <a onClick={() => navigate(`/editService/${selectedData.id_sv}`)}>
-                                <img src="/img/icon/Edit Square.png" /> <br /><span>Cập Nhật</span></a>
-                                
-                                </div>
-                                <div className="cnsc1">  
-                            <a href="/services">
-                                <img src="/img/Edit Square.png" /> <br /><span>Quay lại    </span></a>
-                                
-                                </div>
+                            <div className="cnsc">
+                                <a onClick={() => navigate(`/editService/${selectedData.id_sv}`)}>
+                                    <img src="/img/icon/Edit Square.png" /> <br /><span>Cập Nhật</span></a>
+
+                            </div>
+                            <div className="cnsc1">
+                                <a href="/services">
+                                    <img src="/img/Edit Square.png" /> <br /><span style={{ color: "black" }}> Quay lại    </span></a>
+
+                            </div>
 
 
                         </Col>

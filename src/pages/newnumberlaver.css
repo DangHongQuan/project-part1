@@ -36,6 +36,11 @@
   align-items: flex-start;
   gap: 12px;
   background: var(--orange-orange-400, #ff9138);
+  width: 498.5px;
+  margin-left: -16px;
+  margin-bottom: -16px;
+  border-bottom-left-radius: 7px;
+  border-bottom-right-radius: 7px;
 }
 .dvkh {
   color: var(--gray-gray-400-text, #535261);
@@ -125,3 +130,4 @@
   border: 1.5px solid var(--gray-gray-100, #d4d4d7);
   background: var(--white, #fff);
 }
+

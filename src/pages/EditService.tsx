@@ -13,10 +13,10 @@ import { firestore } from '../Firebase/Firebase';
 function EditService() {
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
   const { id_sv } = useParams<{ id_sv: string }>();
-  const data = useSelector((state: RootState) => state.service.data);
+  const dataService = useSelector((state: RootState) => state.service.dataService);
 
   // Kiểm tra xem dữ liệu đã được lấy thành công hay chưa
-  const selectedData = data.find((item) => item.id_sv === id_sv);
+  const selectedData = dataService.find((item) => item.id_sv === id_sv);
   if (!selectedData) {
     return <div>Loading...</div>; // Hoặc thông báo lỗi nếu cần
   }

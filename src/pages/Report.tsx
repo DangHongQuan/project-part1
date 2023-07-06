@@ -27,6 +27,8 @@ import { RootState } from "../reduxtoolkit/store";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import { fetchServiceData } from "../reduxtoolkit/serviceActions";
+import { format } from "date-fns";
+import { fetchNumberData } from "../reduxtoolkit/NumberLeverActions";
 
 
 const { Sider, Content } = Layout;
@@ -104,7 +106,58 @@ interface Data {
 
 const Report: React.FC = () => {
 
-    
+    const [userData, setUserData] = useState<any>({});
+    useEffect(() => {
+        const storedUserData = JSON.parse(localStorage.getItem("userData") || "{}");
+        setUserData(storedUserData);
+    }, []);
+
+    const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
+
+
+    useEffect(() => {
+        dispatch(fetchNumberData());
+    }, [dispatch]);
+    const [searchText, setSearchText] = useState('');
+    const [searchStatusTt, setsearchStatusTt] = useState('');
+    const [searchStatusnc, setsearchStatusnc] = useState('');
+    const [searchStatustdv, setsearchStatustdv] = useState('');
+
+    const [selectedDate, setSelectedDate] = useState(null);
+
+
+    const navigate = useNavigate();
+    const { data } = useSelector((state: RootState) => state.numberlever);
+   
+    const handleSearch = () => {
+        const filtered = data.filter((item) => {
+          const itemDate = new Date(item.data);
+          const startDate = selectedDate && selectedDate[0] ? new Date(selectedDate[0]) : null;
+          const endDate = selectedDate && selectedDate[1] ? new Date(selectedDate[1]) : null;
+      
+          if (startDate && endDate) {
+            startDate.setHours(0, 0, 0, 0);
+            endDate.setHours(23, 59, 59, 999);
+          }
+        
+          return (
+            item.name_dv &&
+            (!selectedDate || (startDate && endDate && itemDate >= startDate && itemDate <= endDate))
+          );
+        });
+      
+        return filtered;
+      };
+      
+      
+      
+
+
+
+
+    const handleDateChange = (dates) => {
+        setSelectedDate(dates);
+    };
     
 
     return (
@@ -164,8 +217,9 @@ const Report: React.FC = () => {
                        
                         <Col span={10} className=" ms-3">
                             <label className="tthd " > Chọn thời gian</label>
-                            <Space.Compact block>
-                                <DatePicker.RangePicker style={{ width: '60%' }} />
+                           <Space.Compact block>
+                            <DatePicker.RangePicker style={{ width: '90%' }} onChange={handleDateChange} />
+
 
                             </Space.Compact>
                         </Col>
@@ -176,38 +230,44 @@ const Report: React.FC = () => {
 
                     <Row className="mt-5 ms-5">
                         <Col span={20}>
-                            <Table
-                                dataSource={data}
-                                bordered
-                                pagination={{ pageSize: 5 }}
-                                rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-even' : 'table-row-odd')}
-                            >
-                                <Table.Column
-                                    title={<span>Mã dịch vụ</span>}
-                                    dataIndex="id_sv"
-                                    key="id_sv"
+                        <Table dataSource={handleSearch()} bordered pagination={{ pageSize: 5 }} rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-even' : 'table-row-odd')} >
+                                <Column
+                                    title={<span className="table-title">STT</span>}
+                                    dataIndex="id_cs"
+                                    key="id_cs"
                                     render={(text: string) => <span>{text}</span>}
                                 />
-                                <Table.Column
+                              
+                                <Column
                                     title={<span className="table-title">Tên dịch vụ</span>}
-                                    dataIndex="name"
-                                    key="name"
+                                    dataIndex="name_dv"
+                                    key="name_dv"
                                     render={(text: string) => <span>{text}</span>}
                                 />
-                                <Table.Column
-                                    title={<span className="table-title">Mô tả</span>}
-                                    dataIndex="describe"
-                                    key="describe"
-                                    render={(text: string) => <span>{text}</span>}
+
+
+                                <Column
+                                    title={<span className="table-title">Thời gian cấp</span>}
+                                    dataIndex="data"
+                                    key="data"
+                                    render={(text: string) => <span>{format(new Date(text), "HH:mm:ss ' ' dd/MM/yyyy")}</span>}
                                 />
-                                  <Table.Column
-                                    title={<span className="table-title">Trạng thái hoạt động</span>}
+                               
+                                <Column
+                                    title={<span className="table-title">Trạng thái</span>}
                                     dataIndex="status"
                                     key="status"
                                     render={(text: string) => <span>{text}</span>}
                                 />
-                          
+                                <Column
+                                    title={<span className="table-title">Nguồn cấp</span>}
+                                    dataIndex="powersupply"
+                                    key="powersupply"
+                                    render={(text: string) => <span>{text}</span>}
+                                />
+
                                 
+
                             </Table>
                         </Col>
                         <Col span={3} className="ms-1">

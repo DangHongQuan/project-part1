@@ -103,7 +103,6 @@ const handleLogout = () => {
 };
 
 const NumberLever: React.FC = () => {
-    const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
 
     const [userData, setUserData] = useState<any>({});
     useEffect(() => {
@@ -111,8 +110,8 @@ const NumberLever: React.FC = () => {
         setUserData(storedUserData);
     }, []);
 
+    const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
 
-    const { data } = useSelector((state: RootState) => state.numberlever);
 
     useEffect(() => {
         dispatch(fetchNumberData());
@@ -126,33 +125,33 @@ const NumberLever: React.FC = () => {
 
 
     const navigate = useNavigate();
-   
+
     const handleSearch = () => {
         const filtered = data.filter((item) => {
-          const itemDate = new Date(item.data);
-          const startDate = selectedDate && selectedDate[0] ? new Date(selectedDate[0]) : null;
-          const endDate = selectedDate && selectedDate[1] ? new Date(selectedDate[1]) : null;
-      
-          if (startDate && endDate) {
-            startDate.setHours(0, 0, 0, 0);
-            endDate.setHours(23, 59, 59, 999);
-          }
-        
-          return (
-            item.name_dv &&
-            item.name_kh.toLowerCase().includes(searchText.toLowerCase()) &&
-            (searchStatusTt === '' || item.status.toLowerCase() === searchStatusTt.toLowerCase()) &&
-            (searchStatusnc === '' || item.powersupply.toLowerCase() === searchStatusnc.toLowerCase()) &&
-            (searchStatustdv === '' || item.name_dv.toLowerCase() === searchStatustdv.toLowerCase()) &&
-            (!selectedDate || (startDate && endDate && itemDate >= startDate && itemDate <= endDate))
-          );
+            const itemDate = new Date(item.data);
+            const startDate = selectedDate && selectedDate[0] ? new Date(selectedDate[0]) : null;
+            const endDate = selectedDate && selectedDate[1] ? new Date(selectedDate[1]) : null;
+
+            if (startDate && endDate) {
+                startDate.setHours(0, 0, 0, 0);
+                endDate.setHours(23, 59, 59, 999);
+            }
+
+            return (
+                item.name_dv &&
+                item.name_kh.toLowerCase().includes(searchText.toLowerCase()) &&
+                (searchStatusTt === '' || item.status.toLowerCase() === searchStatusTt.toLowerCase()) &&
+                (searchStatusnc === '' || item.powersupply.toLowerCase() === searchStatusnc.toLowerCase()) &&
+                (searchStatustdv === '' || item.name_dv.toLowerCase() === searchStatustdv.toLowerCase()) &&
+                (!selectedDate || (startDate && endDate && itemDate >= startDate && itemDate <= endDate))
+            );
         });
-      
+
         return filtered;
-      };
-      
-      
-      
+    };
+
+
+
 
 
     const handleChangeSearchText = e => {
@@ -174,7 +173,8 @@ const NumberLever: React.FC = () => {
     const handleDateChange = (dates) => {
         setSelectedDate(dates);
     };
-    
+    const { data } = useSelector((state: RootState) => state.numberlever);
+
     return (
         <>
             <Layout style={{ minHeight: "100vh" }}>
@@ -235,16 +235,20 @@ const NumberLever: React.FC = () => {
                         <Col span={3}>
                             <label className="tthd ">Tên dịch vụ</label>
                             <Select
-                              value={searchStatustdv}
-                              onChange={handleChangesearchStatustdv}
-                             defaultValue="Tất cả" style={{ width: 154 }} className="slectTop d-flex ms-3">
+                                value={searchStatustdv}
+                                onChange={handleChangesearchStatustdv}
+                                defaultValue="Tất cả"
+                                style={{ width: 154 }}
+                                className="slectTop d-flex ms-3"
+                            >
                                 <Option value="">Tất cả</Option>
-                                {data.map((item)=> (
-                                    <Option key={item.id_cs} value={item.name_dv}>
-                                        {item.name_dv}
+                                {[...new Set(data.map((item) => item.name_dv))].map((name_dv) => (
+                                    <Option key={name_dv} value={name_dv}>
+                                        {name_dv}
                                     </Option>
                                 ))}
                             </Select>
+
 
 
                         </Col>
@@ -279,7 +283,7 @@ const NumberLever: React.FC = () => {
                         <Col span={6} className=" ms-3">
                             <label className="ctg  " > Chọn thời gian</label>
                             <Space.Compact block>
-                            <DatePicker.RangePicker style={{ width: '90%' }} onChange={handleDateChange} />
+                                <DatePicker.RangePicker style={{ width: '90%' }} onChange={handleDateChange} />
 
 
                             </Space.Compact>

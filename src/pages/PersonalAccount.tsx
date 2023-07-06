@@ -230,7 +230,7 @@ const PersoalAccount: React.FC   = () => {
         </Content>
       </Layout>
     </>
-  )
+  )  
 };
 
 export default PersoalAccount;
