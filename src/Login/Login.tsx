@@ -52,7 +52,7 @@ const Login: React.FC = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Form.Item>
-          <a className="qmklogin">Quên mật khẩu?</a>
+          <a className="qmklogin" href="/forgorpassword">Quên mật khẩu?</a>
           <Form.Item>
             <Button className="btlogin" htmlType="submit">
               Đăng Nhập

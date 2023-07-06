@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-// import './homedasboard.css'
-// import  useFetchServiceData  from '../redux/serviceActions';
-
-import { Badge, Card, DatePicker, Pagination, Table } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+import { Badge, Card, DatePicker, Pagination, Table, Tooltip } from 'antd';
 import './dasbordefault.css'
 import './service.css'
 import { Link, Route, useNavigate, Routes } from 'react-router-dom';
@@ -14,28 +10,24 @@ import {
     DesktopOutlined,
     LoginOutlined,
     MessageOutlined,
-    SearchOutlined,
     SettingOutlined,
 } from "@ant-design/icons";
+import { saveAs } from 'file-saver';
+
 import { Button, Col, Input, Layout, Menu, Row, Select, Space } from "antd";
 import { Header } from "antd/es/layout/layout";
 import Column from "antd/es/table/Column";
-import { query } from "express";
-import { collection, getDocs, getFirestore } from "firebase/firestore";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../reduxtoolkit/store";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
-import { fetchServiceData } from "../reduxtoolkit/serviceActions";
 import { format } from "date-fns";
 import { fetchNumberData } from "../reduxtoolkit/NumberLeverActions";
-
+import { write, utils as XLSXUtils, writeFile } from 'xlsx';
 
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
-// Lấy thông tin người dùng từ localStorage
-const userData = JSON.parse(localStorage.getItem('userData') || '{}');
 
 type Menu = {
     key: string;
@@ -101,11 +93,25 @@ interface Data {
     ct: string;
     cn: string;
 }
-
-
+const DownloadButton = ({ handleDownload }) => (
+    <Button onClick={handleDownload}>Tải về</Button>
+  );
+ 
+function convertTableToExcelData(tableData) {
+    const worksheet = XLSXUtils.json_to_sheet(tableData);
+    const workbook = XLSXUtils.book_new();
+    XLSXUtils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    const excelBuffer = write(workbook, { bookType: 'xlsx', type: 'array' });
+    const excelData = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8' });
+    return excelData;
+  }
 
 const Report: React.FC = () => {
-
+    const handleDownload = () => {
+        const tableData = data;
+        const excelData = convertTableToExcelData(tableData);
+        saveAs(excelData, 'data.xlsx');
+      };
     const [userData, setUserData] = useState<any>({});
     useEffect(() => {
         const storedUserData = JSON.parse(localStorage.getItem("userData") || "{}");
@@ -118,47 +124,35 @@ const Report: React.FC = () => {
     useEffect(() => {
         dispatch(fetchNumberData());
     }, [dispatch]);
-    const [searchText, setSearchText] = useState('');
-    const [searchStatusTt, setsearchStatusTt] = useState('');
-    const [searchStatusnc, setsearchStatusnc] = useState('');
-    const [searchStatustdv, setsearchStatustdv] = useState('');
+
 
     const [selectedDate, setSelectedDate] = useState(null);
 
 
     const navigate = useNavigate();
     const { data } = useSelector((state: RootState) => state.numberlever);
-   
+
     const handleSearch = () => {
         const filtered = data.filter((item) => {
-          const itemDate = new Date(item.data);
-          const startDate = selectedDate && selectedDate[0] ? new Date(selectedDate[0]) : null;
-          const endDate = selectedDate && selectedDate[1] ? new Date(selectedDate[1]) : null;
-      
-          if (startDate && endDate) {
-            startDate.setHours(0, 0, 0, 0);
-            endDate.setHours(23, 59, 59, 999);
-          }
-        
-          return (
-            item.name_dv &&
-            (!selectedDate || (startDate && endDate && itemDate >= startDate && itemDate <= endDate))
-          );
+            const itemDate = new Date(item.data);
+            const startDate = selectedDate && selectedDate[0] ? new Date(selectedDate[0]) : null;
+            const endDate = selectedDate && selectedDate[1] ? new Date(selectedDate[1]) : null;
+
+            if (startDate && endDate) {
+                startDate.setHours(0, 0, 0, 0);
+                endDate.setHours(23, 59, 59, 999);
+            }
+            return (
+                item.name_dv &&
+                (!selectedDate || (startDate && endDate && itemDate >= startDate && itemDate <= endDate))
+            );
         });
-      
         return filtered;
-      };
-      
-      
-      
-
-
-
-
+    };
     const handleDateChange = (dates) => {
         setSelectedDate(dates);
     };
-    
+  
 
     return (
         <>
@@ -214,70 +208,72 @@ const Report: React.FC = () => {
                     <p className="dstbhome">Danh sách dịch vụ</p>
 
                     <Row className="custom-ms">
-                       
+
                         <Col span={10} className=" ms-3">
                             <label className="tthd " > Chọn thời gian</label>
-                           <Space.Compact block>
-                            <DatePicker.RangePicker style={{ width: '90%' }} onChange={handleDateChange} />
+                            <Space.Compact block>
+                                <DatePicker.RangePicker style={{ width: '90%' }} onChange={handleDateChange} />
 
 
                             </Space.Compact>
                         </Col>
-                       
+
                     </Row>
 
 
 
                     <Row className="mt-5 ms-5">
                         <Col span={20}>
-                        <Table dataSource={handleSearch()} bordered pagination={{ pageSize: 5 }} rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-even' : 'table-row-odd')} >
-                                <Column
-                                    title={<span className="table-title">STT</span>}
-                                    dataIndex="id_cs"
-                                    key="id_cs"
-                                    render={(text: string) => <span>{text}</span>}
-                                />
-                              
-                                <Column
-                                    title={<span className="table-title">Tên dịch vụ</span>}
-                                    dataIndex="name_dv"
-                                    key="name_dv"
-                                    render={(text: string) => <span>{text}</span>}
-                                />
+                                <Table dataSource={handleSearch()} bordered pagination={{ pageSize: 5 }} rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-even' : 'table-row-odd')} >
+                                    <Column
+                                        dataIndex="id_cs"
+                                        key="id_cs"
+                                        title="STT"
+                                        
+                                        
+                                        render={(text: string) => <span>{text}</span>}
+                                    />
+
+                                    <Column
+                                        title={<span className="table-title">Tên dịch vụ</span>}
+                                        dataIndex="name_dv"
+                                        key="name_dv"
+                                        render={(text: string) => <span>{text}</span>}
+                                    />
 
 
-                                <Column
-                                    title={<span className="table-title">Thời gian cấp</span>}
-                                    dataIndex="data"
-                                    key="data"
-                                    render={(text: string) => <span>{format(new Date(text), "HH:mm:ss ' ' dd/MM/yyyy")}</span>}
-                                />
-                               
-                                <Column
-                                    title={<span className="table-title">Trạng thái</span>}
-                                    dataIndex="status"
-                                    key="status"
-                                    render={(text: string) => <span>{text}</span>}
-                                />
-                                <Column
-                                    title={<span className="table-title">Nguồn cấp</span>}
-                                    dataIndex="powersupply"
-                                    key="powersupply"
-                                    render={(text: string) => <span>{text}</span>}
-                                />
+                                    <Column
+                                        title={<span className="table-title">Thời gian cấp</span>}
+                                        dataIndex="data"
+                                        key="data"
+                                        render={(text: string) => <span>{format(new Date(text), "HH:mm:ss ' ' dd/MM/yyyy")}</span>}
+                                    />
 
-                                
+                                    <Column
+                                        title={<span className="table-title">Trạng thái</span>}
+                                        dataIndex="status"
+                                        key="status"
+                                        render={(text: string) => <span>{text}</span>}
+                                    />
+                                    <Column
+                                        title={<span className="table-title">Nguồn cấp</span>}
+                                        dataIndex="powersupply"
+                                        key="powersupply"
+                                        render={(text: string) => <span>{text}</span>}
+                                    />
 
-                            </Table>
+
+
+                                </Table>
                         </Col>
                         <Col span={3} className="ms-1">
-                            <Link to={"/addService"}>
+                        <a onClick={handleDownload}>
                                 <Card className="bgaDvice">
                                     <img src="/img/icon/document-download.png" alt="" />
-                                    <p>Tải về   </p>
-
+                                    <br />
+                                    <span>Tải về</span>
                                 </Card>
-                            </Link>
+                                </a>
                         </Col>
                     </Row>
                     <Routes >

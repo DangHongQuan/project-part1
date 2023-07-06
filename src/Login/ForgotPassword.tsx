@@ -20,19 +20,12 @@ const ForgotPassword: React.FC = () => {
   };
 
   const handleSubmit = async (values: any) => {
-    try {
-      // Gửi yêu cầu lấy lại mật khẩu
+  
       await sendPasswordResetEmail(auth, values.email);
       console.log("Password reset email sent successfully");
       setErrorMessage("Vui lòng kiểm tra hộp thư đến.");
       setInputError(false);
-    } catch (error) {
-      console.log("Password reset failed", error);
-      setErrorMessage(
-        "Yêu cầu lấy lại mật khẩu không thành công. Vui lòng kiểm tra lại địa chỉ email."
-      );
-      setInputError(true);
-    }
+    
   };
 
 
@@ -78,7 +71,7 @@ const ForgotPassword: React.FC = () => {
             </div>
           </Form>
       </Col>
-      <Col className="bg-home" span={14} style={{ height: '100%', width: '100%', backgroundColor:'white' }}>
+      <Col className="bg-home" span={10} style={{ height: '100%', width: '20px', backgroundColor:'white' }}>
         <img src="/img/Frame.png" width={848} alt="Logo" />
       </Col>
     </Row>
