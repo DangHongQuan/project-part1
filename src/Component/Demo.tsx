@@ -24,7 +24,7 @@ import { RootState } from '../reduxtoolkit/store';
 
 function Demoaaa() {
   const { id_sv } = useParams<{ id_sv: string }>();
-  const data = useSelector((state: RootState) => state.service.data);
+  const data = useSelector((state: RootState) => state.service.dataService);
 
   // Kiểm tra xem dữ liệu đã được lấy thành công hay chưa
   const selectedData = data.find(item => item.id_sv === id_sv);

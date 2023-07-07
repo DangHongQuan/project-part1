@@ -27,6 +27,11 @@ import DetailService from './pages/DetailService';
 import EditDevice from './pages/EditDevice';
 import DetailServiceeee from './pages/DetailService';
 import EditServiceeee from './pages/EditServiceeee';
+import Roles from './pages/Roles';
+import NewRoless from './pages/NewRoles';
+import RolesForm from './Demo/AddRoles';
+import FechtRoles from './Demo/FerchRoles';
+import UpdateRoles from './Demo/UpdateRoles';
 
 
 
@@ -45,7 +50,7 @@ function RouteApp() {
         <Route path='/persoalaccount' element={<PersoalAccount />} />
         <Route path='/res' element={<Register />} />
         <Route path='/addDevice' element={<AddDevice />} />
-        <Route path='/l' element={<LoginForm />} />
+        <Route path='/addroles' element={<NewRoless />} />
         <Route path='/services' element={<Service />} />
         <Route path='/addService' element={<AddService />} />
         <Route path='/b' element={<ServiceComponent />} />
@@ -58,14 +63,16 @@ function RouteApp() {
         <Route path="/reports" element={<Report />} />
 
         <Route path="/numbers" element={<NumberLever />} />
-        <Route path="/x" element={<DemoOption />} />
+        <Route path="/roles" element={<Roles />} />
         <Route path="/detailDevice/:id" element={<DetailDevice />} />
         <Route path="/editDevice/:id" element={<EditDevice />} />
+        <Route path="/updateRoles/:name" element={<UpdateRoles />} />
 
 
         <Route path="/addNumberLever" element={<NewnumberLever />} />
         <Route path="/h" element={<DetailService />} />
-        <Route path="/j" element={<AddDemo />} />
+        <Route path="/rf" element={<FechtRoles />} />
+        <Route path="/x" element={<RolesForm />} />
 
       </Routes>
     </BrowserRouter>
