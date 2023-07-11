@@ -27,7 +27,7 @@ const Login: React.FC = () => {
   };
   return (
     <Row align="middle" className="layout">
-      <Col className="layoytlog" span={10} style={{ height: '100%', width: '100%' }}>
+    <Col className="layoytlog" span={10} style={{ height: '100%', width: '100%' }}>
         <Form  className="mt-5" onClick={handleLogin}>
           <Form.Item>
             <img src="/img/Logoalta.png" alt="" />

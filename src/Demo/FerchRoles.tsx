@@ -35,7 +35,7 @@ const FechtRoles = () => {
           <span>{item.name} {item.describe} {item.function_a} {item.function_b}</span>
           <button onClick={() => navigate(`/updateRoles/${item.name}`)}>Cập nhật</button>
               <br />
-          {/* ... */}
+          {/* ... */} 
         </div>
       ))}
     </div>

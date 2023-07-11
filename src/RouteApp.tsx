@@ -10,7 +10,6 @@ import DeviceApp from './pages/DeviceApp';
 import Register from './Login/Register';
 import PersoalAccount from './pages/PersonalAccount';
 import AddDevice from './pages/AddDevice';
-import LoginForm from './Demo/LoginFrom';
 import Service from './pages/Service';
 import AddService from './pages/addService';
 import ServiceComponent from './Component/ServiceComponent';
@@ -32,6 +31,15 @@ import NewRoless from './pages/NewRoles';
 import RolesForm from './Demo/AddRoles';
 import FechtRoles from './Demo/FerchRoles';
 import UpdateRoles from './Demo/UpdateRoles';
+import UserList from './Component/ViewAdmin';
+import EditAdminForm from './Component/EditAdminForm';
+import DetailNumberLever from './pages/DetailNumberlever';
+import EditRoles from './pages/EditRoles';
+import PageAccount from './pages/PageAcount';
+import UpdateUsert from './pages/UpdateUset';
+import ChangePasswordForm from './Demo/ChangePasswordForm ';
+import PasswordUpdate from './Demo/ChangePasswordForm ';
+import NewAcount from './pages/NewAcount';
 
 
 
@@ -50,7 +58,7 @@ function RouteApp() {
         <Route path='/persoalaccount' element={<PersoalAccount />} />
         <Route path='/res' element={<Register />} />
         <Route path='/addDevice' element={<AddDevice />} />
-        <Route path='/addroles' element={<NewRoless />} />
+        {/* <Route path='/addroles' element={<NewRoless />} /> */}
         <Route path='/services' element={<Service />} />
         <Route path='/addService' element={<AddService />} />
         <Route path='/b' element={<ServiceComponent />} />
@@ -61,18 +69,30 @@ function RouteApp() {
         <Route path="/d" element={<SignUpForm />} />
         <Route path="/g" element={<DemoFechDevices />} />
         <Route path="/reports" element={<Report />} />
-
         <Route path="/numbers" element={<NumberLever />} />
         <Route path="/roles" element={<Roles />} />
         <Route path="/detailDevice/:id" element={<DetailDevice />} />
         <Route path="/editDevice/:id" element={<EditDevice />} />
-        <Route path="/updateRoles/:name" element={<UpdateRoles />} />
+
+        <Route path="/editRoles/:name" element={<EditRoles />} />
+        <Route path="/editUser/:email" element={<UpdateUsert />} />
+        
+        <Route path="/editnumberlever/:id_cs" element={<DetailNumberLever />} />
+        <Route path="/addroles" element={<NewRoless />} />
 
 
         <Route path="/addNumberLever" element={<NewnumberLever />} />
         <Route path="/h" element={<DetailService />} />
         <Route path="/rf" element={<FechtRoles />} />
         <Route path="/x" element={<RolesForm />} />
+        <Route path="/s" element={<UserList />} />
+        <Route path="/k" element={<YourComponent />} />
+        <Route path="/p" element={<PasswordUpdate />} />
+
+        <Route path="/addcount" element={<NewAcount />} />
+
+        <Route path="/accounts" element={<PageAccount />} />
+
 
       </Routes>
     </BrowserRouter>

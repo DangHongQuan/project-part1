@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 // import './homedasboard.css'
 // import  useFetchServiceData  from '../redux/serviceActions';
-import "./roles.css"
+
 import { Badge, Card, DatePicker, Pagination, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import './dasbordefault.css'
@@ -28,9 +28,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import { fetchServiceData } from "../reduxtoolkit/serviceActions";
 import { Option } from "antd/es/mentions";
-import { format } from "date-fns";
-import { fetchrolesData } from "../reduxtoolkit/RolesActions";
-import { fetchUsersData } from "../reduxtoolkit/UserAction";
+import { fetchUsersData } from '../reduxtoolkit/UserAction';
 
 
 const { Sider, Content } = Layout;
@@ -76,54 +74,29 @@ const items: Menu[] = [
     ]),
 ];
 
-const data = [
-    {
-        id_sv: "KIO_01",
-        name: "Kiosk",
-        describe: "Hoạt động",
-        isActive: true,
-        ct: "Chi tiết",
-        cn: "Cập nhật",
-    },
-    {
-        id_sv: "KIO_01",
-        name: "Kiosk",
-        describe: "Hoạt động",
-        isActive: true,
-        ct: "Chi tiết",
-        cn: "Cập nhật",
-    },
-
-];
 
 
 
 
-const Roles: React.FC = () => {
-    const [searchText, setSearchText] = useState('');
+const PageAccount: React.FC = () => {
+
 
     const navigate = useNavigate();
     const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
-    const { dataroles } = useSelector((state: RootState) => state.roles);
     const { data } = useSelector((state: RootState) => state.user);
-
-    useEffect(() => {
-        dispatch(fetchrolesData());
-    }, [dispatch]);
-
 
     useEffect(() => {
         dispatch(fetchUsersData());
     }, [dispatch]);
 
-    const countUsersByRole = (roleName) => {
-        return data.filter((item) => item.role === roleName).length;
-    };
-
+    const [searchText, setSearchText] = useState('');
+    const [searchStatus, setSearchStatus] = useState('');
 
     const handleSearch = () => {
-        const filtered = dataroles.filter(item =>
-            item.name.toLowerCase().includes(searchText.toLowerCase())
+        const filtered = data.filter(item =>
+            item.name &&
+            item.name.toLowerCase().includes(searchText.toLowerCase()) &&
+            (searchStatus === '' || item.status.toLowerCase() === searchStatus.toLowerCase())
         );
         return filtered;
     };
@@ -131,6 +104,11 @@ const Roles: React.FC = () => {
     const handleChangeSearchText = e => {
         setSearchText(e.target.value);
     };
+
+    const handleChangeSearchStatus = value => {
+        setSearchStatus(value);
+    };
+
 
     return (
         <>
@@ -149,7 +127,7 @@ const Roles: React.FC = () => {
                                         ))}
                                     </SubMenu>
                                 ) : (
-                                    <Menu.Item key={item.key} icon={item.icon} className="menu-item " style={item.key === '0' ? { backgroundColor: '#ff7506', color: 'white' } : {}}> {/* Add className="menu-item" */}
+                                    <Menu.Item key={item.key} icon={item.icon} className="menu-item" style={item.key === '' ? { backgroundColor: '#ff7506', color: 'white' } : {}}> {/* Add className="menu-item" */}
                                         <Link to={item.path}>{item.label}</Link>
                                     </Menu.Item>
                                 )
@@ -166,7 +144,8 @@ const Roles: React.FC = () => {
                     <Header className="hdaccount">
                         <Row >
                             <Col span={10}>
-                                <p className="hederpc mx-2">Cài đặt hệ thống &gt;  <a href="/roles" className="dsdv ms-2"> Quản lý vai trò</a></p>
+                                <p className="hederpc mx-2">Cài đặt hệ thống &gt;  
+                                <a href="/" className="dsdv ms-2"> Quản lý tài khoản</a></p>
                             </Col>
                             <Col span={11}   >
                                 <div className="hederpaccount text-end">
@@ -183,18 +162,27 @@ const Roles: React.FC = () => {
                             </Col>
                         </Row>
                     </Header>
-                    <p className="dstbhome">Danh sách vai trò</p>
+                    <p className="dstbhome">Danh sách tài khoản</p>
 
-
-
-                    <Row className="custom-ms w-75  ">
-
-                        <Col span={10} className=" ms-3 ">
-                            <label className="tthd " > Tù Khóa</label>
-                            {/* <Input.Search
-                                placeholder="Tìm kiếm..."
-                                style={{ marginBottom: 16 }}
-                            /> */}
+                    <Row className="custom-ms">
+                        <Col span={15}>
+                            <label className="tthd ">Trạng thái hoạt động</label>
+                            <Select
+                             className=" d-flex ms-3"
+                                placeholder="Tìm kiếm theo trạng thái hoạt động"
+                                value={searchStatus}
+                                onChange={handleChangeSearchStatus}
+                                style={{ width: 180, marginBottom: 16  }}
+                            >
+                                <Option value="">Tất cả</Option>
+                                <Option value="Hoạt động">Hoạt động</Option>
+                                <Option value="Ngừng hoạt động">Ngừng hoạt động</Option>
+                            </Select>
+                          
+                        </Col>
+                       
+                        <Col span={5} className="custom-tk">
+                            <label className="tk">Từ khóa</label>
                             <Input.Search
                                 placeholder="Tìm kiếm..."
                                 value={searchText}
@@ -204,59 +192,75 @@ const Roles: React.FC = () => {
                             />
 
                         </Col>
-
                     </Row>
+
+
 
                     <Row className="mt-5 ms-5">
                         <Col span={20}>
-                            <Table dataSource={handleSearch()} bordered pagination={{ pageSize: 5 }} rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-even' : 'table-row-odd')} >
-                                <Column
-                                    dataIndex="name"
-                                    key="name"
-                                    title={<span className="table-title">Tên vai trò</span>}
-
-
+                          
+                            <Table
+                                dataSource={handleSearch()}
+                                bordered
+                                pagination={{ pageSize: 5 }}
+                                rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-even' : 'table-row-odd')}
+                            >
+                                <Table.Column
+                                    title={<span>Tên đăng nhập</span>}
+                                    dataIndex="email"
+                                    key="email"
                                     render={(text: string) => <span>{text}</span>}
                                 />
-                                <Column
-                                    title={<span className="table-title">Số người dùng</span>}
+                                <Table.Column
+                                    title={<span className="table-title">Họ tên</span>}
                                     dataIndex="name"
                                     key="name"
-                                    render={(text, record: { name: string }) => (
-                                        <span>{countUsersByRole(record.name)}</span>
-                                    )}
-                                />
-
-
-                                <Column
-                                    title={<span className="table-title">Số người dùng</span>}
-                                    dataIndex="describe"
-                                    key="describe"
                                     render={(text: string) => <span>{text}</span>}
                                 />
-
-
-                                <Column
+                                <Table.Column
+                                    title={<span className="table-title">Số điện thoại</span>}
+                                    dataIndex="phone"
+                                    key="phone"
+                                    render={(text: string) => <span>{text}</span>}
+                                />
+                                <Table.Column
+                                    title={<span className="table-title">Email</span>}
+                                    dataIndex="email"
+                                    key="email"
+                                    render={(text: string) => <span>{text}</span>}
+                                />
+                                 <Table.Column
+                                    title={<span className="table-title">Vai trò</span>}
+                                    dataIndex="role"
+                                    key="role"
+                                    render={(text: string) => <span>{text}</span>}
+                                />
+                                 <Table.Column
+                                    title={<span className="table-title">Trạng thái hoạt động</span>}
+                                    dataIndex="status"
+                                    key="status"
+                                    render={(text: string) => <span>{text}</span>}
+                                />
+                              
+                                <Table.Column
                                     dataIndex="cn"
                                     key="cn"
-                                    render={(text: string, record: any) => (<Button onClick={() => navigate(`/editRoles/${record.name}`)}>Cập nhật</Button>)
-
-                                    }
+                                    render={(text: string, record: any) => (
+                                        <a onClick={() => navigate(`/editUser/${record.email}`)}>Cập Nhật</a>
+                                    )}
                                 />
                             </Table>
                         </Col>
                         <Col span={3} className="ms-1">
-                            <a href="/addroles" >
+                            <Link to={"/addcount"}>
                                 <Card className="bgaDvice">
                                     <img src="/img/icon/add-square.png" alt="" />
-                                    <br />
-                                    <span>Thêm vai trò</span>
+                                    <p>Thêm tài khoản</p>
+
                                 </Card>
-                            </a>
+                            </Link>
                         </Col>
                     </Row>
-
-
                     <Routes >
                         {items.map((item) => (
                             <Route key={item.key} path={item.path}>
@@ -270,6 +274,6 @@ const Roles: React.FC = () => {
     )
 };
 
-export default Roles;
+export default PageAccount;
 
 

@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import "./homedasboard.css";
 import "./newroles.css";
 import { Link, Route, Routes, useNavigate } from "react-router-dom";
+import { firestore } from '../Firebase/Firebase';
+import { collection, getDocs, query, updateDoc, where } from '@firebase/firestore';
+import { useParams } from 'react-router-dom';
 import {
     AppstoreOutlined,
     AreaChartOutlined,
@@ -49,9 +52,12 @@ import { Option } from "antd/es/mentions";
 import style from "react-syntax-highlighter/dist/esm/styles/hljs/a11y-dark";
 import { Modal } from "react-bootstrap";
 import TextArea from "antd/es/input/TextArea";
-import { addNewroles } from "../reduxtoolkit/RolesActions";
+import { addNewroles, updaterolesData } from "../reduxtoolkit/RolesActions";
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
+
+
+
 
 type Menu = {
     key: string;
@@ -97,25 +103,39 @@ const handleLogout = () => {
     window.location.href = "/";
 };
 
-const NewRoless: React.FC = () => {
+const EditRoles: React.FC = () => {
     const  navigate = useNavigate();
     const [userData, setUserData] = useState<any>({});
     useEffect(() => {
         const storedUserData = JSON.parse(localStorage.getItem("userData") || "{}");
         setUserData(storedUserData);
     }, []);
-
     const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
-
-
-    const handleAddData = (values) => {
-      dispatch(addNewroles(values));
-      form.resetFields();
-      navigate("/roles")
-       // Reset form after adding data
-    };
+    const { name } = useParams<{ name: string }>();
+    const dataService = useSelector((state: RootState) => state.roles.dataroles);
   
-    const [form] = Form.useForm();
+    // Kiểm tra xem dữ liệu đã được lấy thành công hay chưa
+    const selectedData = dataService.find((item) => item.name === name);
+    if (!selectedData) {
+      return <div>Loading...</div>; // Hoặc thông báo lỗi nếu cần
+    }
+  
+    const handleSaveChanges = async (values: any) => {
+      const updatedData = {
+        ...selectedData,
+        ...values,
+      };
+      const serviceQuery = query(collection(firestore, 'roles'), where('name', '==', selectedData.name));
+      const serviceDocs = await getDocs(serviceQuery);
+      const serviceDocRef = serviceDocs.docs[0].ref;
+  
+      await updateDoc(serviceDocRef, updatedData);
+  
+      // Gửi action updateServiceData với dữ liệu cập nhật
+      dispatch(updaterolesData(updatedData));
+      window.location.href="/roles"
+    };
+ 
 
     return (
         <>
@@ -186,7 +206,7 @@ const NewRoless: React.FC = () => {
                                     </a>
                                     <a href="/" className="dstbadd dstb ms-2">
                                         {" "}
-                                        Thêm vai trò
+                                        Cập nhật vai trò
                                     </a>
                                 </p>
                             </Col>
@@ -206,8 +226,8 @@ const NewRoless: React.FC = () => {
                         </Row>
                     </Header>
 
-                    <p className="dstbhome">Thêm vai trò</p>
-                    <Form  form={form}  onFinish={handleAddData}>
+                    <p className="dstbhome">Danh sách vai trò</p>
+                    <Form    onFinish={handleSaveChanges} initialValues={selectedData}>
                     <Card className="card">
                         <p className="h3 d-flex ttvt"> Thông tin vai trò</p>
                         <Row>
@@ -272,7 +292,7 @@ const NewRoless: React.FC = () => {
                             </Col>
                             <Col span={12} className="d-flex ms-5">
                                 <button type="submit" className="btn-ttb">
-                                    Thêm 
+                                    Cập nhật
                                 </button>
                             </Col>
                         </Row>
@@ -290,4 +310,4 @@ const NewRoless: React.FC = () => {
     );
 };
 
-export default NewRoless;
+export default EditRoles;

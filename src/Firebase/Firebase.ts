@@ -2,10 +2,11 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { getDocs, getFirestore, query, where } from "firebase/firestore";
-import { getDownloadURL, getStorage } from 'firebase/storage';
-import {  createUserWithEmailAndPassword } from "firebase/auth";
-import {  collection, addDoc } from "firebase/firestore";
-import {  ref, uploadBytes } from 'firebase/storage';
+import { getDownloadURL, getStorage } from "firebase/storage";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { collection, addDoc } from "firebase/firestore";
+import { ref, uploadBytes } from "firebase/storage";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyD2_n2jaMMBF1qwAcFroeddE0ibt6p9Igs",
@@ -14,18 +15,14 @@ const firebaseConfig = {
   storageBucket: "project-1-804ed.appspot.com",
   messagingSenderId: "1073530932270",
   appId: "1:1073530932270:web:8c81652e6d0e148cb8a3bf",
-  measurementId: "G-RYEM5Y32S9"
+  measurementId: "G-RYEM5Y32S9",
 };
-
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const firestore = getFirestore(app);
-export const storage= getStorage(app);
-
-
-
+export const storage = getStorage(app);
 
 export const registerUser = async (
   name: string,
@@ -39,7 +36,11 @@ export const registerUser = async (
 ) => {
   try {
     // Create user with email and password
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     const userId = userCredential.user.uid;
 
     // Upload image to Storage
@@ -47,7 +48,7 @@ export const registerUser = async (
     await uploadBytes(storageRef, image);
 
     // Save user information to Firestore
-    const usersCollection = collection(firestore, 'users');
+    const usersCollection = collection(firestore, "users");
     await addDoc(usersCollection, {
       name,
       email,
@@ -56,31 +57,31 @@ export const registerUser = async (
       phone,
       role,
       status,
-      image: userId
+      image: userId,
     });
 
     console.log("User registered successfully!");
+    window.location.href=("/accounts")
   } catch (error) {
     console.error("Error registering user:", error);
   }
 };
-// ...
-// ...
 
-// ...
-
-
-
-// Hàm đăng nhập
 export const loginUser = async (email: string, password: string) => {
   try {
     // Thực hiện đăng nhập bằng email và password
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     const user = userCredential.user;
 
     if (user) {
       // Lấy thông tin người dùng từ Firestore dựa trên email
-      const querySnapshot = await getDocs(query(collection(firestore, 'users'), where('email', '==', email)));
+      const querySnapshot = await getDocs(
+        query(collection(firestore, "users"), where("email", "==", email))
+      );
       const userDocs = querySnapshot.docs;
 
       if (userDocs.length > 0) {
@@ -88,7 +89,7 @@ export const loginUser = async (email: string, password: string) => {
         const imageFileName = userData.image;
 
         // Lấy URL của ảnh từ Storage
-        const storageRef = ref(storage, 'images/' + imageFileName);
+        const storageRef = ref(storage, "images/" + imageFileName);
         const imageURL = await getDownloadURL(storageRef);
 
         console.log("User data:", userData);
@@ -116,8 +117,4 @@ export const loginUser = async (email: string, password: string) => {
   return null;
 };
 
-
-
 // ...
-
-
