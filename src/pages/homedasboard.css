@@ -103,3 +103,36 @@ a:hover {
 color: black !important;
 }
 
+.bdcs{
+  color: var(--orange-orange-500, #FF7506);
+
+/* 24/24 Bold */
+font-family: Nunito;
+font-size: 24px;
+font-style: normal;
+font-weight: 700;
+line-height: 36px;
+}
+
+.span-title{
+  color: var(--gray-gray-400-text, #535261);
+
+/* 14/14 Bold */
+font-family: Nunito;
+font-size: 14px;
+font-style: normal;
+font-weight: 700;
+line-height: 18px;
+}
+
+.span-number {
+  color: var(--gray-gray-400-text, #535261);
+
+/* 30/30 Bold */
+font-family: Nunito;
+font-size: 30px;
+font-style: normal;
+font-weight: 700;
+line-height: 45px;
+display: flex;
+}

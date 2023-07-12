@@ -20,7 +20,6 @@ import DemoFechDevices from './Component/DemoFechDevices';
 import NumberLever from './pages/NumberLever';
 import NewnumberLever from './pages/NewnumberLever';
 import Report from './pages/Report';
-import DemoOption from './Component/DemoOptionSelect';
 import DetailDevice from './pages/DetailDevice';
 import DetailService from './pages/DetailService';
 import EditDevice from './pages/EditDevice';
@@ -30,16 +29,16 @@ import Roles from './pages/Roles';
 import NewRoless from './pages/NewRoles';
 import RolesForm from './Demo/AddRoles';
 import FechtRoles from './Demo/FerchRoles';
-import UpdateRoles from './Demo/UpdateRoles';
 import UserList from './Component/ViewAdmin';
-import EditAdminForm from './Component/EditAdminForm';
 import DetailNumberLever from './pages/DetailNumberlever';
 import EditRoles from './pages/EditRoles';
 import PageAccount from './pages/PageAcount';
 import UpdateUsert from './pages/UpdateUset';
-import ChangePasswordForm from './Demo/ChangePasswordForm ';
 import PasswordUpdate from './Demo/ChangePasswordForm ';
 import NewAcount from './pages/NewAcount';
+import Story from './pages/Story';
+import DemoArea from './Demo/ChartComponent';
+
 
 
 
@@ -92,6 +91,8 @@ function RouteApp() {
         <Route path="/addcount" element={<NewAcount />} />
 
         <Route path="/accounts" element={<PageAccount />} />
+        <Route path="/users" element={<Story />} />
+        <Route path="/ccccc" element={<DemoArea />} />
 
 
       </Routes>

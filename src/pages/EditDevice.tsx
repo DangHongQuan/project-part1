@@ -26,6 +26,9 @@ import { fetchDevicesData, updateDevicesData } from "../reduxtoolkit/DevicesActi
 import { Option } from "antd/es/mentions";
 import { collection, doc, updateDoc } from "@firebase/firestore";
 import { firestore } from "../Firebase/Firebase";
+import { addNewstory } from "../reduxtoolkit/StoryAction";
+import { unwrapResult } from "@reduxjs/toolkit";
+import axios from "axios";
 
 
 const { Sider, Content } = Layout;
@@ -70,43 +73,65 @@ const items: Menu[] = [
     getItem("Quản lý người dùng", "6.3", <SettingOutlined />, "/users"),
   ]),
 ];
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  tel: string;
-  phone: number;
-  address: string;
-}
+
 
 
 const EditDevice: React.FC = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const [ipAddress, setIpAddress] = useState<string | null>(null);
 
-    const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
-    const { id } = useParams<{ id: string }>();
-    const data = useSelector((state: RootState) => state.device.data);
+  useEffect(() => {
+    const getIPAddress = async () => {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        const ip = data.ip;
+        setIpAddress(ip);
+      } catch (error) {
+        console.error('Lỗi khi lấy địa chỉ IP:', error);
+      }
+    };
 
-    const selectedData = data.find((item) => item.id === id);
-    if (!selectedData) {
-        return <div>Loading...</div>; 
-    }
-    const handleDeviceChanges = async (values: any) => {
-        const updatedData = {
-          ...selectedData,
-          ...values,
-        };
-        const serviceDocRef = doc(collection(firestore, 'devices'), selectedData.id);
-      
-        await updateDoc(serviceDocRef, updatedData);
-      
-        dispatch(updateDevicesData(updatedData));
-        alert("Cập nhật thành công")
-        navigate("/device")
+    getIPAddress();
+  }, []);
+  const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
+  const { id } = useParams<{ id: string }>();
+  const data = useSelector((state: RootState) => state.device.data);
+  const [startDate, setStartDate] = useState(new Date().toISOString());
+  const selectedData = data.find((item) => item.id === id);
+  if (!selectedData) {
+    return <div>Loading...</div>;
+  }
+  
+  const handleDeviceChanges = async (values: any) => {
+    try {
+      const updatedData = {
+        ...selectedData,
+        ...values,
       };
+      const serviceDocRef = doc(collection(firestore, 'devices'), selectedData.id);
+      await updateDoc(serviceDocRef, updatedData);
+      dispatch(updateDevicesData(updatedData));
+      alert("Cập nhật thành công");
+      navigate("/device");
+      const newValues = {
+        name: userData.email,
+        date: startDate,
+        ip: ipAddress,
+        
+        operations: 'Cập nhật thông tin thiết bị ' +selectedData.id_dc,
+      };
+      await dispatch(addNewstory(newValues));
+    } catch (error) {
+      alert('Lỗi khi cập nhật: ' + error.message);
+    }
+  };
+  
+ console.log(ipAddress)
 
 
-
+  
+  
 
   return (
     <>
@@ -142,11 +167,11 @@ const EditDevice: React.FC = () => {
           <Header className="hdaccount">
             <Row >
               <Col span={10}>
-                <p className="hederpc mx-2">Thiết bị &gt; 
-                 <a href="/device" className="dstbadd ms-2"> Danh sách thiết bị  &gt; </a>
-                 <a href="/" className="dstb ms-2"> Cập nhật thiết bị</a></p>
+                <p className="hederpc mx-2">Thiết bị &gt;
+                  <a href="/device" className="dstbadd ms-2"> Danh sách thiết bị  &gt; </a>
+                  <a href="/" className="dstb ms-2"> Cập nhật thiết bị</a></p>
               </Col>
-              <Col span={11}   >    
+              <Col span={11}   >
                 <div className="hederpaccount text-end">
                   <img src="/img/icon/notification.png" className="me-2 iconaccount" />
                   <img src={userData.imageURL} alt="" className="imgaccount" />
@@ -161,114 +186,114 @@ const EditDevice: React.FC = () => {
               </Col>
             </Row>
           </Header>
-          <p className="dstbhome " style={{marginLeft: "120px"}}>Quản lý thiết bị</p>
+          <p className="dstbhome " style={{ marginLeft: "120px" }}>Quản lý thiết bị</p>
 
-         
+
 
 
           <Row className="mt-5 ms-5">
-          <Form onFinish={handleDeviceChanges} initialValues={selectedData}>
-                <Card className="card">
-                    <p className="tttb">Thông tin thiết bị</p>
-                    <Row>
-                        <Col span={11} className="mx-2">
-                            <h1 className="lbadd">Mã thiết bị: <i className="kytu"> &#42;</i></h1>
-                            <Form.Item name="id_dc" >
-                                <Input className="inputadd" />
-                            </Form.Item>
-                            {/* <Input placeholder="Nhập mã thiết bị" className="inputadd" /> */}
-                        </Col>
-                        <Col span={11} className="ms-4">
-                            <h1 className="lbadd">Loại thiết bị: <i className="kytu"> &#42;</i></h1>
-                            <Form.Item name="type"  >
-                                <Select placeholder="Chọn loại thiêt bị"  >
-                                    <option value="DC_03">DC_03</option>
+            <Form onFinish={handleDeviceChanges} initialValues={selectedData}>
+              <Card className="card">
+                <p className="tttb">Thông tin thiết bị</p>
+                <Row>
+                  <Col span={11} className="mx-2">
+                    <h1 className="lbadd">Mã thiết bị: <i className="kytu"> &#42;</i></h1>
+                    <Form.Item name="id_dc" >
+                      <Input className="inputadd" />
+                    </Form.Item>
+                    {/* <Input placeholder="Nhập mã thiết bị" className="inputadd" /> */}
+                  </Col>
+                  <Col span={11} className="ms-4">
+                    <h1 className="lbadd">Loại thiết bị: <i className="kytu"> &#42;</i></h1>
+                    <Form.Item name="type"  >
+                      <Select placeholder="Chọn loại thiêt bị"  >
+                        <option value="DC_03">DC_03</option>
 
-                                </Select>
-                            </Form.Item>
+                      </Select>
+                    </Form.Item>
 
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={11} className="mx-2">
-                            <h1 className="lbadd">Tên thiết bị: <i className="kytu"> &#42;</i></h1>
-                            {/* <Input placeholder="Nhập mã thiết bị" className="inputadd" /> */}
-                            <Form.Item name="name">
-                                <Input className="inputadd" />
-                            </Form.Item>
-                        </Col>
-                        <Col span={11} className="ms-4">
-                            <h1 className="lbadd">Tên đăng nhập: <i className="kytu"> &#42;</i></h1>
-                            <Form.Item name="username" >
-                                <Input className="inputadd" />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={11} className="mx-2">
-                            <h1 className="lbadd">Địa chỉ ip: <i className="kytu"> &#42;</i></h1>
-                            <Form.Item name="ip">
-                                <Input className="inputadd" readOnly />
-
-                            </Form.Item>
-
-
-                        </Col>
-                        <Col span={11} className="ms-4">
-                            <h1 className="lbadd">Mật khẩu: <i className="kytu"> &#42;</i></h1>
-                            <Form.Item name="password"  >
-                                <Input className="inputadd" />
-                            </Form.Item>
-                            <Form.Item name="status_hd" hidden initialValue="Hoạt động">
-                                <Input />
-                            </Form.Item>
-                            <Form.Item name="status_kn" hidden initialValue="Kết nối">
-                                <Input />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={23} className="mx-2">
-                            <h1 className="lbadd">Dịch vụ sử dụng: <i className="kytu"> &#42;</i></h1>
-
-                            <div className="site-space-compact-wrapper">
-                                <Space.Compact block>
-                                    <Form.Item name="servie_dc" style={{ width: '99%' }}>
-
-                                        <Select
-                                            allowClear
-                                            mode="multiple"
-                                            style={{ width: '99%' }}
-                                        >
-                                            {data.map(item => (
-                                                <Option key={item.name} value={item.name + " "}>
-                                                    {item.name}
-                                                </Option>
-                                            ))}
-                                        </Select>
-                                    </Form.Item>
-
-                                </Space.Compact>
-
-                            </div>
-                        </Col>
-
-                    </Row>
-
-
-                </Card>
-                <Row className="justify-content-center mt-3" style={{marginLeft: "200px"}}>
-                    <Col span={10} className="text-end col-hb">
-                        <button className="btn-adddvice">
-                            Hủy bỏ
-                        </button>
-                    </Col>
-                    <Col span={12} className="d-flex ms-5">
-                        <button className="btn-ttb">
-                            Thêm thiết bị
-                        </button>
-                    </Col>
+                  </Col>
                 </Row>
+                <Row>
+                  <Col span={11} className="mx-2">
+                    <h1 className="lbadd">Tên thiết bị: <i className="kytu"> &#42;</i></h1>
+                    {/* <Input placeholder="Nhập mã thiết bị" className="inputadd" /> */}
+                    <Form.Item name="name">
+                      <Input className="inputadd" />
+                    </Form.Item>
+                  </Col>
+                  <Col span={11} className="ms-4">
+                    <h1 className="lbadd">Tên đăng nhập: <i className="kytu"> &#42;</i></h1>
+                    <Form.Item name="username" >
+                      <Input className="inputadd" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={11} className="mx-2">
+                    <h1 className="lbadd">Địa chỉ ip: <i className="kytu"> &#42;</i></h1>
+                    <Form.Item name="ip">
+                      <Input className="inputadd" readOnly />
+
+                    </Form.Item>
+
+
+                  </Col>
+                  <Col span={11} className="ms-4">
+                    <h1 className="lbadd">Mật khẩu: <i className="kytu"> &#42;</i></h1>
+                    <Form.Item name="password"  >
+                      <Input className="inputadd" />
+                    </Form.Item>
+                    <Form.Item name="status_hd" hidden initialValue="Hoạt động">
+                      <Input />
+                    </Form.Item>
+                    <Form.Item name="status_kn" hidden initialValue="Kết nối">
+                      <Input />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col span={23} className="mx-2">
+                    <h1 className="lbadd">Dịch vụ sử dụng: <i className="kytu"> &#42;</i></h1>
+
+                    <div className="site-space-compact-wrapper">
+                      <Space.Compact block>
+                        <Form.Item name="servie_dc" style={{ width: '99%' }}>
+
+                          <Select
+                            allowClear
+                            mode="multiple"
+                            style={{ width: '99%' }}
+                          >
+                            {data.map(item => (
+                              <Option key={item.name} value={item.name + " "}>
+                                {item.name}
+                              </Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+
+                      </Space.Compact>
+
+                    </div>
+                  </Col>
+
+                </Row>
+
+
+              </Card>
+              <Row className="justify-content-center mt-3" style={{ marginLeft: "200px" }}>
+                <Col span={10} className="text-end col-hb">
+                  <button className="btn-adddvice">
+                    Hủy bỏ
+                  </button>
+                </Col>
+                <Col span={12} className="d-flex ms-5">
+                  <button className="btn-ttb">
+                    Thêm thiết bị
+                  </button>
+                </Col>
+              </Row>
 
             </Form>
           </Row>

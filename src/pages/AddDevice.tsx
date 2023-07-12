@@ -22,6 +22,7 @@ import { AnyAction } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewDevices } from "../reduxtoolkit/DevicesActions";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { addNewstory, fetchstoryData } from '../reduxtoolkit/StoryAction';
 // Lấy thông tin người dùng từ localStorage
 const userData = JSON.parse(localStorage.getItem('userData') || '{}');
 const { Option } = Select;
@@ -79,6 +80,7 @@ interface DataType {
 
 const AddDevice: React.FC = () => {
     const [ipAddress, setIPAddress] = useState('');
+    const [startDate, setStartDate] = useState(new Date().toISOString());
 
     useEffect(() => {
         const fetchIPAddress = async () => {
@@ -94,11 +96,13 @@ const AddDevice: React.FC = () => {
 
     const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
     const { dataService } = useSelector((state: RootState) => state.service);
+    
 
     useEffect(() => {
         dispatch(fetchServiceData());
 
     }, [dispatch]);
+   
 
 
 
@@ -107,13 +111,17 @@ const AddDevice: React.FC = () => {
 
         const actionResult = await dispatch(addNewDevices(values));
         const newServiceData = unwrapResult(actionResult);
+      
         alert('Thêm mới thành công:');
     };
 
+   
 
 
     return (
         <>
+
+
             <Layout style={{ minHeight: "100vh" }}>
                 <Sider theme="light" className="sidebar">
                     <div style={{ width: 200 }}>
@@ -169,6 +177,7 @@ const AddDevice: React.FC = () => {
                     <p className="qltb">Quảng lý thiết bị</p>
 
                     <Form onFinish={handleAddNewService}>
+                       
                         <Card className="card">
                             <p className="tttb">Thông tin thiết bị</p>
                             <Row>
@@ -187,7 +196,7 @@ const AddDevice: React.FC = () => {
 
                                         </Select>
                                     </Form.Item>
-                                 
+
                                 </Col>
                             </Row>
                             <Row>
@@ -220,11 +229,11 @@ const AddDevice: React.FC = () => {
                                         <Input className="inputadd" />
                                     </Form.Item>
                                     <Form.Item name="status_hd" hidden initialValue="Hoạt động">
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item name="status_kn" hidden initialValue="Kết nối">
-                                    <Input />
-                                </Form.Item>
+                                        <Input />
+                                    </Form.Item>
+                                    <Form.Item name="status_kn" hidden initialValue="Kết nối">
+                                        <Input />
+                                    </Form.Item>
                                     {/* <Input placeholder="Nhập mã thiết bị" className="inputadd" /> */}
                                 </Col>
                             </Row>
@@ -258,20 +267,22 @@ const AddDevice: React.FC = () => {
 
 
                         </Card>
-                        <Row className="justify-content-center mt-3">
-                            <Col span={10} className="text-end col-hb">
-                                <button className="btn-adddvice">
-                                    Hủy bỏ
-                                </button>
-                            </Col>
-                            <Col span={12} className="d-flex ms-5">
-                                <button className="btn-ttb">
-                                    Thêm thiết bị
-                                </button>
-                            </Col>
-                        </Row>
 
                     </Form>
+                   
+                    <Row className="justify-content-center mt-3">
+                        <Col span={10} className="text-end col-hb">
+                            <button className="btn-adddvice">
+                                Hủy bỏ
+                            </button>
+                        </Col>
+                        <Col span={12} className="d-flex ms-5">
+                            <button className="btn-ttb">
+                                Thêm thiết bị
+                            </button>
+                        </Col>
+                    </Row>
+
                     <Routes >
                         {items.map((item) => (
                             <Route key={item.key} path={item.path}>

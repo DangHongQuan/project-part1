@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 // import './homedasboard.css'
 import { Badge, Card, Checkbox, DatePicker, Form, Pagination, Table, Tag } from 'antd';
 import './dasbordefault.css'
@@ -26,6 +26,7 @@ import { addNewService, updateServiceData } from "../reduxtoolkit/serviceActions
 import { unwrapResult } from "@reduxjs/toolkit";
 import { collection, getDocs, query, updateDoc, where } from "@firebase/firestore";
 import { firestore } from "../Firebase/Firebase";
+import { addNewstory } from "../reduxtoolkit/StoryAction";
 
 
 const { Sider, Content } = Layout;
@@ -78,7 +79,23 @@ const items: Menu[] = [
 const EditServiceeee: React.FC = () => {
     const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
     const { id_sv } = useParams<{ id_sv: string }>();
+  const [startDate, setStartDate] = useState(new Date().toISOString());
     const dataService = useSelector((state: RootState) => state.service.dataService);
+    const [ipAddress, setIpAddress] = useState<string | null>(null);
+  useEffect(() => {
+    const getIPAddress = async () => {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        const ip = data.ip;
+        setIpAddress(ip);
+      } catch (error) {
+        console.error('Lỗi khi lấy địa chỉ IP:', error);
+      }
+    };
+
+    getIPAddress();
+  }, []);
     const navigate= useNavigate();
     // Kiểm tra xem dữ liệu đã được lấy thành công hay chưa
     const selectedData = dataService.find((item) => item.id_sv === id_sv);
@@ -101,6 +118,15 @@ const EditServiceeee: React.FC = () => {
         dispatch(updateServiceData(updatedData));
         alert("Cập nhật thành công")
         navigate("/services")
+        const newValues = {
+            name: userData.email,
+            date: startDate,
+            ip: ipAddress,
+            
+            operations: 'Cập nhật thông tin dịch vụ ' +selectedData.id_sv,
+          };
+          console.log(ipAddress)
+          await dispatch(addNewstory(newValues));
     };
     return (
         <>

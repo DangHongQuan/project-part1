@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Form, Input, Button, Col, Row } from "antd";
+import { Form, Input, Button, Col, Row, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, firestore, loginUser } from "../Firebase/Firebase";
@@ -18,11 +18,15 @@ const Login: React.FC = () => {
 
   
   const handleLogin = async () => {
-    const user = await loginUser(email, password);
-    if (user) {
-      setUserData(user); // Cập nhật state userData với thông tin người dùng
-      localStorage.setItem('userData', JSON.stringify(user)); // Lưu thông tin người dùng vào localStorage
-      history('/persoalaccount'); // Chuyển hướng đến trang hiển thị thông tin người dùng
+    try {
+      const user = await loginUser(email, password);
+      if (user) {
+        setUserData(user); // Cập nhật state userData với thông tin người dùng
+        localStorage.setItem('userData', JSON.stringify(user)); // Lưu thông tin người dùng vào localStorage
+        history('/persoalaccount'); // Chuyển hướng đến trang hiển thị thông tin người dùng
+      }
+    } catch (error) {
+      message.error('Đăng nhập không thành công. Vui lòng kiểm tra lại email và mật khẩu.');
     }
   };
   return (
