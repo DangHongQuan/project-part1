@@ -60,10 +60,8 @@ export const registerUser = async (
       image: userId,
     });
 
-    console.log("User registered successfully!");
     window.location.href=("/accounts")
   } catch (error) {
-    console.error("Error registering user:", error);
   }
 };
 
@@ -92,8 +90,7 @@ export const loginUser = async (email: string, password: string) => {
         const storageRef = ref(storage, "images/" + imageFileName);
         const imageURL = await getDownloadURL(storageRef);
 
-        console.log("User data:", userData);
-        console.log("Image URL:", imageURL);
+
 
         // Trả về đối tượng chứa thông tin người dùng và URL của ảnh
         const userWithImageURL = {
@@ -104,13 +101,10 @@ export const loginUser = async (email: string, password: string) => {
         // Trả về đối tượng userWithImageURL
         return userWithImageURL;
       } else {
-        console.log("User not found in Firestore");
       }
     } else {
-      console.log("User not found in Auth");
     }
   } catch (error) {
-    console.error("Login error:", error);
   }
 
   // Trả về giá trị null hoặc giá trị khác khi có lỗi xảy ra

@@ -128,7 +128,6 @@ const NewnumberLever: React.FC = () => {
                 return currentId > maxId ? currentId : maxId;
             }, 0);
             setTimeout(() => {
-                console.log(maxId_cs);
                 setMaxId_cs(maxId_cs + 1);
                 setIsMaxIdLoaded(true);
             }, 50); // Hiển thị giá trị sau 5 giây

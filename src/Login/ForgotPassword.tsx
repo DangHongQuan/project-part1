@@ -22,7 +22,6 @@ const ForgotPassword: React.FC = () => {
   const handleSubmit = async (values: any) => {
   
       await sendPasswordResetEmail(auth, values.email);
-      console.log("Password reset email sent successfully");
       setErrorMessage("Vui lòng kiểm tra hộp thư đến.");
       setInputError(false);
     

@@ -84,14 +84,12 @@ const EditServiceeee: React.FC = () => {
     const [ipAddress, setIpAddress] = useState<string | null>(null);
   useEffect(() => {
     const getIPAddress = async () => {
-      try {
+  
         const response = await fetch('https://api.ipify.org?format=json');
         const data = await response.json();
         const ip = data.ip;
         setIpAddress(ip);
-      } catch (error) {
-        console.error('Lỗi khi lấy địa chỉ IP:', error);
-      }
+   
     };
 
     getIPAddress();
@@ -125,7 +123,7 @@ const EditServiceeee: React.FC = () => {
             
             operations: 'Cập nhật thông tin dịch vụ ' +selectedData.id_sv,
           };
-          console.log(ipAddress)
+    
           await dispatch(addNewstory(newValues));
     };
     return (

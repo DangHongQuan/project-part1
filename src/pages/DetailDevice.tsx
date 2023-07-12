@@ -69,7 +69,7 @@ const DetailDevice: React.FC = () => {
         setUserData(storedUserData);
     }, []);
     const { id } = useParams<{ id: string }>();
-    const data = useSelector((state: RootState) => state.device.data);
+    const data = useSelector((state: RootState) => state.device.dataDevice);
 
     // Tìm kiếm dữ liệu dựa trên id từ URL Params
     const selectedData = data.find(item => item.id === id);

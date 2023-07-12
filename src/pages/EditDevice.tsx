@@ -82,21 +82,19 @@ const EditDevice: React.FC = () => {
 
   useEffect(() => {
     const getIPAddress = async () => {
-      try {
+  
         const response = await fetch('https://api.ipify.org?format=json');
         const data = await response.json();
         const ip = data.ip;
         setIpAddress(ip);
-      } catch (error) {
-        console.error('Lỗi khi lấy địa chỉ IP:', error);
-      }
+   
     };
 
     getIPAddress();
   }, []);
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
   const { id } = useParams<{ id: string }>();
-  const data = useSelector((state: RootState) => state.device.data);
+  const data = useSelector((state: RootState) => state.device.dataDevice);
   const [startDate, setStartDate] = useState(new Date().toISOString());
   const selectedData = data.find((item) => item.id === id);
   if (!selectedData) {
@@ -127,7 +125,6 @@ const EditDevice: React.FC = () => {
     }
   };
   
- console.log(ipAddress)
 
 
   

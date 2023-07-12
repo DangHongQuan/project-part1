@@ -45,7 +45,7 @@ import { useEffect, useState } from "react";
     async (updatedData: DeviceeData, { getState }) => {
       try {
         
-        const data = useSelector((state: RootState) => state.device.data);
+        const data = useSelector((state: RootState) => state.device.dataDevice);
         const { id_dc } = updatedData;
   
         // Kiểm tra xem dữ liệu có tồn tại trong store hay không
@@ -68,40 +68,13 @@ import { useEffect, useState } from "react";
     }
   );
   
-  // const [ipAddress, setIPAddress] = useState('');
-
-  //   useEffect(() => {
-  //       const fetchIPAddress = async () => {
-
-  //           const response = await fetch('https://api.ipify.org?format=json');
-  //           const data = await response.json();
-  //           setIPAddress(data.ip);
-
-  //       };
-
-  //       fetchIPAddress();
-  //   }, []);
-  // export const addNewDevices = createAsyncThunk(
-  //   'service/addNewDevices',
-  //   async (newServiceData: any) => {
-  //     const firestore: Firestore = getFirestore();
-  //     const newServiceDocRef = await addDoc(collection(firestore, 'devices'), newServiceData);
-  //     ip: ipAddress
-  //     const newServiceId = newServiceDocRef.id;
-      
-  //     return { id_dc: newServiceId, ...newServiceData };
-  //   }
-  // );
 
   const fetchIPAddress = async () => {
-    try {
+  
       const response = await fetch('https://api.ipify.org?format=json');
       const data = await response.json();
       return data.ip;
-    } catch (error) {
-      console.error('Error fetching IP address:', error);
-      return null;
-    }
+
   };
   
   export const addNewDevices = createAsyncThunk(

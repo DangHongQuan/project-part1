@@ -74,7 +74,6 @@ const DetailNumberLever: React.FC = () => {
     const { id_cs } = useParams<{ id_cs: string }>();
     const data = useSelector((state: RootState) => state.numberlever.data);
 
-    console.log(id_cs)
     // Tìm kiếm dữ liệu dựa trên id từ URL Params
     const selectedData = data.find(item => item.id_cs == id_cs);
     return (

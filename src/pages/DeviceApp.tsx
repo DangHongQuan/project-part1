@@ -81,7 +81,7 @@ interface DataType {
 const DeviceApp: React.FC = () => {
   const navigate = useNavigate();
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
-  const { data } = useSelector((state: RootState) => state.device);
+  const { dataDevice } = useSelector((state: RootState) => state.device);
 
   useEffect(() => {
     dispatch(fetchDevicesData());
@@ -94,7 +94,7 @@ const DeviceApp: React.FC = () => {
 
 
   const handleSearch = () => {
-    const filtered = data.filter(item =>
+    const filtered = dataDevice.filter(item =>
       item.name.toLowerCase().includes(searchText.toLowerCase()) &&
 
 

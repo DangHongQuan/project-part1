@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import './homedasboard.css'
 import { useNavigate } from 'react-router-dom';
@@ -12,12 +13,15 @@ import {
   MessageOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { Button, Card, Col, Layout, Menu, Row } from "antd";
+import { Badge, Button, Card, Col, Layout, Menu, Row } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../reduxtoolkit/store";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import { fetchNumberData } from "../reduxtoolkit/NumberLeverActions";
+import { Area, RingProgress } from "@ant-design/plots";
+import { fetchDevicesData } from "../reduxtoolkit/DevicesActions";
+import { fetchServiceData } from "../reduxtoolkit/serviceActions";
 
 
 
@@ -63,6 +67,13 @@ const items: Menu[] = [
     getItem("Quản lý người dùng", "6.3", <SettingOutlined />, "/users"),
   ]),
 ];
+interface DemoRingProgressProps {
+  height?: number;
+  width?: number;
+  autoFit?: boolean;
+  percent?: number;
+  color?: string[];
+}
 
 
 const HomeDasboard: React.FC = () => {
@@ -71,26 +82,48 @@ const HomeDasboard: React.FC = () => {
   const [boqua, setBoqua] = useState(0);
   const [dasudung, SetDasudung] = useState(0);
   const [count, setCount] = useState(0);
+  const [a, seta] = useState(0);
   useEffect(() => {
     const storedUserData = JSON.parse(localStorage.getItem("userData") || "{}");
     setUserData(storedUserData);
   }, []);
   const navigate = useNavigate();
   const { data } = useSelector((state: RootState) => state.numberlever);
-  const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
- 
+  const { dataService } = useSelector((state: RootState) => state.service);
 
+  const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
+  const dataChart = data || [];
+  const { dataDevice } = useSelector((state: RootState) => state.device);
+
+  const countNumber = data.length
+  const countDevice = dataDevice.length
+  const nhDevice = dataDevice.filter((item) => item.status_hd === "Hoạt động")
+  const countNhDeive = nhDevice.length
+  const nhdDevice = dataDevice.filter((item) => item.status_hd === "Ngừng hoạt động")
+  const countNhdDeive = nhdDevice.length
+  const conutService = dataService.length
+  const counthdService= dataService.filter((item) => item.status === "Hoạt động")
+  const counthdServiceLength = counthdService.length
+  const countNhdService = dataService.filter((item) => item.status === "Ngừng hoạt động")
+  const countNhdServiceLenght= countNhdService.length
+  useEffect(() => {
+    dispatch(fetchDevicesData());
+  }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchServiceData());
+  }, [dispatch]);
   useEffect(() => {
     dispatch(fetchNumberData());
   }, [dispatch]);
   useEffect(() => {
     const Count = data.length;
     setCount(Count);
-  }); 
+  });
   useEffect(() => {
     const dangcho = data.filter((item) => item.status === "Đang chờ");
     setDangcho(dangcho.length);
   });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const dasudung = data.filter((item) => item.status === "Đã sử dụng");
     SetDasudung(dasudung.length);
@@ -99,6 +132,64 @@ const HomeDasboard: React.FC = () => {
     const boqua = data.filter((item) => item.status === "Bỏ qua");
     setBoqua(boqua.length);
   });
+
+  const newData = dataChart.map((item: any) => {
+    const date = new Date(item.data);
+    const dateString = date.toISOString().slice(0, 100);
+    const count = dataChart.filter((d: any) => d.data === item.data).length;
+    return { timePeriod: dateString, value: count };
+  });
+
+  const sortedData = newData.sort((a, b) => {
+    if (a.timePeriod < b.timePeriod) return -1;
+    if (a.timePeriod > b.timePeriod) return 1;
+    return 0;
+  });
+
+  const config = {
+    data: sortedData,
+    xField: 'timePeriod',
+    yField: 'value',
+    seriesField: '', // Xóa seriesField để chỉ hiển thị một đường
+    xAxis: {
+      range: [0, 1],
+    },
+  };
+  const containerStyle: React.CSSProperties = {
+    display: 'flex',
+    justifyContent: 'flex',
+    alignItems: 'flex',
+    marginTop: '-17px'
+  };
+  const toltalpt = countNhDeive / countDevice;
+  const toltalptcc = parseFloat(toltalpt.toFixed(2));
+  const configa = {
+    height: 70,
+    width: 70,
+    autoFit: false,
+    percent: toltalptcc,
+    color: ['#5B8FF9', '#E8EDF3'],
+  };
+
+  const ptService = parseFloat((counthdServiceLength / conutService).toFixed(2));
+
+  const configb = {
+    height: 70,
+    width: 70,
+    autoFit: false,
+    percent: ptService,
+    color: ['#5B8FF9', '#E8EDF3'],
+  };
+  const ptNumber = parseFloat((dangcho / countNumber).toFixed(2))
+  const configc = {
+    height: 70,
+    width: 70,
+    autoFit: false,
+    percent: ptNumber,
+    color: ['#5B8FF9', '#E8EDF3'],
+  };
+
+
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
@@ -201,6 +292,10 @@ const HomeDasboard: React.FC = () => {
                   </Card>
                 </Col>
               </Row>
+              <Card className="cardDB">
+                <Area {...config} className="area" />
+              </Card>
+
             </Col>
             <Col span={8} className="homeright">
               <Row className="mt-4">
@@ -217,8 +312,74 @@ const HomeDasboard: React.FC = () => {
                   </a>
                 </Col>
               </Row>
+              <p className="tq">Tổng quan</p>
+
+              <Card className="card-right">
+                <Row>
+                  <Col span={10}>
+                    <div style={containerStyle}>
+                      <RingProgress {...configa} />
+                      <h1 style={{ marginTop: "20px", marginLeft: 5 }}>{countDevice}</h1>
+
+                    </div>
+                  </Col>
+                  <Col span={10}>
+                    <p style={{ marginTop: "-20px" }}> <Badge status="warning" /> Đang hoạt động
+                      <span className="span-right-db">{" " + countNhDeive}</span></p>
+                    <p style={{ marginTop: "-20px" }}>   <Badge status="default" /> Nhưng hoạt động
+                      <span className="span-right-db">{" " + countNhdDeive}</span></p>
 
 
+
+                  </Col>
+                </Row>
+
+
+
+              </Card>
+              <Card className="card-right mt-1">
+                <Row>
+                  <Col span={10}>
+                    <div style={containerStyle}>
+                      <RingProgress {...configb} />
+                      <h1 style={{ marginTop: "20px", marginLeft: 5 }}>{conutService}</h1>
+
+                    </div>
+                  </Col>
+                  <Col span={10}>
+                    <p style={{ marginTop: "-20px" }}> <Badge status="processing" /> Đang hoạt động
+                      <span className="span-right-db">{" " + counthdServiceLength}</span></p>
+                    <p style={{ marginTop: "-20px" }}>   <Badge status="default" /> Nhưng hoạt động
+                      <span className="span-right-db">{" " + countNhdServiceLenght}</span></p>
+
+
+
+                  </Col>
+                </Row>
+
+              </Card>
+              <Card className="card-right mt-1">
+                <Row>
+                  <Col span={10}>
+                    <div style={containerStyle}>
+                      <RingProgress {...configc} />
+                      <h1 style={{ marginTop: "20px", marginLeft: 5 }}>{countNumber}</h1>
+
+                    </div>
+                  </Col>
+                  <Col span={10} >
+                    <p style={{ marginTop: "-30px" }}> <Badge status="success" /> Đang chờ
+                      <span className="span-right-db">{" " + dangcho}</span></p>
+                    <p style={{ marginTop: "-20px" }}>   <Badge status="default" /> Đã sử dụng
+                      <span className="span-right-db">{" " + dasudung}</span></p>
+                    <p style={{ marginTop: "-25px" }}>   <Badge color="pink"/> Bỏ qua
+                      <span className="span-right-db">{" " + boqua}</span></p>
+
+                  </Col>
+                </Row>
+
+              </Card>
+              <img src="/img/Datepicker.png" alt="" />
             </Col>
           </Row>
 

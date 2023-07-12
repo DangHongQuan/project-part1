@@ -136,3 +136,44 @@ font-weight: 700;
 line-height: 45px;
 display: flex;
 }
+
+.cardDB{
+  width: 790px;
+  margin-left: 50px;
+  margin-top: 10px;
+}
+.area{
+  width: 900px !important;
+  margin-left: -70px !important;
+  height: 370px !important;
+}
+
+.tq{
+  color: var(--orange-orange-500, #FF7506);
+
+/* 24/24 Bold */
+font-family: Nunito;
+font-size: 24px;
+font-style: normal;
+font-weight: 700;
+line-height: 36px;
+display: flex;
+margin-left: 10px;
+}
+.span-right{
+  color: var(--gray-gray-300, #7E7D88);
+font-family: Nunito;
+font-size: 12px;
+font-style: normal;
+font-weight: 400;
+line-height: 21px;
+}
+.card-right{
+  margin-left: 10px;
+  width: 420px;
+height: 83px;
+flex-shrink: 0;
+border-radius: 12px;
+background: var(--white, #FFF);
+box-shadow: 2px 2px 15px 0px rgba(70, 64, 67, 0.10);
+}
