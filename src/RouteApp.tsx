@@ -12,11 +12,7 @@ import PersoalAccount from './pages/PersonalAccount';
 import AddDevice from './pages/AddDevice';
 import Service from './pages/Service';
 import AddService from './pages/addService';
-import ServiceComponent from './Component/ServiceComponent';
-import YourComponent from './Component/YourComponent';
-import AddDemo from './Component/AddDemo';
-import SignUpForm from './Demo/AddUser';
-import DemoFechDevices from './Component/DemoFechDevices';
+
 import NumberLever from './pages/NumberLever';
 import NewnumberLever from './pages/NewnumberLever';
 import Report from './pages/Report';
@@ -27,17 +23,16 @@ import DetailServiceeee from './pages/DetailService';
 import EditServiceeee from './pages/EditServiceeee';
 import Roles from './pages/Roles';
 import NewRoless from './pages/NewRoles';
-import RolesForm from './Demo/AddRoles';
-import FechtRoles from './Demo/FerchRoles';
-import UserList from './Component/ViewAdmin';
+
 import DetailNumberLever from './pages/DetailNumberlever';
 import EditRoles from './pages/EditRoles';
 import PageAccount from './pages/PageAcount';
 import UpdateUsert from './pages/UpdateUset';
-import PasswordUpdate from './Demo/ChangePasswordForm ';
+
 import NewAcount from './pages/NewAcount';
 import Story from './pages/Story';
 import DemoArea from './Demo/ChartComponent';
+import DemoRingProgress from './Demo/BorderRadius';
 
 
 
@@ -57,42 +52,25 @@ function RouteApp() {
         <Route path='/persoalaccount' element={<PersoalAccount />} />
         <Route path='/res' element={<Register />} />
         <Route path='/addDevice' element={<AddDevice />} />
-        {/* <Route path='/addroles' element={<NewRoless />} /> */}
         <Route path='/services' element={<Service />} />
         <Route path='/addService' element={<AddService />} />
-        <Route path='/b' element={<ServiceComponent />} />
-        <Route path='/e' element={<YourComponent />} />
         <Route path="/detailService/:id_sv" element={<DetailServiceeee />} />
         <Route path="/editService/:id_sv" element={<EditServiceeee />} />
-        <Route path="/c" element={<AddDemo />} />
-        <Route path="/d" element={<SignUpForm />} />
-        <Route path="/g" element={<DemoFechDevices />} />
         <Route path="/reports" element={<Report />} />
         <Route path="/numbers" element={<NumberLever />} />
         <Route path="/roles" element={<Roles />} />
         <Route path="/detailDevice/:id" element={<DetailDevice />} />
         <Route path="/editDevice/:id" element={<EditDevice />} />
-
         <Route path="/editRoles/:name" element={<EditRoles />} />
         <Route path="/editUser/:email" element={<UpdateUsert />} />
-        
         <Route path="/editnumberlever/:id_cs" element={<DetailNumberLever />} />
         <Route path="/addroles" element={<NewRoless />} />
-
-
         <Route path="/addNumberLever" element={<NewnumberLever />} />
-        <Route path="/h" element={<DetailService />} />
-        <Route path="/rf" element={<FechtRoles />} />
-        <Route path="/x" element={<RolesForm />} />
-        <Route path="/s" element={<UserList />} />
-        <Route path="/k" element={<YourComponent />} />
-        <Route path="/p" element={<PasswordUpdate />} />
-
         <Route path="/addcount" element={<NewAcount />} />
-
         <Route path="/accounts" element={<PageAccount />} />
         <Route path="/users" element={<Story />} />
         <Route path="/ccccc" element={<DemoArea />} />
+        <Route path="/aaa" element={<DemoRingProgress />} />
 
 
       </Routes>

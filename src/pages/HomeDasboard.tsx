@@ -87,7 +87,6 @@ const HomeDasboard: React.FC = () => {
     const Count = data.length;
     setCount(Count);
   }); 
-  console.log(data)
   useEffect(() => {
     const dangcho = data.filter((item) => item.status === "Đang chờ");
     setDangcho(dangcho.length);

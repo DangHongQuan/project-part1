@@ -97,14 +97,7 @@ const data = [
     },
 
 ];
-interface Data {
-    id_sv: string;
-    name: string;
-    describe: string;
-    isActive: boolean;
-    ct: string;
-    cn: string;
-}
+
 
 
 
@@ -114,8 +107,7 @@ const DetailServiceeee: React.FC = () => {
     const navigate = useNavigate();
     const [searchText, setSearchText] = useState('');
     const [searchStatusTt, setsearchStatusTt] = useState('');
-    const [searchStatusnc, setsearchStatusnc] = useState('');
-    const [searchStatustdv, setsearchStatustdv] = useState('');
+
 
     const [selectedDate, setSelectedDate] = useState(null);
     const { id_sv } = useParams<{ id_sv: string }>();
