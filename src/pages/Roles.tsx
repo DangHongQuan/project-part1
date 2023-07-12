@@ -76,25 +76,6 @@ const items: Menu[] = [
     ]),
 ];
 
-const data = [
-    {
-        id_sv: "KIO_01",
-        name: "Kiosk",
-        describe: "Hoạt động",
-        isActive: true,
-        ct: "Chi tiết",
-        cn: "Cập nhật",
-    },
-    {
-        id_sv: "KIO_01",
-        name: "Kiosk",
-        describe: "Hoạt động",
-        isActive: true,
-        ct: "Chi tiết",
-        cn: "Cập nhật",
-    },
-
-];
 
 
 

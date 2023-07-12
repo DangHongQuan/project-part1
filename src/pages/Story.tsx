@@ -67,33 +67,7 @@ const items: Menu[] = [
     ]),
 ];
 
-const data = [
-    {
-        id_sv: "KIO_01",
-        name: "Kiosk",
-        describe: "Hoạt động",
-        isActive: true,
-        ct: "Chi tiết",
-        cn: "Cập nhật",
-    },
-    {
-        id_sv: "KIO_01",
-        name: "Kiosk",
-        describe: "Hoạt động",
-        isActive: true,
-        ct: "Chi tiết",
-        cn: "Cập nhật",
-    },
 
-];
-interface Data {
-    id_sv: string;
-    name: string;
-    describe: string;
-    isActive: boolean;
-    ct: string;
-    cn: string;
-}
 const DownloadButton = ({ handleDownload }) => (
     <Button onClick={handleDownload}>Tải về</Button>
   );

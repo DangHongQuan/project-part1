@@ -10,7 +10,7 @@ import {
     DesktopOutlined,
     LoginOutlined,
     MessageOutlined,
-    SearchOutlined,
+
     SettingOutlined,
 } from "@ant-design/icons";
 import { RootState } from "../reduxtoolkit/store";
@@ -22,8 +22,7 @@ import { AnyAction } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 import { addNewDevices } from "../reduxtoolkit/DevicesActions";
 import { unwrapResult } from "@reduxjs/toolkit";
-import { addNewstory, fetchstoryData } from '../reduxtoolkit/StoryAction';
-// Lấy thông tin người dùng từ localStorage
+
 const userData = JSON.parse(localStorage.getItem('userData') || '{}');
 const { Option } = Select;
 
@@ -68,14 +67,7 @@ const items: Menu[] = [
         getItem("Quản lý người dùng", "6.3", <SettingOutlined />, "/users"),
     ]),
 ];
-interface DataType {
-    key: string;
-    name: string;
-    age: number;
-    tel: string;
-    phone: number;
-    address: string;
-}
+
 
 
 const AddDevice: React.FC = () => {

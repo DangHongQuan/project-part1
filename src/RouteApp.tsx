@@ -1,13 +1,10 @@
 import React from 'react'
-
-import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Login from './Login/Login';
 import ForgotPassword from './Login/ForgotPassword';
 import ResetPassword from './Login/ResetPassword';
 import HomeDasboard from './pages/HomeDasboard';
 import DeviceApp from './pages/DeviceApp';
-import Register from './Login/Register';
 import PersoalAccount from './pages/PersonalAccount';
 import AddDevice from './pages/AddDevice';
 import Service from './pages/Service';
@@ -16,7 +13,6 @@ import NumberLever from './pages/NumberLever';
 import NewnumberLever from './pages/NewnumberLever';
 import Report from './pages/Report';
 import DetailDevice from './pages/DetailDevice';
-import DetailService from './pages/DetailService';
 import EditDevice from './pages/EditDevice';
 import DetailServiceeee from './pages/DetailService';
 import EditServiceeee from './pages/EditServiceeee';
@@ -46,7 +42,6 @@ function RouteApp() {
         <Route path='/dasboard' element={<HomeDasboard />} />
         <Route path='/device' element={<DeviceApp />} />
         <Route path='/persoalaccount' element={<PersoalAccount />} />
-        <Route path='/res' element={<Register />} />
         <Route path='/addDevice' element={<AddDevice />} />
         <Route path='/services' element={<Service />} />
         <Route path='/addService' element={<AddService />} />

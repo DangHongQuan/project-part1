@@ -34,7 +34,7 @@ export const registerUser = async (
   status: string,
   image: File
 ) => {
-  try {
+
     // Create user with email and password
     const userCredential = await createUserWithEmailAndPassword(
       auth,
@@ -61,13 +61,11 @@ export const registerUser = async (
     });
 
     window.location.href=("/accounts")
-  } catch (error) {
-  }
+ 
 };
 
 export const loginUser = async (email: string, password: string) => {
-  try {
-    // Thực hiện đăng nhập bằng email và password
+ 
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
@@ -100,15 +98,8 @@ export const loginUser = async (email: string, password: string) => {
 
         // Trả về đối tượng userWithImageURL
         return userWithImageURL;
-      } else {
-      }
-    } else {
-    }
-  } catch (error) {
-  }
-
-  // Trả về giá trị null hoặc giá trị khác khi có lỗi xảy ra
+      }}
   return null;
 };
 
-// ...
+

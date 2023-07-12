@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import './homedasboard.css'
-// import  useFetchServiceData  from '../redux/serviceActions';
 
 import { Badge, Card, DatePicker, Pagination, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -72,36 +70,6 @@ const items: Menu[] = [
         getItem("Quản lý người dùng", "6.3", <SettingOutlined />, "/users"),
     ]),
 ];
-
-const data = [
-    {
-        id_sv: "KIO_01",
-        name: "Kiosk",
-        describe: "Hoạt động",
-        isActive: true,
-        ct: "Chi tiết",
-        cn: "Cập nhật",
-    },
-    {
-        id_sv: "KIO_01",
-        name: "Kiosk",
-        describe: "Hoạt động",
-        isActive: true,
-        ct: "Chi tiết",
-        cn: "Cập nhật",
-    },
-
-];
-interface Data {
-    id_sv: string;
-    name: string;
-    describe: string;
-    isActive: boolean;
-    ct: string;
-    cn: string;
-}
-
-
 
 const Service: React.FC = () => {
 

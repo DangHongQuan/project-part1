@@ -16,7 +16,7 @@ import { UserData, fetchDataFailure, fetchDataStart, fetchDataSuccess } from "./
   export const fetchUsersData = (): AppThunk => async (dispatch, getState) => {
     dispatch(fetchDataStart());
   
-    try {
+  
       const firestore = getFirestore();
       const UsersCollectionRef = collection(firestore, "users");
       const querySnapshot = await getDocs(UsersCollectionRef);
@@ -27,15 +27,13 @@ import { UserData, fetchDataFailure, fetchDataStart, fetchDataSuccess } from "./
         );
         dispatch(fetchDataSuccess(rows));
       }
-    } catch (error) {
-      dispatch(fetchDataFailure("Lỗi khi lấy dữ liệu: " + String(error))); // Chuyển error thành string
-    }
+  
   };
   
   export const updateUsersData = createAsyncThunk(
     "Users/updateUsersData",
     async (updatedData: UserData, { getState }) => {
-      try {
+     
         const data = useSelector((state: RootState) => state.user.data);
         const { email } = updatedData;
   
@@ -43,19 +41,12 @@ import { UserData, fetchDataFailure, fetchDataStart, fetchDataSuccess } from "./
         const existingData = data.find(
           (item: { email: string }) => item.email === email
         );
-        if (!existingData) {
-          throw new Error(`Dữ liệu với id_sv ${email} không tồn tại.`);
-        }
-  
-        // Cập nhật dữ liệu trong Firestore
         const UsersDocRef = doc(firestore, "users", email);
         const updatedDataObject = { ...updatedData };
         await updateDoc(UsersDocRef, updatedDataObject);
   
         return updatedData; // Trả về dữ liệu đã được cập nhật
-      } catch (error) {
-        throw new Error(`Lỗi khi cập nhật dữ liệu: ${error}`);
-      }
+   
     }
   );
   

@@ -21,8 +21,6 @@ import {
 
 export const fetchstoryData = (): AppThunk => async (dispatch, getState) => {
   dispatch(fetchDataStart());
-
-  try {
     const firestore = getFirestore();
     const storyCollectionRef = collection(firestore, "story");
     const querySnapshot = await getDocs(storyCollectionRef);
@@ -33,15 +31,13 @@ export const fetchstoryData = (): AppThunk => async (dispatch, getState) => {
       );
       dispatch(fetchDataSuccess(rows));
     }
-  } catch (error) {
-    dispatch(fetchDataFailure("Lỗi khi lấy dữ liệu: " + String(error))); // Chuyển error thành string
-  }
+
 };
 
 export const updatestoryData = createAsyncThunk(
   "story/updatestoryData",
   async (updatedData: StoryData, { getState }) => {
-    try {
+
       const data = useSelector((state: RootState) => state.story.datastory);
       const { name } = updatedData;
 
@@ -49,9 +45,7 @@ export const updatestoryData = createAsyncThunk(
       const existingData = data.find(
         (item: { name: string }) => item.name === name
       );
-      if (!existingData) {
-        throw new Error(`Dữ liệu với id_sv ${name} không tồn tại.`);
-      }
+ 
 
       // Cập nhật dữ liệu trong Firestore
       const storyDocRef = doc(firestore, "story", name);
@@ -59,9 +53,7 @@ export const updatestoryData = createAsyncThunk(
       await updateDoc(storyDocRef, updatedDataObject);
 
       return updatedData; // Trả về dữ liệu đã được cập nhật
-    } catch (error) {
-      throw new Error(`Lỗi khi cập nhật dữ liệu: ${error}`);
-    }
+  
   }
 );
 
