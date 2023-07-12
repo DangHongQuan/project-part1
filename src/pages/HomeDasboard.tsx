@@ -189,6 +189,7 @@ const HomeDasboard: React.FC = () => {
     color: ['#5B8FF9', '#E8EDF3'],
   };
 
+  
 
   return (
     <>
@@ -324,9 +325,9 @@ const HomeDasboard: React.FC = () => {
                     </div>
                   </Col>
                   <Col span={10}>
-                    <p style={{ marginTop: "-20px" }}> <Badge status="warning" /> Đang hoạt động
+                    <p style={{ marginTop: "-10px" }}> <Badge status="warning" /> Đang hoạt động
                       <span className="span-right-db">{" " + countNhDeive}</span></p>
-                    <p style={{ marginTop: "-20px" }}>   <Badge status="default" /> Nhưng hoạt động
+                    <p style={{ marginTop: "-10px" }}>   <Badge status="default" /> Nhưng hoạt động
                       <span className="span-right-db">{" " + countNhdDeive}</span></p>
 
 
@@ -347,9 +348,9 @@ const HomeDasboard: React.FC = () => {
                     </div>
                   </Col>
                   <Col span={10}>
-                    <p style={{ marginTop: "-20px" }}> <Badge status="processing" /> Đang hoạt động
+                    <p style={{ marginTop: "-10px" }}> <Badge status="processing" /> Đang hoạt động
                       <span className="span-right-db">{" " + counthdServiceLength}</span></p>
-                    <p style={{ marginTop: "-20px" }}>   <Badge status="default" /> Nhưng hoạt động
+                    <p style={{ marginTop: "-10px" }}>   <Badge status="default" /> Nhưng hoạt động
                       <span className="span-right-db">{" " + countNhdServiceLenght}</span></p>
 
 
@@ -368,11 +369,11 @@ const HomeDasboard: React.FC = () => {
                     </div>
                   </Col>
                   <Col span={10} >
-                    <p style={{ marginTop: "-30px" }}> <Badge status="success" /> Đang chờ
+                    <p style={{ marginTop: "-20px" }}> <Badge status="success" /> Đang chờ
                       <span className="span-right-db">{" " + dangcho}</span></p>
-                    <p style={{ marginTop: "-20px" }}>   <Badge status="default" /> Đã sử dụng
+                    <p style={{ marginTop: "-12px" }}>   <Badge status="default" /> Đã sử dụng
                       <span className="span-right-db">{" " + dasudung}</span></p>
-                    <p style={{ marginTop: "-25px" }}>   <Badge color="pink"/> Bỏ qua
+                    <p style={{ marginTop: "-15px" }}>   <Badge color="pink"/> Bỏ qua
                       <span className="span-right-db">{" " + boqua}</span></p>
 
                   </Col>

@@ -12,7 +12,6 @@ import PersoalAccount from './pages/PersonalAccount';
 import AddDevice from './pages/AddDevice';
 import Service from './pages/Service';
 import AddService from './pages/addService';
-
 import NumberLever from './pages/NumberLever';
 import NewnumberLever from './pages/NewnumberLever';
 import Report from './pages/Report';
@@ -23,12 +22,10 @@ import DetailServiceeee from './pages/DetailService';
 import EditServiceeee from './pages/EditServiceeee';
 import Roles from './pages/Roles';
 import NewRoless from './pages/NewRoles';
-
 import DetailNumberLever from './pages/DetailNumberlever';
 import EditRoles from './pages/EditRoles';
 import PageAccount from './pages/PageAcount';
 import UpdateUsert from './pages/UpdateUset';
-
 import NewAcount from './pages/NewAcount';
 import Story from './pages/Story';
 
