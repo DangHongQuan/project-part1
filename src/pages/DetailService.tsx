@@ -158,7 +158,13 @@ const DetailServiceeee: React.FC = () => {
         return <div>Loading...</div>; // Hoặc thông báo lỗi nếu cần
     }
 
-
+    const handleLogout = () => {
+        // Xử lý đăng xuất tại đây (ví dụ: xóa thông tin đăng nhập, đặt lại trạng thái, v.v.)
+        // Sau đó, chuyển hướng về trang đăng nhập
+        // Ví dụ: xóa thông tin người dùng trong localStorage
+        localStorage.removeItem('userData');
+        window.location.href=('/')
+      };
 
     return (
         <>
@@ -186,7 +192,7 @@ const DetailServiceeee: React.FC = () => {
                         </Menu>
                     </div>
                     <Button className="btn-dangxuat" icon={<LoginOutlined style={{ color: "#ff7506" }} />}>
-                        <span className="btn-text__logout">Đăng xuất</span>
+                        <span onClick={handleLogout} className="btn-text__logout">Đăng xuất</span>
 
                     </Button>
                 </Sider>

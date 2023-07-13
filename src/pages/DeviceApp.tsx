@@ -114,7 +114,13 @@ const DeviceApp: React.FC = () => {
   const handleChangeSearchStatus_kn = value => {
     setSearchStatus_kn(value);
   };
-
+  const handleLogout = () => {
+    // Xử lý đăng xuất tại đây (ví dụ: xóa thông tin đăng nhập, đặt lại trạng thái, v.v.)
+    // Sau đó, chuyển hướng về trang đăng nhập
+    // Ví dụ: xóa thông tin người dùng trong localStorage
+    localStorage.removeItem('userData');
+    window.location.href=('/')
+  };
 
 
 
@@ -144,7 +150,7 @@ const DeviceApp: React.FC = () => {
             </Menu>
           </div>
           <Button className="btn-dangxuat" icon={<LoginOutlined style={{ color: "#ff7506" }} />}>
-            <span className="btn-text__logout">Đăng xuất</span>
+            <span onClick={handleLogout} className="btn-text__logout">Đăng xuất</span>
 
           </Button>
         </Sider>

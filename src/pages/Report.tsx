@@ -66,33 +66,7 @@ const items: Menu[] = [
     ]),
 ];
 
-const data = [
-    {
-        id_sv: "KIO_01",
-        name: "Kiosk",
-        describe: "Hoạt động",
-        isActive: true,
-        ct: "Chi tiết",
-        cn: "Cập nhật",
-    },
-    {
-        id_sv: "KIO_01",
-        name: "Kiosk",
-        describe: "Hoạt động",
-        isActive: true,
-        ct: "Chi tiết",
-        cn: "Cập nhật",
-    },
 
-];
-interface Data {
-    id_sv: string;
-    name: string;
-    describe: string;
-    isActive: boolean;
-    ct: string;
-    cn: string;
-}
 const DownloadButton = ({ handleDownload }) => (
     <Button onClick={handleDownload}>Tải về</Button>
   );
@@ -120,7 +94,13 @@ const Report: React.FC = () => {
 
     const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
 
-
+    const handleLogout = () => {
+        // Xử lý đăng xuất tại đây (ví dụ: xóa thông tin đăng nhập, đặt lại trạng thái, v.v.)
+        // Sau đó, chuyển hướng về trang đăng nhập
+        // Ví dụ: xóa thông tin người dùng trong localStorage
+        localStorage.removeItem('userData');
+        window.location.href=('/')
+      };
     useEffect(() => {
         dispatch(fetchNumberData());
     }, [dispatch]);
@@ -180,7 +160,7 @@ const Report: React.FC = () => {
                         </Menu>
                     </div>
                     <Button className="btn-dangxuat" icon={<LoginOutlined style={{ color: "#ff7506" }} />}>
-                        <span className="btn-text__logout">Đăng xuất</span>
+                        <span onClick={handleLogout} className="btn-text__logout">Đăng xuất</span>
 
                     </Button>
                 </Sider>
