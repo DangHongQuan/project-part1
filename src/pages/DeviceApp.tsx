@@ -189,7 +189,7 @@ const DeviceApp: React.FC = () => {
               >
                 <Option value="">Tất cả</Option>
                 <Option value="Hoạt động">Hoạt động</Option>
-                <Option value="Ngừng hoạt động">Ngừng hoạt động</Option>
+                <Option value="Ngừng hoạt động">Ngừng hoạt động</Option>
               </Select>
             
             </Col>
@@ -203,7 +203,7 @@ const DeviceApp: React.FC = () => {
                 style={{ width: 200, marginBottom: 16 }}
               >
                 <Option value="">Tất cả</Option>
-                <Option value="Kết nối">Kết nối</Option>
+                <Option value="Kết nối">Kết nối</Option>
                 <Option value="Mất kết nối">Mất kết nối</Option>
               </Select>
              
