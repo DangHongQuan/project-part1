@@ -109,3 +109,14 @@
 .table-row-odd {
   background: var(--orange-orange-50, #FFF2E7);
 }
+
+.link-a{
+  color: var(--blue, #4277FF);
+
+/* 14/14 Reg Underline */
+font-size: 14px;
+font-style: normal;
+font-weight: 400;
+line-height: 21px; /* 150% */
+text-decoration-line: underline;
+}

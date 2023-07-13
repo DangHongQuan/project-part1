@@ -177,3 +177,14 @@ border-radius: 12px;
 background: var(--white, #FFF);
 box-shadow: 2px 2px 15px 0px rgba(70, 64, 67, 0.10);
 }
+
+.calender{
+  margin-left: 13px;
+  margin-top: 10px;
+  width: 420px !important;
+  border-radius: 12px;
+background: #FFF;
+
+/* Pink shadow */
+box-shadow: 2px 2px 15px 0px rgba(70, 64, 67, 0.10);
+}

@@ -366,7 +366,7 @@ const NumberLever: React.FC = () => {
                                     dataIndex="cn"
                                     key="cn"
                                     render={(text: string, record: any) => (
-                                        <Button onClick={() => navigate(`/editnumberlever/${record.id_cs}`)}>Chi tiết</Button>
+                                        <a className="link-a" onClick={() => navigate(`/editnumberlever/${record.id_cs}`)}>Chi tiết</a>
                                     )}
                                 />
 

@@ -22,9 +22,9 @@ import { fetchNumberData } from "../reduxtoolkit/NumberLeverActions";
 import { Area, RingProgress } from "@ant-design/plots";
 import { fetchDevicesData } from "../reduxtoolkit/DevicesActions";
 import { fetchServiceData } from "../reduxtoolkit/serviceActions";
-
-
-
+import type { CalendarMode } from 'antd/es/calendar/generateCalendar';
+import type { Dayjs } from 'dayjs';
+import { Calendar, theme } from 'antd';
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
@@ -67,22 +67,15 @@ const items: Menu[] = [
     getItem("Quản lý người dùng", "6.3", <SettingOutlined />, "/users"),
   ]),
 ];
-interface DemoRingProgressProps {
-  height?: number;
-  width?: number;
-  autoFit?: boolean;
-  percent?: number;
-  color?: string[];
-}
-
-
+const onPanelChange = (value: Dayjs, mode: CalendarMode) => {
+  console.log(value.format('YYYY-MM-DD'), mode);
+};
 const HomeDasboard: React.FC = () => {
   const [userData, setUserData] = useState<any>({});
   const [dangcho, setDangcho] = useState(0);
   const [boqua, setBoqua] = useState(0);
   const [dasudung, SetDasudung] = useState(0);
   const [count, setCount] = useState(0);
-  const [a, seta] = useState(0);
   useEffect(() => {
     const storedUserData = JSON.parse(localStorage.getItem("userData") || "{}");
     setUserData(storedUserData);
@@ -102,10 +95,10 @@ const HomeDasboard: React.FC = () => {
   const nhdDevice = dataDevice.filter((item) => item.status_hd === "Ngừng hoạt động")
   const countNhdDeive = nhdDevice.length
   const conutService = dataService.length
-  const counthdService= dataService.filter((item) => item.status === "Hoạt động")
+  const counthdService = dataService.filter((item) => item.status === "Hoạt động")
   const counthdServiceLength = counthdService.length
   const countNhdService = dataService.filter((item) => item.status === "Ngừng hoạt động")
-  const countNhdServiceLenght= countNhdService.length
+  const countNhdServiceLenght = countNhdService.length
   useEffect(() => {
     dispatch(fetchDevicesData());
   }, [dispatch]);
@@ -123,7 +116,6 @@ const HomeDasboard: React.FC = () => {
     const dangcho = data.filter((item) => item.status === "Đang chờ");
     setDangcho(dangcho.length);
   });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     const dasudung = data.filter((item) => item.status === "Đã sử dụng");
     SetDasudung(dasudung.length);
@@ -189,7 +181,13 @@ const HomeDasboard: React.FC = () => {
     color: ['#5B8FF9', '#E8EDF3'],
   };
 
-  
+  const { token } = theme.useToken();
+
+  const wrapperStyle: React.CSSProperties = {
+    width: 300,
+    border: `1px solid ${token.colorBorderSecondary}`,
+    borderRadius: token.borderRadiusLG,
+  };
 
   return (
     <>
@@ -325,9 +323,9 @@ const HomeDasboard: React.FC = () => {
                     </div>
                   </Col>
                   <Col span={10}>
-                    <p style={{ marginTop: "-10px" }}> <Badge status="warning" /> Đang hoạt động
+                    <p style={{ marginTop: "-10px", textAlign: "left" }}> <Badge status="warning" /> Đang hoạt động
                       <span className="span-right-db">{" " + countNhDeive}</span></p>
-                    <p style={{ marginTop: "-10px" }}>   <Badge status="default" /> Nhưng hoạt động
+                    <p style={{ marginTop: "-10px", textAlign: "left" }}>   <Badge status="default" /> Nhưng hoạt động
                       <span className="span-right-db">{" " + countNhdDeive}</span></p>
 
 
@@ -348,9 +346,9 @@ const HomeDasboard: React.FC = () => {
                     </div>
                   </Col>
                   <Col span={10}>
-                    <p style={{ marginTop: "-10px" }}> <Badge status="processing" /> Đang hoạt động
+                    <p style={{ marginTop: "-10px", textAlign: "left" }}> <Badge status="processing" /> Đang hoạt động
                       <span className="span-right-db">{" " + counthdServiceLength}</span></p>
-                    <p style={{ marginTop: "-10px" }}>   <Badge status="default" /> Nhưng hoạt động
+                    <p style={{ marginTop: "-10px", textAlign: "left" }}>   <Badge status="default" /> Nhưng hoạt động
                       <span className="span-right-db">{" " + countNhdServiceLenght}</span></p>
 
 
@@ -369,18 +367,20 @@ const HomeDasboard: React.FC = () => {
                     </div>
                   </Col>
                   <Col span={10} >
-                    <p style={{ marginTop: "-20px" }}> <Badge status="success" /> Đang chờ
+                    <p style={{ marginTop: "-20px", textAlign: "left" }}> <Badge status="success" /> Đang chờ
                       <span className="span-right-db">{" " + dangcho}</span></p>
-                    <p style={{ marginTop: "-12px" }}>   <Badge status="default" /> Đã sử dụng
+                    <p style={{ marginTop: "-12px", textAlign: "left" }}>   <Badge status="default" /> Đã sử dụng
                       <span className="span-right-db">{" " + dasudung}</span></p>
-                    <p style={{ marginTop: "-15px" }}>   <Badge color="pink"/> Bỏ qua
+                    <p style={{ marginTop: "-15px", textAlign: "left" }}>   <Badge color="pink" /> Bỏ qua
                       <span className="span-right-db">{" " + boqua}</span></p>
 
                   </Col>
                 </Row>
 
               </Card>
-              <img src="/img/Datepicker.png" alt="" />
+              <div style={wrapperStyle} className="calender" >
+                <Calendar fullscreen={false} onPanelChange={onPanelChange} />
+              </div>
             </Col>
           </Row>
 

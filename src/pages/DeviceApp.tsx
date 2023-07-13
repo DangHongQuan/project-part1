@@ -185,13 +185,7 @@ const DeviceApp: React.FC = () => {
                 <Option value="Hoạt động">Hoạt động</Option>
                 <Option value="Ngừng hoạt động">Ngừng hoạt động</Option>
               </Select>
-              {/* <Select defaultValue="all" style={{ width: 280 }} className="slectTop d-flex ms-3">
-                <Select.Option value="all"  >Tất cả</Select.Option>
-                <Select.Option value="active">Hoạt động</Select.Option>
-                <Select.Option value="inactive">
-                  Ngưng hoạt động
-                </Select.Option>
-              </Select> */}
+            
             </Col>
             <Col span={10}>
               <label className="ttkn">Trạng thái kết nối</label>
@@ -206,13 +200,7 @@ const DeviceApp: React.FC = () => {
                 <Option value="Kết nối">Kết nối</Option>
                 <Option value="Mất kết nối">Mất kết nối</Option>
               </Select>
-              {/* <Select defaultValue="all" style={{ width: 280 }} className="slectTop d-flex ms-3">
-                <Select.Option value="all"  >Tất cả</Select.Option>
-                <Select.Option value="active">Hoạt động</Select.Option>
-                <Select.Option value="inactive">
-                  Ngưng hoạt động
-                </Select.Option>
-              </Select> */}
+             
             </Col>
             <Col span={5} className="custom-tk">
               <label className="tk">Từ khóa</label>
@@ -278,7 +266,7 @@ const DeviceApp: React.FC = () => {
                   dataIndex="ct"
                   key="ct"
                   render={(text: string, record: any) => (
-                    <Button onClick={() => navigate(`/detailDevice/${record.id}`)}>Chi tiết</Button>
+                    <a className="link-a" onClick={() => navigate(`/detailDevice/${record.id}`)}>Chi tiết</a>
                   )}
                 />
                 <Table.Column
@@ -286,7 +274,7 @@ const DeviceApp: React.FC = () => {
                   dataIndex="cn"
                   key="cn"
                   render={(text: string, record: any) => (
-                    <Button onClick={() => navigate(`/editDevice/${record.id}`)}>Cập Nhật</Button>
+                    <a className="link-a" onClick={() => navigate(`/editDevice/${record.id}`)}>Cập Nhật</a>
                   )}
                 />
               </Table>

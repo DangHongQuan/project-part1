@@ -88,13 +88,13 @@ const AddDevice: React.FC = () => {
 
     const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
     const { dataService } = useSelector((state: RootState) => state.service);
-    
+
 
     useEffect(() => {
         dispatch(fetchServiceData());
 
     }, [dispatch]);
-   
+
 
 
 
@@ -103,11 +103,10 @@ const AddDevice: React.FC = () => {
 
         const actionResult = await dispatch(addNewDevices(values));
         const newServiceData = unwrapResult(actionResult);
-      
+
         alert('Thêm mới thành công:');
     };
 
-   
 
 
     return (
@@ -168,8 +167,7 @@ const AddDevice: React.FC = () => {
                     </Header>
                     <p className="qltb">Quảng lý thiết bị</p>
 
-                    <Form onFinish={handleAddNewService}>
-                       
+                    <Form onFinish={handleAddNewService} >
                         <Card className="card">
                             <p className="tttb">Thông tin thiết bị</p>
                             <Row>
@@ -182,7 +180,7 @@ const AddDevice: React.FC = () => {
                                 </Col>
                                 <Col span={11} className="ms-4">
                                     <h1 className="lbadd">Loại thiết bị: <i className="kytu"> &#42;</i></h1>
-                                    <Form.Item name="type"    >
+                                    <Form.Item name="type"  >
                                         <Select placeholder="Chọn loại thiêt bị"  >
                                             <option value="DC_03">DC_03</option>
 
@@ -201,7 +199,6 @@ const AddDevice: React.FC = () => {
                                 </Col>
                                 <Col span={11} className="ms-4">
                                     <h1 className="lbadd">Tên đăng nhập: <i className="kytu"> &#42;</i></h1>
-                                    {/* <Input placeholder="Nhập mã thiết bị" className="inputadd" /> */}
                                     <Form.Item name="username" >
                                         <Input className="inputadd" />
                                     </Form.Item>
@@ -226,7 +223,6 @@ const AddDevice: React.FC = () => {
                                     <Form.Item name="status_kn" hidden initialValue="Kết nối">
                                         <Input />
                                     </Form.Item>
-                                    {/* <Input placeholder="Nhập mã thiết bị" className="inputadd" /> */}
                                 </Col>
                             </Row>
                             <Row>
@@ -259,21 +255,20 @@ const AddDevice: React.FC = () => {
 
 
                         </Card>
+                        <Row className="justify-content-center mt-3" style={{ marginLeft: "30px" }}>
+                            <Col span={10} className="text-end col-hb">
+                                <button className="btn-adddvice">
+                                    Hủy bỏ
+                                </button>
+                            </Col>
+                            <Col span={12} className="d-flex ms-5">
+                                <button className="btn-ttb">
+                                    Thêm thiết bị
+                                </button>
+                            </Col>
+                        </Row>
 
                     </Form>
-                   
-                    <Row className="justify-content-center mt-3">
-                        <Col span={10} className="text-end col-hb">
-                            <button className="btn-adddvice">
-                                Hủy bỏ
-                            </button>
-                        </Col>
-                        <Col span={12} className="d-flex ms-5">
-                            <button className="btn-ttb">
-                                Thêm thiết bị
-                            </button>
-                        </Col>
-                    </Row>
 
                     <Routes >
                         {items.map((item) => (

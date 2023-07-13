@@ -231,14 +231,14 @@ const Service: React.FC = () => {
                                     dataIndex="ct"
                                     key="ct"
                                     render={(text: string, record: any) => (
-                                        <Button onClick={() => navigate(`/detailService/${record.id_sv}`)}>Chi tiết</Button>
+                                        <a className="link-a" onClick={() => navigate(`/detailService/${record.id_sv}`)}>Chi tiết</a>
                                     )}
                                 />
                                 <Table.Column
                                     dataIndex="cn"
                                     key="cn"
                                     render={(text: string, record: any) => (
-                                        <Button onClick={() => navigate(`/editService/${record.id_sv}`)}>Cập Nhật</Button>
+                                        <a className="link-a" onClick={() => navigate(`/editService/${record.id_sv}`)}>Cập Nhật</a>
                                     )}
                                 />
                             </Table>

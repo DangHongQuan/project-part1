@@ -246,7 +246,7 @@ const PageAccount: React.FC = () => {
                                     dataIndex="cn"
                                     key="cn"
                                     render={(text: string, record: any) => (
-                                        <a onClick={() => navigate(`/editUser/${record.email}`)}>Cập Nhật</a>
+                                        <a className="link-a" onClick={() => navigate(`/editUser/${record.email}`)}>Cập Nhật</a>
                                     )}
                                 />
                             </Table>

@@ -220,7 +220,7 @@ const Roles: React.FC = () => {
                                 <Column
                                     dataIndex="cn"
                                     key="cn"
-                                    render={(text: string, record: any) => (<Button onClick={() => navigate(`/editRoles/${record.name}`)}>Cập nhật</Button>)
+                                    render={(text: string, record: any) => (<a  className="link-a"onClick={() => navigate(`/editRoles/${record.name}`)}>Cập nhật</a>)
 
                                     }
                                 />
