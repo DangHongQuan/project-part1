@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 // import './homedasboard.css'
-import { Badge, Card, Pagination, Table } from 'antd';
+import { Badge, Card, Dropdown, Pagination, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import './dasbordefault.css'
 import './device.css'
@@ -24,6 +24,8 @@ import { AnyAction } from "redux";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchDevicesData } from "../reduxtoolkit/DevicesActions";
 import { Option } from "antd/es/mentions";
+import { fetchNumberData } from "../reduxtoolkit/NumberLeverActions";
+import { format } from "date-fns";
 
 
 const { Sider, Content } = Layout;
@@ -87,7 +89,6 @@ const DeviceApp: React.FC = () => {
     dispatch(fetchDevicesData());
   }, [dispatch]);
 
-
   const [searchText, setSearchText] = useState('');
   const [searchStatus_hd, setSearchStatus_hd] = useState('');
   const [searchStatus_kn, setSearchStatus_kn] = useState('');
@@ -119,11 +120,30 @@ const DeviceApp: React.FC = () => {
     // Sau đó, chuyển hướng về trang đăng nhập
     // Ví dụ: xóa thông tin người dùng trong localStorage
     localStorage.removeItem('userData');
-    window.location.href=('/')
+    window.location.href = ('/')
   };
 
 
 
+  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
+    dispatch(fetchNumberData());
+  }, [dispatch]);
+  const { data } = useSelector((state: RootState) => state.numberlever);
+  const handleDropdownClick = () => {
+    setIsOpen(!isOpen);
+  };
+  const menu = (
+    <Menu style={{ maxHeight: '200px', width: '400px', overflowY: 'auto' }}>
+      <Menu.Item className="tb-dr">Thông báo</Menu.Item>
+      {data.map((item: any) => (
+        <Menu.Item key={item.id_cs}>
+          <span className="nd">Người dùng:   {item.name_kh}</span> <br />
+          <span className="tgns">Thời gian nhận số: {format(new Date(item.data), "HH:mm 'ngày' dd/MM/yyyy")}</span>
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
@@ -161,14 +181,24 @@ const DeviceApp: React.FC = () => {
                 <p className="hederpc mx-2">Thiết bị &gt;  <a href="/device" className="dstb ms-2"> Danh sách thiết bị</a></p>
               </Col>
               <Col span={11}   >
+
                 <div className="hederpaccount text-end">
-                  <img src="/img/icon/notification.png" className="me-2 iconaccount" />
+                  <Dropdown
+                    overlay={menu}
+                    visible={isOpen}
+                    onVisibleChange={setIsOpen}
+                    overlayClassName="custom-dropdown"
+                    placement="topLeft"
+                  >
+                    <img src="/img/icon/notification.png" className="me-2 iconaccount" onClick={handleDropdownClick} />
+                  </Dropdown>
                   <img src={userData.imageURL} alt="" className="imgaccount" />
                 </div>
               </Col>
               <Col span={3} >
+                <p className="xc">xin chào</p>
                 <a href="/persoalaccount">
-                  <p className="xc">xin chào</p>
+
                   <p className="name">{userData.name}</p>
                 </a>
 
@@ -191,7 +221,7 @@ const DeviceApp: React.FC = () => {
                 <Option value="Hoạt động">Hoạt động</Option>
                 <Option value="Ngừng hoạt động">Ngừng hoạt động</Option>
               </Select>
-            
+
             </Col>
             <Col span={10}>
               <label className="ttkn">Trạng thái kết nối</label>
@@ -206,7 +236,7 @@ const DeviceApp: React.FC = () => {
                 <Option value="Kết nối">Kết nối</Option>
                 <Option value="Mất kết nối">Mất kết nối</Option>
               </Select>
-             
+
             </Col>
             <Col span={5} className="custom-tk">
               <label className="tk">Từ khóa</label>

@@ -13,7 +13,7 @@ import {
   MessageOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { Badge, Button, Card, Col, Layout, Menu, Row } from "antd";
+import { Badge, Button, Card, Col, Dropdown, Layout, Menu, Row } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../reduxtoolkit/store";
 import { ThunkDispatch } from "redux-thunk";
@@ -25,6 +25,7 @@ import { fetchServiceData } from "../reduxtoolkit/serviceActions";
 import type { CalendarMode } from 'antd/es/calendar/generateCalendar';
 import type { Dayjs } from 'dayjs';
 import { Calendar, theme } from 'antd';
+import { format } from "date-fns";
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
 
@@ -193,8 +194,24 @@ const HomeDasboard: React.FC = () => {
     // Sau đó, chuyển hướng về trang đăng nhập
     // Ví dụ: xóa thông tin người dùng trong localStorage
     localStorage.removeItem('userData');
-    window.location.href=('/')
+    window.location.href = ('/')
   };
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleDropdownClick = () => {
+    setIsOpen(!isOpen);
+  };
+  const menu = (
+    <Menu style={{ maxHeight: '200px', width: '400px', overflowY: 'auto' }}>
+      <Menu.Item className="tb-dr">Thông báo</Menu.Item>
+      {data.map((item: any) => (
+        <Menu.Item key={item.id_cs}>
+          <span className="nd">Người dùng:   {item.name_kh}</span> <br />
+          <span className="tgns">Thời gian nhận số: {format(new Date(item.data), "HH:mm 'ngày' dd/MM/yyyy")}</span>
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
@@ -306,7 +323,15 @@ const HomeDasboard: React.FC = () => {
               <Row className="mt-4">
 
                 <Col span={15}>
-                  <img src="/img/icon/notification.png" className="me-2 iconaccount" />
+                  <Dropdown
+                    overlay={menu}
+                    visible={isOpen}
+                    onVisibleChange={setIsOpen}
+                    overlayClassName="custom-dropdown"
+                    placement="topLeft"
+                  >
+                    <img src="/img/icon/notification.png" className="me-2 iconaccount" onClick={handleDropdownClick} />
+                  </Dropdown>
                   <img src={userData.imageURL} alt="" className="imgaccount" />
                 </Col>
 

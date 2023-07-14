@@ -13,7 +13,7 @@ import {
     SettingOutlined,
     UserOutlined,
 } from "@ant-design/icons";
-import { Avatar, Badge, Button, Card, Col, DatePicker, Form, Image, Input, Layout, Menu, Row, Select, Space, Table } from "antd";
+import { Avatar, Badge, Button, Card, Col, DatePicker, Dropdown, Form, Image, Input, Layout, Menu, Row, Select, Space, Table } from "antd";
 import { Header } from "antd/es/layout/layout";
 import Column from "antd/es/table/Column";
 
@@ -174,7 +174,22 @@ const NumberLever: React.FC = () => {
         setSelectedDate(dates);
     };
     const { data } = useSelector((state: RootState) => state.numberlever);
-
+    const [isOpen, setIsOpen] = useState(false);
+    
+    const handleDropdownClick = () => {
+      setIsOpen(!isOpen);
+    };
+    const menu = (
+      <Menu style={{ maxHeight: '200px', width: '400px', overflowY: 'auto' }}>
+        <Menu.Item className="tb-dr">Thông báo</Menu.Item>
+        {data.map((item: any) => (
+          <Menu.Item key={item.id_cs}>
+            <span className="nd">Người dùng:   {item.name_kh}</span> <br />
+            <span className="tgns">Thời gian nhận số: {format(new Date(item.data), "HH:mm 'ngày' dd/MM/yyyy")}</span>
+          </Menu.Item>
+        ))}
+      </Menu>
+    );
     return (
         <>
             <Layout style={{ minHeight: "100vh" }}>
@@ -216,7 +231,15 @@ const NumberLever: React.FC = () => {
                             </Col>
                             <Col span={11}>
                                 <div className="hederpaccount text-end">
-                                    <img src="/img/icon/notification.png" className="me-2 iconaccount" />
+                                <Dropdown
+                                        overlay={menu}
+                                        visible={isOpen}
+                                        onVisibleChange={setIsOpen}
+                                        overlayClassName="custom-dropdown"
+                                        placement="topLeft"
+                                    >
+                                        <img src="/img/icon/notification.png" className="me-2 iconaccount" onClick={handleDropdownClick} />
+                                    </Dropdown>
                                     <img src={userData.imageURL} alt="" className="imgaccount" />
                                 </div>
 
@@ -290,18 +313,7 @@ const NumberLever: React.FC = () => {
                         </Col>
                         <Col span={5} className="custom-tk ms-1">
                             <label className="tukhoa">Từ khóa</label>
-                            {/* <Input
-                                style={{ width: 280 }}
-                                placeholder="Nhập từ khóa"
-                                suffix={
-                                    <Space>
-                                        <SearchOutlined
-                                            className="d-flex align-items-center justify-content-center inputtk"
-                                            style={{ color: "#1890ff" }}
-                                        />
-                                    </Space>
-                                }
-                            /> */}
+                       
                             <Input.Search
                                 placeholder="Tìm kiếm..."
                                 value={searchText}

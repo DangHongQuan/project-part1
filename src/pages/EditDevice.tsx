@@ -82,12 +82,12 @@ const EditDevice: React.FC = () => {
 
   useEffect(() => {
     const getIPAddress = async () => {
-  
-        const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        const ip = data.ip;
-        setIpAddress(ip);
-   
+
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      const ip = data.ip;
+      setIpAddress(ip);
+
     };
 
     getIPAddress();
@@ -100,7 +100,7 @@ const EditDevice: React.FC = () => {
   if (!selectedData) {
     return <div>Loading...</div>;
   }
-  
+
   const handleDeviceChanges = async (values: any) => {
     try {
       const updatedData = {
@@ -116,25 +116,25 @@ const EditDevice: React.FC = () => {
         name: userData.email,
         date: startDate,
         ip: ipAddress,
-        
-        operations: 'Cập nhật thông tin thiết bị ' +selectedData.id_dc,
+
+        operations: 'Cập nhật thông tin thiết bị ' + selectedData.id_dc,
       };
       await dispatch(addNewstory(newValues));
     } catch (error) {
       alert('Lỗi khi cập nhật: ' + error.message);
     }
   };
-  
+
 
   const handleLogout = () => {
     // Xử lý đăng xuất tại đây (ví dụ: xóa thông tin đăng nhập, đặt lại trạng thái, v.v.)
     // Sau đó, chuyển hướng về trang đăng nhập
     // Ví dụ: xóa thông tin người dùng trong localStorage
     localStorage.removeItem('userData');
-    window.location.href=('/')
+    window.location.href = ('/')
   };
-  
-  
+
+
 
   return (
     <>
@@ -176,7 +176,9 @@ const EditDevice: React.FC = () => {
               </Col>
               <Col span={11}   >
                 <div className="hederpaccount text-end">
+
                   <img src="/img/icon/notification.png" className="me-2 iconaccount" />
+
                   <img src={userData.imageURL} alt="" className="imgaccount" />
                 </div>
               </Col>

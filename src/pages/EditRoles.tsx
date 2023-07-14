@@ -25,6 +25,7 @@ import {
     Checkbox,
     Col,
     DatePicker,
+    Dropdown,
     Form,
     Image,
     Input,
@@ -104,38 +105,58 @@ const handleLogout = () => {
 };
 
 const EditRoles: React.FC = () => {
-    const  navigate = useNavigate();
+    const [isOpen, setIsOpen] = useState(false);
+    const { data } = useSelector((state: RootState) => state.numberlever);
+    const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
+
+    const navigate = useNavigate();
     const [userData, setUserData] = useState<any>({});
     useEffect(() => {
         const storedUserData = JSON.parse(localStorage.getItem("userData") || "{}");
         setUserData(storedUserData);
     }, []);
-    const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
+    useEffect(() => {
+        dispatch(fetchNumberData());
+    }, [dispatch]);
     const { name } = useParams<{ name: string }>();
     const dataService = useSelector((state: RootState) => state.roles.dataroles);
-  
+
     // Kiểm tra xem dữ liệu đã được lấy thành công hay chưa
     const selectedData = dataService.find((item) => item.name === name);
     if (!selectedData) {
-      return <div>Loading...</div>; // Hoặc thông báo lỗi nếu cần
+        return <div>Loading...</div>; // Hoặc thông báo lỗi nếu cần
     }
-  
+    
     const handleSaveChanges = async (values: any) => {
-      const updatedData = {
-        ...selectedData,
-        ...values,
-      };
-      const serviceQuery = query(collection(firestore, 'roles'), where('name', '==', selectedData.name));
-      const serviceDocs = await getDocs(serviceQuery);
-      const serviceDocRef = serviceDocs.docs[0].ref;
-  
-      await updateDoc(serviceDocRef, updatedData);
-  
-      // Gửi action updateServiceData với dữ liệu cập nhật
-      dispatch(updaterolesData(updatedData));
-      window.location.href="/roles"
+        const updatedData = {
+            ...selectedData,
+            ...values,
+        };
+        const serviceQuery = query(collection(firestore, 'roles'), where('name', '==', selectedData.name));
+        const serviceDocs = await getDocs(serviceQuery);
+        const serviceDocRef = serviceDocs.docs[0].ref;
+
+        await updateDoc(serviceDocRef, updatedData);
+
+        // Gửi action updateServiceData với dữ liệu cập nhật
+        dispatch(updaterolesData(updatedData));
+        window.location.href = "/roles"
     };
- 
+
+    const handleDropdownClick = () => {
+        setIsOpen(!isOpen);
+    };
+    const menu = (
+        <Menu style={{ maxHeight: '200px', width: '400px', overflowY: 'auto' }}>
+            <Menu.Item className="tb-dr">Thông báo</Menu.Item>
+            {data.map((item: any) => (
+                <Menu.Item key={item.id_cs}>
+                    <span className="nd">Người dùng:   {item.name_kh}</span> <br />
+                    <span className="tgns">Thời gian nhận số: {format(new Date(item.data), "HH:mm 'ngày' dd/MM/yyyy")}</span>
+                </Menu.Item>
+            ))}
+        </Menu>
+    );
 
     return (
         <>
@@ -212,10 +233,15 @@ const EditRoles: React.FC = () => {
                             </Col>
                             <Col span={11}>
                                 <div className="hederpaccount text-end">
-                                    <img
-                                        src="/img/icon/notification.png"
-                                        className="me-2 iconaccount"
-                                    />
+                                    <Dropdown
+                                        overlay={menu}
+                                        visible={isOpen}
+                                        onVisibleChange={setIsOpen}
+                                        overlayClassName="custom-dropdown"
+                                        placement="topLeft"
+                                    >
+                                        <img src="/img/icon/notification.png" className="me-2 iconaccount" onClick={handleDropdownClick} />
+                                    </Dropdown>
                                     <img src={userData.imageURL} alt="" className="imgaccount" />
                                 </div>
                             </Col>
@@ -227,12 +253,12 @@ const EditRoles: React.FC = () => {
                     </Header>
 
                     <p className="dstbhome">Danh sách vai trò</p>
-                    <Form    onFinish={handleSaveChanges} initialValues={selectedData}>
-                    <Card className="card">
-                        <p className="h3 d-flex ttvt"> Thông tin vai trò</p>
-                        <Row>
-                            <Col span={10} >
-                              
+                    <Form onFinish={handleSaveChanges} initialValues={selectedData}>
+                        <Card className="card">
+                            <p className="h3 d-flex ttvt"> Thông tin vai trò</p>
+                            <Row>
+                                <Col span={10} >
+
                                     <label className="d-flex"> Tên vai trò</label>
                                     <Form.Item name="name" rules={[{ required: true }]}>
                                         <Input />
@@ -241,50 +267,50 @@ const EditRoles: React.FC = () => {
                                     <Form.Item name="describe" rules={[{ required: true }]}>
                                         <TextArea rows={3} />
                                     </Form.Item>
-                               
-                            </Col>
-                            <Col span={10} className="ms-5 pqcn-hd">
-                                <p className="d-flex">Phân quyền chức năng  <i className="kytu"> &#42;</i></p>
-                                <div className="br-addrole">
-                                <label className="d-flex ms-3"> Nhóm chức năng A</label>
-                                <Form.Item name="function_a">
-                                    <Checkbox.Group className=" ms-3"
-                                        style={{ display: "flex", flexDirection: "column" }}
-                                    >
-                                        <Checkbox value="Chức năng a">Chức năng a</Checkbox>
-                                        <Checkbox value="Chức năng b">Chức năng b</Checkbox>
-                                        <Checkbox value="Chức năng c">Chức năng c</Checkbox>
-                                        <Checkbox value="Chức năng d">Chức năng d</Checkbox>
-                                    </Checkbox.Group>
-                                </Form.Item>
-                                <label className="d-flex ms-3"> Nhóm chức năng B</label>
-                                <Form.Item name="function_b">
-                                    <Checkbox.Group className=" ms-3"
-                                        style={{ display: "flex", flexDirection: "column" }}
-                                    >
-                                      
-                                        <Checkbox name="a" value="Chức năng 1">
-                                            Chức năng a
-                                        </Checkbox>
-                                        <Checkbox name="a" value="Chức năng 2">
-                                            Chức năng b
-                                        </Checkbox>
-                                        <Checkbox name="a" value="Chức năng 3">
-                                            Chức năng c
-                                        </Checkbox>
-                                        <Checkbox name="a" value="Chức năng 4">
-                                            Chức năng d
-                                        </Checkbox>
-                                    </Checkbox.Group>
 
-                                </Form.Item>
-                                </div>
-                            </Col>
+                                </Col>
+                                <Col span={10} className="ms-5 pqcn-hd">
+                                    <p className="d-flex">Phân quyền chức năng  <i className="kytu"> &#42;</i></p>
+                                    <div className="br-addrole">
+                                        <label className="d-flex ms-3"> Nhóm chức năng A</label>
+                                        <Form.Item name="function_a">
+                                            <Checkbox.Group className=" ms-3"
+                                                style={{ display: "flex", flexDirection: "column" }}
+                                            >
+                                                <Checkbox value="Chức năng a">Chức năng a</Checkbox>
+                                                <Checkbox value="Chức năng b">Chức năng b</Checkbox>
+                                                <Checkbox value="Chức năng c">Chức năng c</Checkbox>
+                                                <Checkbox value="Chức năng d">Chức năng d</Checkbox>
+                                            </Checkbox.Group>
+                                        </Form.Item>
+                                        <label className="d-flex ms-3"> Nhóm chức năng B</label>
+                                        <Form.Item name="function_b">
+                                            <Checkbox.Group className=" ms-3"
+                                                style={{ display: "flex", flexDirection: "column" }}
+                                            >
 
-                        </Row>
+                                                <Checkbox name="a" value="Chức năng 1">
+                                                    Chức năng a
+                                                </Checkbox>
+                                                <Checkbox name="a" value="Chức năng 2">
+                                                    Chức năng b
+                                                </Checkbox>
+                                                <Checkbox name="a" value="Chức năng 3">
+                                                    Chức năng c
+                                                </Checkbox>
+                                                <Checkbox name="a" value="Chức năng 4">
+                                                    Chức năng d
+                                                </Checkbox>
+                                            </Checkbox.Group>
 
-                    </Card>
-                    <Row className="justify-content-center mt-3">
+                                        </Form.Item>
+                                    </div>
+                                </Col>
+
+                            </Row>
+
+                        </Card>
+                        <Row className="justify-content-center mt-3">
                             <Col span={10} className="text-end col-hb">
                                 <button className="btn-adddvice" onClick={() => navigate(-1)}>
                                     Hủy bỏ

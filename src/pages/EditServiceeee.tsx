@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 // import './homedasboard.css'
-import { Badge, Card, Checkbox, DatePicker, Form, Pagination, Table, Tag } from 'antd';
+import { Badge, Card, Checkbox, DatePicker, Dropdown, Form, Pagination, Table, Tag } from 'antd';
 import './dasbordefault.css'
 import './addservice.css'
 import { Link, Route, Routes, useNavigate, useParams } from "react-router-dom";
@@ -27,6 +27,8 @@ import { unwrapResult } from "@reduxjs/toolkit";
 import { collection, getDocs, query, updateDoc, where } from "@firebase/firestore";
 import { firestore } from "../Firebase/Firebase";
 import { addNewstory } from "../reduxtoolkit/StoryAction";
+import { fetchNumberData } from "../reduxtoolkit/NumberLeverActions";
+import { format } from "date-fns";
 
 
 const { Sider, Content } = Layout;
@@ -79,22 +81,28 @@ const items: Menu[] = [
 const EditServiceeee: React.FC = () => {
     const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
     const { id_sv } = useParams<{ id_sv: string }>();
-  const [startDate, setStartDate] = useState(new Date().toISOString());
+    const [startDate, setStartDate] = useState(new Date().toISOString());
     const dataService = useSelector((state: RootState) => state.service.dataService);
     const [ipAddress, setIpAddress] = useState<string | null>(null);
-  useEffect(() => {
-    const getIPAddress = async () => {
-  
-        const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        const ip = data.ip;
-        setIpAddress(ip);
-   
-    };
+    const [isOpen, setIsOpen] = useState(false);
+    const { data } = useSelector((state: RootState) => state.numberlever);
 
-    getIPAddress();
-  }, []);
-    const navigate= useNavigate();
+    useEffect(() => {
+        dispatch(fetchNumberData());
+    }, [dispatch]);
+    useEffect(() => {
+        const getIPAddress = async () => {
+
+            const response = await fetch('https://api.ipify.org?format=json');
+            const data = await response.json();
+            const ip = data.ip;
+            setIpAddress(ip);
+
+        };
+
+        getIPAddress();
+    }, []);
+    const navigate = useNavigate();
     // Kiểm tra xem dữ liệu đã được lấy thành công hay chưa
     const selectedData = dataService.find((item) => item.id_sv === id_sv);
     if (!selectedData) {
@@ -120,19 +128,34 @@ const EditServiceeee: React.FC = () => {
             name: userData.email,
             date: startDate,
             ip: ipAddress,
-            
-            operations: 'Cập nhật thông tin dịch vụ ' +selectedData.id_sv,
-          };
-    
-          await dispatch(addNewstory(newValues));
+
+            operations: 'Cập nhật thông tin dịch vụ ' + selectedData.id_sv,
+        };
+
+        await dispatch(addNewstory(newValues));
     };
     const handleLogout = () => {
         // Xử lý đăng xuất tại đây (ví dụ: xóa thông tin đăng nhập, đặt lại trạng thái, v.v.)
         // Sau đó, chuyển hướng về trang đăng nhập
         // Ví dụ: xóa thông tin người dùng trong localStorage
         localStorage.removeItem('userData');
-        window.location.href=('/')
-      };
+        window.location.href = ('/')
+    };
+   
+    const handleDropdownClick = () => {
+        setIsOpen(!isOpen);
+    };
+    const menu = (
+        <Menu style={{ maxHeight: '200px', width: '400px', overflowY: 'auto' }}>
+            <Menu.Item className="tb-dr">Thông báo</Menu.Item>
+            {data.map((item: any) => (
+                <Menu.Item key={item.id_cs}>
+                    <span className="nd">Người dùng:   {item.name_kh}</span> <br />
+                    <span className="tgns">Thời gian nhận số: {format(new Date(item.data), "HH:mm 'ngày' dd/MM/yyyy")}</span>
+                </Menu.Item>
+            ))}
+        </Menu>
+    );
     return (
         <>
             <Layout style={{ minHeight: "100vh" }}>
@@ -175,7 +198,15 @@ const EditServiceeee: React.FC = () => {
                             </Col>
                             <Col span={11}   >
                                 <div className="hederpaccount text-end">
-                                    <img src="/img/icon/notification.png" className="me-2 iconaccount" />
+                                    <Dropdown
+                                        overlay={menu}
+                                        visible={isOpen}
+                                        onVisibleChange={setIsOpen}
+                                        overlayClassName="custom-dropdown"
+                                        placement="topLeft"
+                                    >
+                                        <img src="/img/icon/notification.png" className="me-2 iconaccount" onClick={handleDropdownClick} />
+                                    </Dropdown>
                                     <img src={userData.imageURL} alt="" className="imgaccount" />
                                 </div>
                             </Col>
@@ -189,7 +220,7 @@ const EditServiceeee: React.FC = () => {
                         </Row>
                     </Header>
                     <p className="qldv">Quản lý dịch vụ</p>
-                    <Form onFinish={handleSaveChanges   } initialValues={selectedData}>
+                    <Form onFinish={handleSaveChanges} initialValues={selectedData}>
                         <Card className="card">
                             <p className="thongTindichvu">Thông tin dịch vụ</p>
                             <Row>

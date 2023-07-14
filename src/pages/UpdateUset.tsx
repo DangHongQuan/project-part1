@@ -120,6 +120,7 @@ const UpdateUsert: React.FC = () => {
         localStorage.removeItem('userData');
         window.location.href=('/')
       };
+      
     return (
         <>
             <Layout style={{ minHeight: "100vh" }}>

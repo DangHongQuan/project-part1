@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 // import './homedasboard.css'
-import { Badge, Card, Checkbox, DatePicker, Form, Pagination, Table, Tag } from 'antd';
+import { Badge, Card, Checkbox, DatePicker, Dropdown, Form, Pagination, Table, Tag } from 'antd';
 import './dasbordefault.css'
 import './addservice.css'
 import { Link, Route, Routes } from "react-router-dom";
@@ -21,9 +21,11 @@ import TextArea from "antd/es/input/TextArea";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import { RootState } from "../reduxtoolkit/store";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addNewService } from "../reduxtoolkit/serviceActions";
 import { unwrapResult } from "@reduxjs/toolkit";
+import { format } from "date-fns";
+import { fetchNumberData } from "../reduxtoolkit/NumberLeverActions";
 
 
 const { Sider, Content } = Layout;
@@ -80,8 +82,8 @@ const AddService: React.FC = () => {
         // Sau đó, chuyển hướng về trang đăng nhập
         // Ví dụ: xóa thông tin người dùng trong localStorage
         localStorage.removeItem('userData');
-        window.location.href=('/')
-      };
+        window.location.href = ('/')
+    };
     const handleAddNewService = async (values: any) => {
         // Perform any processing you need with the new data
 
@@ -92,6 +94,25 @@ const AddService: React.FC = () => {
         // Handle success after adding and updating Redux Toolkit
         alert('Thêm mới thành công:' + newServiceData);
     };
+    const [isOpen, setIsOpen] = useState(false);
+    useEffect(() => {
+        dispatch(fetchNumberData());
+    }, [dispatch]);
+    const { data } = useSelector((state: RootState) => state.numberlever);
+    const handleDropdownClick = () => {
+        setIsOpen(!isOpen);
+    };
+    const menu = (
+        <Menu style={{ maxHeight: '200px', width: '400px', overflowY: 'auto' }}>
+            <Menu.Item className="tb-dr">Thông báo</Menu.Item>
+            {data.map((item: any) => (
+                <Menu.Item key={item.id_cs}>
+                    <span className="nd">Người dùng:   {item.name_kh}</span> <br />
+                    <span className="tgns">Thời gian nhận số: {format(new Date(item.data), "HH:mm 'ngày' dd/MM/yyyy")}</span>
+                </Menu.Item>
+            ))}
+        </Menu>
+    );
     return (
         <>
             <Layout style={{ minHeight: "100vh" }}>
@@ -133,7 +154,15 @@ const AddService: React.FC = () => {
                             </Col>
                             <Col span={11}   >
                                 <div className="hederpaccount text-end">
-                                    <img src="/img/icon/notification.png" className="me-2 iconaccount" />
+                                    <Dropdown
+                                        overlay={menu}
+                                        visible={isOpen}
+                                        onVisibleChange={setIsOpen}
+                                        overlayClassName="custom-dropdown"
+                                        placement="topLeft"
+                                    >
+                                        <img src="/img/icon/notification.png" className="me-2 iconaccount" onClick={handleDropdownClick} />
+                                    </Dropdown>
                                     <img src={userData.imageURL} alt="" className="imgaccount" />
                                 </div>
                             </Col>

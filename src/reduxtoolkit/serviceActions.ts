@@ -39,20 +39,10 @@ export const fetchServiceData = (): AppThunk => async (dispatch, getState) => {
 export const updateServiceData = createAsyncThunk(
   "service/updateServiceData",
   async (updatedData: ServiceData, { getState }) => {
-    
-      
-      const data = useSelector((state: RootState) => state.service.dataService);
       const { id_sv } = updatedData;
-
-      // Kiểm tra xem dữ liệu có tồn tại trong store hay không
-      const existingData = data.find(
-        (item: { id_sv: string }) => item.id_sv === id_sv
-      );
-
       const serviceDocRef = doc(firestore, "service", id_sv);
       const updatedDataObject = { ...updatedData };
       await updateDoc(serviceDocRef, updatedDataObject);
-
       return updatedData; // Trả về dữ liệu đã được cập nhật
 
   }

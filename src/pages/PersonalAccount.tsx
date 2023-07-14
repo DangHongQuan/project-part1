@@ -13,8 +13,14 @@ import {
   SettingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Avatar, Button, Card, Col, Form, Image, Input, Layout, Menu, Row } from "antd";
+import { Avatar, Button, Card, Col, Dropdown, Form, Image, Input, Layout, Menu, Row } from "antd";
 import { Header } from "antd/es/layout/layout";
+import { fetchNumberData } from "../reduxtoolkit/NumberLeverActions";
+import { RootState } from "../reduxtoolkit/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AnyAction } from "redux";
+import { ThunkDispatch } from "redux-thunk";
+import { format } from "date-fns";
 
 
 const { Sider, Content } = Layout;
@@ -66,15 +72,37 @@ const handleLogout = () => {
   // Sau đó, chuyển hướng về trang đăng nhập
   // Ví dụ: xóa thông tin người dùng trong localStorage
   localStorage.removeItem('userData');
-  window.location.href=('/')
+  window.location.href = ('/')
 };
 
-const PersoalAccount: React.FC   = () => {
+const PersoalAccount: React.FC = () => {
   const [userData, setUserData] = useState<any>({});
- useEffect(() => {
-  const storedUserData = JSON.parse(localStorage.getItem("userData") || "{}");
-  setUserData(storedUserData);
-}, []);
+  useEffect(() => {
+    const storedUserData = JSON.parse(localStorage.getItem("userData") || "{}");
+    setUserData(storedUserData);
+  }, []);
+  const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch();
+
+  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
+    dispatch(fetchNumberData());
+  }, [dispatch]);
+  const { data } = useSelector((state: RootState) => state.numberlever);
+  const handleDropdownClick = () => {
+    setIsOpen(!isOpen);
+  };
+  const menu = (
+    <Menu style={{ maxHeight: '200px', width: '400px', overflowY: 'auto' }}>
+      <Menu.Item className="tb-dr">Thông báo</Menu.Item>
+      {data.map((item: any) => (
+        <Menu.Item key={item.id_cs}>
+          <span className="nd">Người dùng:   {item.name_kh}</span> <br />
+          <span className="tgns">Thời gian nhận số: {format(new Date(item.data), "HH:mm 'ngày' dd/MM/yyyy")}</span>
+        </Menu.Item>
+      ))}
+    </Menu>
+  );
+
   return (
     <>
       <Layout style={{ minHeight: "100vh" }}>
@@ -106,118 +134,126 @@ const PersoalAccount: React.FC   = () => {
 
           </Button>
         </Sider>
-        
-        <Content className="bg">
-        <Header className="hdaccount">
-        <Row >
-            <Col span={10}>
-              <p className="hederp">Thông tin cá nhân</p>
-            </Col>
-            <Col span={11}>
-              <div className="hederpaccount text-end">
-                <img src="/img/icon/notification.png" className="me-2 iconaccount" />
-                <img src={userData.imageURL} alt="" className="imgaccount" />
-              </div>
 
-            </Col>
-            <Col span={3}>
-            <p className="xc">xin chào</p>
-            <p className="name">{userData.name}</p>
-            </Col>
-          </Row>
-        </Header>
-        {/* <Card className="card center">
+        <Content className="bg">
+          <Header className="hdaccount">
+            <Row >
+              <Col span={10}>
+                <p className="hederp">Thông tin cá nhân</p>
+              </Col>
+              <Col span={11}>
+                <div className="hederpaccount text-end">
+                  <Dropdown
+                    overlay={menu}
+                    visible={isOpen}
+                    onVisibleChange={setIsOpen}
+                    overlayClassName="custom-dropdown"
+                    placement="topLeft"
+                  >
+                    <img src="/img/icon/notification.png" className="me-2 iconaccount" onClick={handleDropdownClick} />
+                  </Dropdown>
+                  <img src={userData.imageURL} alt="" className="imgaccount" />
+                </div>
+
+              </Col>
+              <Col span={3}>
+                <p className="xc">xin chào</p>
+                <p className="name">{userData.name}</p>
+              </Col>
+            </Row>
+          </Header>
+          {/* <Card className="card center">
           <h1>aaaaaaa</h1>
         </Card> */}
-         <Card className="card center mt-5">
-                <div className="row">
-                  <div className="col-4">
-                    <div className="row text-center">
-                      <div className="col-12" style={{ position: "relative" }}>
-                      <Avatar src={userData.imageURL} className="imgaccounthome"  size={170}/>
-                        <div
-                          style={{
-                            position: "absolute",
-                            bottom: "20px",
-                            right: "90px",
-                            transform: "translate(50%, 50%)",
-                          }}
-                        >
-                          <Button
-                            style={{ background: "#FF7506", color: "white" }}
-                            shape="circle"
-                            icon={
-                              <CameraOutlined className="d-flex align-items-center fs-5" />
-                            }
-                          />
-                        </div>
-                      </div>
-                      <div className="col mt-4">
-                     <p>{userData.name}</p>
-                      </div>
+          <Card className="card center mt-5">
+            <div className="row">
+              <div className="col-4">
+                <div className="row text-center">
+                  <div className="col-12" style={{ position: "relative" }}>
+                    <Avatar src={userData.imageURL} className="imgaccounthome" size={170} />
+                    <div
+                      style={{
+                        position: "absolute",
+                        bottom: "20px",
+                        right: "90px",
+                        transform: "translate(50%, 50%)",
+                      }}
+                    >
+                      <Button
+                        style={{ background: "#FF7506", color: "white" }}
+                        shape="circle"
+                        icon={
+                          <CameraOutlined className="d-flex align-items-center fs-5" />
+                        }
+                      />
                     </div>
                   </div>
-                  <div className="col-8 mt-5">
-                    <Form disabled>
-                      <div className="row">
-                        <div className="col-6">
-                          <label htmlFor="" className="">
-                         Tên tài khoản
-                          </label>
-                          <Form.Item className="">
-                         <input className="vauePe" value={userData.name}/>
-                          </Form.Item>
-                        </div>
-                        <div className="col-6">
-                          <label htmlFor="" className="">
-                            Tên đăng nhập
-                          </label>
-                          <Form.Item className="">
-                          <input className="vauePe" value={userData.email}/>
-                          </Form.Item>
-                        </div>
-                        <div className="col-6">
-                          <label htmlFor="" className="">
-                            Số điện thoại
-                          </label>
-                          <Form.Item className="">
-                          <input className="vauePe" value={userData.phone}/>
-
-                          </Form.Item>
-                        </div>
-                        <div className="col-6">
-                          <label htmlFor="" className="">
-                            Mật khẩu
-                          </label>
-                          <Form.Item className="">
-                          <input className="vauePe" value={userData.password}/>
-
-                          </Form.Item>
-                        </div>
-                        <div className="col-6">
-                          <label htmlFor="" className="">
-                            Email:
-                          </label>
-                          <Form.Item className="">
-                          <input className="vauePe" value={userData.email}/>
-
-                          </Form.Item>
-                        </div>
-                        <div className="col-6">
-                          <label htmlFor="" className="">
-                            Vai trò:
-                          </label>
-                          <Form.Item className="">
-                          <input className="vauePe" value={userData.role}/>
-
-                          </Form.Item>
-                        </div>
-                      </div>
-                    </Form>
+                  <div className="col mt-4">
+                    <p>{userData.name}</p>
                   </div>
-                  <div className="col-4"></div>
                 </div>
-              </Card>
+              </div>
+              <div className="col-8 mt-5">
+                <Form disabled>
+                  <div className="row">
+                    <div className="col-6">
+                      <label htmlFor="" className="">
+                        Tên tài khoản
+                      </label>
+                      <Form.Item className="">
+                        <input className="vauePe" value={userData.name} />
+                      </Form.Item>
+                    </div>
+                    <div className="col-6">
+                      <label htmlFor="" className="">
+                        Tên đăng nhập
+                      </label>
+                      <Form.Item className="">
+                        <input className="vauePe" value={userData.email} />
+                      </Form.Item>
+                    </div>
+                    <div className="col-6">
+                      <label htmlFor="" className="">
+                        Số điện thoại
+                      </label>
+                      <Form.Item className="">
+                        <input className="vauePe" value={userData.phone} />
+
+                      </Form.Item>
+                    </div>
+                    <div className="col-6">
+                      <label htmlFor="" className="">
+                        Mật khẩu
+                      </label>
+                      <Form.Item className="">
+                        <input className="vauePe" value={userData.password} />
+
+                      </Form.Item>
+                    </div>
+                    <div className="col-6">
+                      <label htmlFor="" className="">
+                        Email:
+                      </label>
+                      <Form.Item className="">
+                        <input className="vauePe" value={userData.email} />
+
+                      </Form.Item>
+                    </div>
+                    <div className="col-6">
+                      <label htmlFor="" className="">
+                        Vai trò:
+                      </label>
+                      <Form.Item className="">
+                        <input className="vauePe" value={userData.role} />
+
+                      </Form.Item>
+                    </div>
+                  </div>
+                </Form>
+              </div>
+              <div className="col-4"></div>
+            </div>
+          </Card>
 
 
           <Routes >
@@ -230,7 +266,7 @@ const PersoalAccount: React.FC   = () => {
         </Content>
       </Layout>
     </>
-  )  
+  )
 };
 
 export default PersoalAccount;
